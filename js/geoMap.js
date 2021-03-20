@@ -7,9 +7,8 @@ class GeoMap {
     // Create SVG area, initialize scales and axes
     initVis() {
       
-      // https://gis.stackexchange.com/questions/182442/whats-the-most-appropriate-way-to-load-mapbox-studio-tiles-in-leaflet
       const map = L.map('map').setView([36.1408, 5.3536], 2);
-      L.Icon.Default.imagePath - "images/";
+      L.Icon.Default.imagePath = "images/";
       L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         zoomOffset: -1,
         tileSize: 512,
