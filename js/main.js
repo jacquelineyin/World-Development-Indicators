@@ -2,6 +2,7 @@
 const indicators = new Indicators();
 
 let barChart, lineChart;
+let data, filteredData;
 
 //TODO: get rid of this after we implement for all selectable items:
 let selected = { area: "world", comparisonAreas: [], indicator: indicators.GDP_PER_CAPITA}
@@ -9,17 +10,30 @@ let selected = { area: "world", comparisonAreas: [], indicator: indicators.GDP_P
 /**
  * Load data from CSV file asynchronously and render charts
  */
- d3.csv('data/Dataset.csv').then(data => {
+ d3.csv('data/Dataset.csv').then(_data => {
     // Filter all irrelevant data
     let indicatorsOfInterest = indicators.getAllIndicatorsOfInterest();
-    data = data.filter(d => indicatorsOfInterest.includes(d.IndicatorName));
+    data = _data.filter(d => indicatorsOfInterest.includes(d.IndicatorName));
 
     data.forEach(d => {
         /* TODO */
     });  
 
+    filteredData = filterData();
+
     //Initialize views
     barChart = new BarChart({
       parentElement: '#barchart'
-    }, data, selected)
+    }, filteredData, selected)
   });
+
+
+  // ----------------- Helpers -------------------- //
+
+  let filterData = () => {
+    let filtered;
+    // Filter by selected indicator
+    filtered = data.filter(d => d.IndicatorName === selected.indicator);
+    console.log(filtered);
+    return filtered;
+  }

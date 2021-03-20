@@ -1,0 +1,6 @@
+/** Styles specific to barChart, which overrides common classes */
+
+/** Axes */
+.x-axis-barchart line {
+    visibility: hidden;
+}

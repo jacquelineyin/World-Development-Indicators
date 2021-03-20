@@ -1,1 +1,7 @@
+@import './barChart.css';
 /* Todo: add styles */
+
+/** Axes */
+.axis-title {
+    font-weight: bold;
+}
