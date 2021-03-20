@@ -4,5 +4,7 @@
  d3.csv('data/Dataset.csv').then(data => {
     data.forEach(d => {
         /* TODO */
-    });  
+    }); 
   });
+
+  var map = new GeoMap();
