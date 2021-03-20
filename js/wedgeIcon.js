@@ -1,7 +1,7 @@
 class WedgeIcon {
 
     constructor() {
-  
+      
     }
   
     initVis() {
