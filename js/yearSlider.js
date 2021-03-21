@@ -76,7 +76,7 @@ class YearSlider {
       vis.xValue = d => d.Year;
   
       // Set the scale input domains
-      vis.xScaleContext.domain(d3.extent(vis.data, vis.xValue)); //.nice();
+      vis.xScaleContext.domain(d3.extent(vis.data, vis.xValue));
     
       vis.renderVis();
     }
