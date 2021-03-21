@@ -17,12 +17,12 @@ var slider = d3
   .step(1)
   .width(1400)
   .tickFormat(d3.format('d'))
-  .ticks(25);
+  .ticks(20);
 
 d3.select('#slider')
   .append('svg')
   .attr('width', 1500)
   .attr('height', 100)
   .append('g')
-  .attr('transform', 'translate(10,10)')
+  .attr('transform', 'translate(15,10)')
   .call(slider);
