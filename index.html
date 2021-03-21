@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html>
+<script src="https://unpkg.com/d3-simple-slider"></script>
+
 <head>
     <title>World Development Indicators</title>
     <link rel="icon" href="data:;base64,iVBORwOKGO=" />
     <link rel="stylesheet" href="css/leaflet.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div id="chart-container">
         <div id="map"></div>
-        <div id="barchart"></div>
-        <div id="linechart"></div>
+        <svg id="barchart"></svg>
+        <svg id="linechart"></svg>
+        <div id="slider"></div>
     </div>
 
     <div id="tooltip"></div>
-    
+
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>
     <script src="js/indicators.js"></script>
@@ -25,4 +29,5 @@
     <script src="js/wedgeIcon.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>
