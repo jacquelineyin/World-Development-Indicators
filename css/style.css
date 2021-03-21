@@ -3,6 +3,10 @@
     height: 500px; 
 }
 
+#slider {
+  display: block;
+}
+
 .axis text,
 .slider text {
   font-size: 12px;

@@ -1,28 +1,17 @@
 /**
  * Load data from CSV file asynchronously and render charts
  */
- d3.csv('data/Dataset.csv').then(data => {
-    data.forEach(d => {
-        /* TODO */
-    }); 
+let data, yearSlider;
+
+d3.csv('data/Dataset.csv').then(_data => {
+  data = _data;
+  _data.forEach(d => {
+    //d.Year = Number(d.Year);
   });
 
-  var map = new GeoMap();
+  // Initialize and render chart
+  yearSlider = new YearSlider({ parentElement: '#slider' }, data);
+  yearSlider.updateVis();
+});
 
-// Year slider
-var slider = d3
-  .sliderHorizontal()
-  .min(1960)
-  .max(2014)
-  .step(1)
-  .width(1400)
-  .tickFormat(d3.format('d'))
-  .ticks(20);
-
-d3.select('#slider')
-  .append('svg')
-  .attr('width', 1500)
-  .attr('height', 100)
-  .append('g')
-  .attr('transform', 'translate(15,10)')
-  .call(slider);
+var map = new GeoMap();
