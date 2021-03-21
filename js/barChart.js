@@ -4,7 +4,7 @@ class BarChart {
      * Class constructor with initial configuration
      * @param {Object} _config 
      * @param {Array} _data 
-     * @param {Object} _selectedItems = {timeInterval: [min, max], focus: "", comparisonAreas: ["", "", ...], indicator: ""}
+     * @param {Object} _selectedItems = {timeInterval: {min: number, max: number}, focus: "", comparisonAreas: ["", "", ...], indicator: ""}
      * @param {Object} _dispatcher 
      */
     constructor(_config, _data, _selectedItems, _dispatcher) {
@@ -23,7 +23,7 @@ class BarChart {
       }
       this.data = _data,
       this.dispatcher = _dispatcher,
-      this.selectedTimeInterval = _selectedItems ? _selectedItems.timeInterval : this.getTimeInterval();
+      this.selectedTimeInterval = _selectedItems && _selectedItems.timeInterval ? _selectedItems.timeInterval : this.getTimeInterval();
       this.selectedIndicator = _selectedItems ? _selectedItems.indicator : null;
       this.selectedArea = _selectedItems ? _selectedItems.area : null;
       this.selectedComparisonAreas = _selectedItems ? _selectedItems.comparisonAreas : [];
@@ -70,17 +70,11 @@ class BarChart {
       let vis = this;
 
       // Specificy accessor functions
-      vis.xValue = d => d.CountryName;
-      vis.yValue = d => d.Value;
-
-      // Update data
-      //TODO: make dynamic
-      let vals = vis.getValues();
-      vis.avg = d3.mean(vals);
-      console.log(vis.avg)
+      vis.xValue = d => d.key;
+      vis.yValue = d => d.avg;
 
       // Update Axes
-      vis.yScale.domain([0, d3.max(vis.getValues())])
+      vis.yScale.domain([0, d3.max(vis.getAllValues())])
       vis.xScale.domain([vis.selectedArea, ...vis.selectedComparisonAreas]);
 
       vis.renderVis();
@@ -173,7 +167,12 @@ class BarChart {
       let vis = this;
 
       let years = vis.data.map(d => d.Year);
-      return d3.extent(years);
+
+      let timeInterval = {};
+      timeInterval.min = d3.min(years);
+      timeInterval.max = d3.max(years);
+
+      return timeInterval;
     }
 
     renderAxisGroups() {
@@ -188,28 +187,73 @@ class BarChart {
         .call(g => g.select('.domain').remove());
     }
 
-    getValues() {
+    getAllValues() {
       let vis = this;
 
       return vis.data.map(d => d.Value);
     }
 
+    /**
+     * 
+     * @param {Array} selectedAreas
+     * @param {string} indicator 
+     * @param {Object} timeInterval = {min: Number, max: Number}
+     * @returns {Array} of Objects 
+     * Ex. 
+     * [
+     *    {key: "World", avg: 4019},
+     *    {key: "China", avg: 5000},
+     *    ...
+     * ]
+     */
+    getAverages(selectedAreas, indicator, timeInterval) {
+      let vis = this;
+      console.log(selectedAreas)
+      let dataOfInterest = vis.data.filter(d => selectedAreas.includes(d.CountryName) && d.IndicatorName === indicator && d.Year >= timeInterval.min && d.Year <= timeInterval.max);
+      let res = d3.rollups(dataOfInterest, v => d3.mean(v, d => d.Value), d => d.CountryName);
+      res = Array.from(res, ([key, avg]) => ({ key, avg }));
+
+      return res;
+    }
+
     renderBars() {
       let vis = this;
       //TODO: use aggregation & grouped elems
+      let vals = vis.getAverages([vis.selectedArea, ...vis.selectedComparisonAreas], vis.selectedIndicator, vis.selectedTimeInterval);
 
       // Bind data to visual elements
-    const bars = vis.chart.selectAll('.bar')
-        .data(vis.data, vis.xValue)
-      .join('rect')
-        .attr('class', d => `bar bar-${d.CountryName.toLowerCase()}`)
-        .attr('x', d => vis.xScale(vis.xValue(d)))
-        .attr('y', d => vis.yScale(vis.avg))
-        .attr('width', vis.xScale.bandwidth())
-        .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
-        .attr('fill', vis.config.selectedCountryBar);
+      const bars = vis.chart.selectAll('.bar')
+          .data(vals, vis.xValue)
+        .join('rect')
+          .attr('class', d => `bar bar-${d.key.toLowerCase()}`)
+          .attr('x', d => vis.xScale(vis.xValue(d)))
+          .attr('y', d => vis.yScale(vis.yValue(d)))
+          .attr('width', vis.xScale.bandwidth())
+          .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
+          .attr('fill', d => vis.getBarColour(d));
         // .on('mouseover', e => d3.select(e.target).attr('stroke', 'black'))
         // .on('mouseleave', e => d3.select(e.target).attr('stroke', 'none'))
         // .on('click', (e) => vis.handleClick(e));
+    }
+
+    /**
+     * 
+     * @param {Object} data = {key: "World", avg: 4019} 
+     */
+    getBarColour(data) {
+      let vis = this;
+
+      let isSelectedArea = data.key === vis.selectedArea;
+      let isHovered = false;
+
+      if (isHovered) {
+        return vis.config.colour.hoveredBar;
+      } else if (isSelectedArea) {
+        return vis.config.colour.selectedCountryBar;
+      } else {
+        return vis.config.colour.comparisonCountryBars;
+      }
+      
+
     }
   }
