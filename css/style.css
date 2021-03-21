@@ -2,3 +2,8 @@
     width: 800px;
     height: 500px; 
 }
+
+.axis text,
+.slider text {
+  font-size: 12px;
+}

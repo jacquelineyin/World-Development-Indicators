@@ -5,3 +5,4 @@
 ## Map 
 - How-to add a Leaflet map: https://gis.stackexchange.com/questions/182442/whats-the-most-appropriate-way-to-load-mapbox-studio-tiles-in-leaflet
 - 436V Leaflet example: https://codesandbox.io/s/vigilant-worker-9ohh6?file=/js/main.js 
+- d3-simple-slider: https://www.npmjs.com/package/d3-simple-slider
