@@ -5,7 +5,7 @@ let barChart, lineChart;
 let data, filteredData;
 
 //TODO: get rid of this after we implement for all selectable items:
-let selected = { area: "world", comparisonAreas: [], indicator: indicators.GDP_PER_CAPITA}
+let selected = { area: "World", comparisonAreas: ["China"], indicator: indicators.GDP_PER_CAPITA}
 
 /**
  * Load data from CSV file asynchronously and render charts
