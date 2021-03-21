@@ -37,3 +37,7 @@ let selected = { area: "World", comparisonAreas: ["China"], indicator: indicator
     console.log(filtered);
     return filtered;
   }
+    }); 
+  });
+
+  var map = new GeoMap();

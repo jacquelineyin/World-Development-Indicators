@@ -1,7 +1,12 @@
 @import './barChart.css';
-/* Todo: add styles */
 
 /** Axes */
 .axis-title {
     font-weight: bold;
+}
+
+/** Map */
+#map { 
+    width: 800px;
+    height: 500px; 
 }
