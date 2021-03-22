@@ -2,10 +2,10 @@ class BarChart {
 
     /**
      * Class constructor with initial configuration
-     * @param {Object} _config 
-     * @param {Array} _data 
-     * @param {Selected} _selectedItems 
-     * @param {Object} _dispatcher 
+     * @param {Object} _config : object holding configuration settings
+     * @param {Array} _data : given data array
+     * @param {Selected} _selectedItems : Selected class object holding selectedItem values
+     * @param {Object} _dispatcher : d3 dispatcher
      */
     constructor(_config, _data, _selectedItems, _dispatcher) {
       this.config = {
@@ -54,9 +54,6 @@ class BarChart {
       // Append axis groups
       vis.appendAxisGroups();
 
-      // Append axis titles
-      vis.appendAxisTitles('Countries/Regions', vis.selected.indicator);
-
       // Update Vis
       vis.updateVis();
 
@@ -72,6 +69,9 @@ class BarChart {
       // Specificy accessor functions
       vis.xValue = d => d.key;
       vis.yValue = d => d.avg;
+
+      // Update axis titles
+      vis.renderAxisTitles('Countries/Regions', vis.selected.indicator);
 
       // Update Axes
       vis.yScale.domain([0, d3.max(vis.getAllAverages())])
@@ -90,15 +90,22 @@ class BarChart {
     }
 
     /**
-     * 
+     * Purpose: updates barChart with new data or new selectedItems
      * @param {Array} _data 
      * @param {Selected} _selectedItems
      */
     update(_data, _selectedItems) {
       let vis = this;
-      //TODO
+      
+      if (_data) {
+        vis.data = _data;
+      }
 
-      // let xScale = d3.scaleLinear()
+      if (_selectedItems) {
+        vis.selectedItems = _selectedItems;
+      }
+
+      vis.updateVis();
     }
 
     // ------------------------------------------ Helper functions ------------------------------------ f//
@@ -137,28 +144,32 @@ class BarChart {
       .attr('class', 'axis y-axis y-axis-barchart');
     }
 
-    appendAxisTitles(xAxisTitle, yAxisTitle) {
+    renderAxisTitles(xAxisTitle, yAxisTitle) {
       //TODO
     let vis = this; 
 
     // Append x-axis title to svg
-    vis.chartArea.append('text')
-      .attr('class', 'axis-title barchart-axis-title')
-      .attr('y', vis.height + 25)
-      .attr('x', vis.width)
-      .attr('dy', '.71em')
-      .style('text-anchor', 'end')
-      .text(xAxisTitle);
+    vis.chartArea.selectAll('.barchart-x-axis-title')
+        .data([xAxisTitle])
+      .join('text')
+        .attr('class', 'axis-title barchart-x-axis-title')
+        .attr('y', vis.height + 25)
+        .attr('x', vis.width)
+        .attr('dy', '.71em')
+        .style('text-anchor', 'end')
+        .text(xAxisTitle);
   
     if (yAxisTitle) {
       // Append y-axis title to svg
-      vis.chartArea.append('text')
-        .attr('class', 'axis-title barchart-axis-title')
-        .attr('y', -vis.config.margin.top)
-        .attr('x', -vis.config.margin.left)
-        .attr('dy', '.71em')
-        .style('text-anchor', 'start')
-        .text(yAxisTitle);
+      vis.chartArea.selectAll('.barchart-y-axis-title')
+          .data([yAxisTitle])
+        .join('text')
+          .attr('class', 'axis-title barchart-y-axis-title')
+          .attr('y', -vis.config.margin.top)
+          .attr('x', -vis.config.margin.left)
+          .attr('dy', '.71em')
+          .style('text-anchor', 'start')
+          .text(yAxisTitle);
     }
   }
 
