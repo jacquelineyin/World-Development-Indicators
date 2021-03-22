@@ -25,7 +25,7 @@
 - [Loading GeoJSON files in Leaflet with leaflet-ajax](https://gis.stackexchange.com/questions/68489/loading-external-geojson-file-into-leaflet-map)
 
 #### Year slider
-- [d3 simple slider] (https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518)
+- [d3 simple slider](https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518)
 
 
 ## Dataset

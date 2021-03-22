@@ -51,21 +51,4 @@ class YearSlider {
         .join('-')
     );
   }
-
-  /**
-   * Prepare the data and scales before we render it.
-   */
-  updateVis() {
-
-  }
-
-  /**
-   * This function contains the D3 code for binding data to visual elements
-   */
-  renderVis() {
-
-    // Update the axes
-
-    // Update the brush and define a default position
-  }
 }
