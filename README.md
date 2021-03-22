@@ -28,6 +28,7 @@
 - See [External Resources: Data Sources](#data-sources)
 
 ### Pre-processing
-1. Joined two datasets (`Indicators.csv` and `continents2.csv`)
-2. Removed all rows that assigned anything other than a country to "CountryName" column (unless the value was "World")
-3. **Note:** _For a more detailed breakdown of how we pre-processed our data, please refer to [the `README.md` in ./data](./data/README.md)_
+1. Filtered dataset `Indicators.csv` of all rows containing irrelevant `IndicatorName` values and created a temporary dataset `Dataset.csv` that held the results
+2. Joined two datasets (`Dataset.csv` and `continents2.csv`)
+3. From the result of the join, removed all rows that assigned anything other than a country to `CountryName` column (unless the value was "World")
+4. **Note:** _For a more detailed breakdown of how we pre-processed our data, please refer to [the `README.md` in ./data](./data/README.md)_
