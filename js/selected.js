@@ -31,7 +31,7 @@ class Selected {
      */
     addComparisonArea(countryOrRegion) {
         let isFocusArea = this.area.region === countryOrRegion || this.area.country === countryOrRegion;
-        let isComparisonListFull = this.comparisonAreas.length < 5;
+        let isComparisonListFull = this.comparisonAreas.length >= 5;
         let isAlreadyInList = this.comparisonAreas.includes(countryOrRegion);
 
         if (!isFocusArea && !isComparisonListFull && !isAlreadyInList) {
