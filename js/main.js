@@ -3,9 +3,9 @@
  */
 let data, yearSlider;
 
-d3.csv('data/Dataset.csv').then(_data => {
-  data = _data;
-  _data.forEach(d => {
+ d3.csv('data/Dataset.csv').then(_data => {
+   data = _data;
+   data.forEach(d => {
 
   });
 
