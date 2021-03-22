@@ -1,10 +1,17 @@
 /**
  * Load data from CSV file asynchronously and render charts
  */
- d3.csv('data/Dataset.csv').then(data => {
-    data.forEach(d => {
-        /* TODO */
-    }); 
+let data, yearSlider;
+
+ d3.csv('data/Dataset.csv').then(_data => {
+   data = _data;
+   data.forEach(d => {
+
   });
 
-  var map = new GeoMap();
+  // Initialize and render chart
+  yearSlider = new YearSlider({ parentElement: '#slider' }, data);
+  yearSlider.updateVis();
+});
+
+var map = new GeoMap();
