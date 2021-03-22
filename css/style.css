@@ -11,6 +11,10 @@
   margin-right: -15px;
 }
 
+#value-range {
+  margin-left: 20px;
+}
+
 .axis text,
 .slider text {
   font-size: 16px;
