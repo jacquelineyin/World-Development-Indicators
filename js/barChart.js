@@ -28,6 +28,7 @@ class BarChart {
     }
   
     initVis() {
+      let vis = this;
       // Create SVG area, initialize scales and axes
 
       // Calculate inner chart size. Margin specifies the space around the actual chart.
@@ -80,6 +81,7 @@ class BarChart {
     }
   
     renderVis() {
+      let vis = this;
       // Bind data to visual elements, update axes
       vis.renderBars();
 
