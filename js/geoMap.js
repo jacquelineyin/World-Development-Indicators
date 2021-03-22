@@ -15,6 +15,8 @@ class GeoMap {
         attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         accessToken: 'sk.eyJ1IjoiYnJldHRwYXN1bGEiLCJhIjoiY2ttaThjenpqMGVyMDJzcmh6d2w5anQ2aiJ9.x43UBzwi3iRfsZSSb5ubIQ'
       }).addTo(map);
+      var vectorLayer = new L.GeoJSON.AJAX("./data/countries.geojson");
+      vectorLayer.addTo(map);
     }
   
     updateVis() {
