@@ -4,7 +4,7 @@ class BarChart {
      * Class constructor with initial configuration
      * @param {Object} _config 
      * @param {Array} _data 
-     * @param {Object} _selectedItems = {timeInterval: {min: number, max: number}, focus: "", comparisonAreas: ["", "", ...], indicator: ""}
+     * @param {Selected} _selectedItems 
      * @param {Object} _dispatcher 
      */
     constructor(_config, _data, _selectedItems, _dispatcher) {
@@ -23,15 +23,11 @@ class BarChart {
       }
       this.data = _data,
       this.dispatcher = _dispatcher,
-      this.selectedTimeInterval = _selectedItems && _selectedItems.timeInterval ? _selectedItems.timeInterval : this.getTimeInterval();
-      this.selectedIndicator = _selectedItems ? _selectedItems.indicator : null;
-      this.selectedArea = _selectedItems ? _selectedItems.area : null;
-      this.selectedComparisonAreas = _selectedItems ? _selectedItems.comparisonAreas : [];
+      this.selected = _selectedItems;
       this.initVis();
     }
   
     initVis() {
-      let vis = this;
       // Create SVG area, initialize scales and axes
 
       // Calculate inner chart size. Margin specifies the space around the actual chart.
@@ -58,7 +54,7 @@ class BarChart {
       vis.appendAxisGroups();
 
       // Append axis titles
-      vis.appendAxisTitles('Countries/Regions', vis.selectedIndicator);
+      vis.appendAxisTitles('Countries/Regions', vis.selected.indicator);
 
       // Update Vis
       vis.updateVis();
@@ -68,21 +64,22 @@ class BarChart {
     updateVis() {
       // Prepare data and scales
       let vis = this;
+      
+      vis.aggregatedData = vis.getAverages(vis.selected);
+
 
       // Specificy accessor functions
       vis.xValue = d => d.key;
       vis.yValue = d => d.avg;
 
       // Update Axes
-      vis.yScale.domain([0, d3.max(vis.getAllValues())])
-      vis.xScale.domain([vis.selectedArea, ...vis.selectedComparisonAreas]);
+      vis.yScale.domain([0, d3.max(vis.getAllAverages())])
+      vis.xScale.domain(vis.selected.allSelectedAreas);
 
       vis.renderVis();
     }
   
     renderVis() {
-      let vis = this;
-      
       // Bind data to visual elements, update axes
       vis.renderBars();
 
@@ -93,7 +90,7 @@ class BarChart {
     /**
      * 
      * @param {Array} _data 
-     * @param {Object} _selectedItems = {focusCountry: "", comparisonCountries: ["", "", ...], indicator: ""}
+     * @param {Selected} _selectedItems
      */
     update(_data, _selectedItems) {
       let vis = this;
@@ -193,6 +190,11 @@ class BarChart {
       return vis.data.map(d => d.Value);
     }
 
+    getAllAverages() {
+      let vis = this;
+      return vis.aggregatedData.map(d => d.avg);
+    }
+
     /**
      * 
      * @param {Array} selectedAreas
@@ -206,10 +208,10 @@ class BarChart {
      *    ...
      * ]
      */
-    getAverages(selectedAreas, indicator, timeInterval) {
+    getAverages(selected) {
       let vis = this;
-      console.log(selectedAreas)
-      let dataOfInterest = vis.data.filter(d => selectedAreas.includes(d.CountryName) && d.IndicatorName === indicator && d.Year >= timeInterval.min && d.Year <= timeInterval.max);
+    
+      let dataOfInterest = vis.filterData(vis.data, selected);
       let res = d3.rollups(dataOfInterest, v => d3.mean(v, d => d.Value), d => d.CountryName);
       res = Array.from(res, ([key, avg]) => ({ key, avg }));
 
@@ -219,11 +221,10 @@ class BarChart {
     renderBars() {
       let vis = this;
       //TODO: use aggregation & grouped elems
-      let vals = vis.getAverages([vis.selectedArea, ...vis.selectedComparisonAreas], vis.selectedIndicator, vis.selectedTimeInterval);
-
+      console.log(vis.aggregatedData);
       // Bind data to visual elements
       const bars = vis.chart.selectAll('.bar')
-          .data(vals, vis.xValue)
+          .data(vis.aggregatedData, vis.xValue)
         .join('rect')
           .attr('class', d => `bar bar-${d.key.toLowerCase()}`)
           .attr('x', d => vis.xScale(vis.xValue(d)))
@@ -242,8 +243,10 @@ class BarChart {
      */
     getBarColour(data) {
       let vis = this;
-
-      let isSelectedArea = data.key === vis.selectedArea;
+    
+      let isSelectedArea = data.key === vis.selected.area.country || data.key === vis.selected.area.region;
+      console.log(vis.selected.area);
+      console.log(isSelectedArea);
       let isHovered = false;
 
       if (isHovered) {
@@ -254,6 +257,23 @@ class BarChart {
         return vis.config.colour.comparisonCountryBars;
       }
       
-
     }
+
+    /**
+     * 
+     * @param {Array} dataArr 
+     * @param {Selected} selectedItems 
+     * @returns 
+     */
+    filterData(dataArr, selectedItems) {
+      let {allSelectedAreas, indicator, timeInterval} = selectedItems;
+      let isWithinTimeInterval = d => d.Year >= timeInterval.min && d.Year <= timeInterval.max;
+
+      let filtered = dataArr.filter(d => allSelectedAreas.includes(d.CountryName) 
+                                          && d.IndicatorName === indicator 
+                                          && isWithinTimeInterval(d));
+      return filtered;
+    }
+
+    
   }
