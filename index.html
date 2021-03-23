@@ -12,19 +12,26 @@
 
 <body>
     <div id="chart-container">
-        <div id="map"></div>
-        <svg id="barchart"></svg>
-        <svg id="linechart"></svg>
-        <div id="slider">
-            <div class="col-sm-2">
-                <p id="value-range"></p>
-            </div>
-            <div class="col-sm">
-                <div id="slider-range"></div>
-            </div>
+        <div id="left-col">
+            <div id="map"></div>
+        </div>
+        <div id="right-col">
+            <svg id="barchart"></svg>
+            <svg id="linechart"></svg>
+        </div>
+
+    </div>
+    
+    <div id="slider">
+        <div class="col-sm-2">
+            <p id="value-range"></p>
+        </div>
+        <div class="col-sm">
+            <div id="slider-range"></div>
         </div>
     </div>
 
+    
     <div id="tooltip"></div>
 
     <script src="js/d3.v6.min.js"></script>

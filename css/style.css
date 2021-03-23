@@ -1,5 +1,10 @@
 @import './barChart.css';
 
+/** Chart Positioning */
+#chart-container {
+  display: flex;
+}
+
 /** Axes */
 .axis-title {
     font-weight: bold;
