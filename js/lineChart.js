@@ -132,7 +132,7 @@ class LineChart {
         };
       })
       .attr("transform", function (d) {
-        return "translate(" + vis.xScale(d.value.year) + "," + vis.yScale(d.value.avg) + ")";
+        return `translate(${vis.xScale(d.value.year)}, ${vis.yScale(d.value.avg) + 20})`;
       })
       .attr("x", 3)
       .attr("dy", ".35em")
@@ -166,8 +166,8 @@ class LineChart {
       .attr("transform", "translate(10,3)");
 
     mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-      .attr('width', vis.config.containerWidth) // can't catch mouse events on a g element
-      .attr('height', vis.config.containerHeight)
+      .attr('width', vis.width) // can't catch mouse events on a g element
+      .attr('height', vis.height)
       .attr('fill', 'none')
       .attr('pointer-events', 'all')
       .on('mouseout', function () { // on mouse out hide line, circles and text
@@ -190,7 +190,7 @@ class LineChart {
         var mouse = d3.pointer(event, this)[0];
         d3.select(".mouse-line")
           .attr("d", function () {
-            var d = "M" + mouse + "," + vis.config.containerHeight;
+            var d = "M" + mouse + "," + vis.height;
             d += " " + mouse + "," + 0;
             return d;
           });
