@@ -8,7 +8,7 @@ class Selected {
      * @param {Object} selectedArea = {region: "", country: ""} : holds selected country and/or region of focus
      * @param {Array} selectedComparisonAreas = ["", "", ...] : list of strings representing countries or regions we wish to compare focusedArea to
      * @param {string} selectedIndicator : indicator that is selected. Default value: POPULATION_TOTAL 
-     * @param {Object} selectedTimeInterval = {minYear, maxYear} : minYear as lowerBound year and maxYear as upperBound of timeInterval
+     * @param {Object} selectedTimeInterval = {min, max} : min as lowerBound year and max as upperBound of timeInterval
      *                                                              Default = NULL;
      */
     constructor(selectedArea, selectedComparisonAreas, selectedIndicator, selectedTimeInterval) {
@@ -17,7 +17,7 @@ class Selected {
         this.area = selectedArea ? selectedArea : {region: "World", country: ""};
         this.comparisonAreas = selectedComparisonAreas ? selectedComparisonAreas : [];
         this.indicator = selectedIndicator ? selectedIndicator : this.availableIndicators.POPULATION_TOTAL;
-        this.timeInterval = selectedTimeInterval ? selectedTimeInterval : null;
+        this.timeInterval = selectedTimeInterval ? selectedTimeInterval : {};
 
         this.allSelectedAreas = [];
         this.updateAllSelectedAreas(this.area, this.comparisonAreas);
@@ -52,11 +52,32 @@ class Selected {
     removeComparisonArea(countryOrRegion) {
         let index = this.comparisonAreas.indexOf(countryOrRegion);
         if (index > -1) {
+            // Remove from list
             this.comparisonAreas.splice(index);
             
             //update allSelectedAreas
             this.updateAllSelectedAreas(this.area, this.comparisonAreas);
         }
+    }
+
+    /**
+     * Purpose: If focusedArea is currently in comparison list, remove from list
+     * @param {Object} focusedArea = {region: "", country: ""} : object that holds country or region being selected
+     */
+    updateComparisonArea(focusedArea) {
+        let isFocusCountryInList = this.comparisonAreas.includes(focusedArea.country);
+        let isFocusRegionInList = this.comparisonAreas.includes(focusedArea.region);
+        let index;
+
+        // Remove from list
+        if (isFocusCountryInList) {
+            index = this.comparisonAreas.indexOf(focusedArea.country);
+            this.comparisonAreas.splice(index, 1);
+        } else if (isFocusRegionInList) {
+            index = this.comparisonAreas.indexOf(focusedArea.region);
+            this.comparisonAreas.splice(index, 1);
+        } 
+
     }
 
     /**
@@ -66,8 +87,11 @@ class Selected {
      * @param {Object} area = {region: "", country: ""} 
      */
     setArea({region, country}) {
-        this.area.region = !!!region ? region : this.area.region;
-        this.area.country = !!!country ? country : this.area.country;
+        this.area.region = !!!region ? this.area.region : region;
+        this.area.country = !!!country ? this.area.country : country;
+
+        // If area was previously in Comparison list, remove
+        this.updateComparisonArea({region, country})
 
         //update allSelectedAreas
         this.updateAllSelectedAreas(this.area, this.comparisonAreas);
