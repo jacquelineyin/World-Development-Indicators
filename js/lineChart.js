@@ -10,6 +10,7 @@ class LineChart {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 900,
       containerHeight: _config.containerHeight || 500,
+      legendWidth: 250,
       margin: _config.margin || { top: 25, right: 20, bottom: 30, left: 50 }
     }
     this.data = _data;
@@ -59,7 +60,7 @@ class LineChart {
     vis.xAxisG = vis.chart.append('g')
       .attr('class', 'axis x-axis')
       .attr('transform', `translate(0,${vis.height})`);
-      
+
     // Append y-axis group
     vis.yAxisG = vis.chart.append('g')
       .attr('class', 'axis y-axis');
@@ -67,6 +68,8 @@ class LineChart {
     // We need to make sure that the tracking area is on top of other chart elements
     vis.lines = vis.chart.append('g')
       .attr('class', 'lines');
+
+    vis.updateVis();
   }
 
   /**
@@ -85,8 +88,8 @@ class LineChart {
       }
       newData.push(obj);
     })
-    console.log(newData);
-    console.log(vis.data);
+    //console.log(newData);
+    //console.log(vis.data);
     //vis.data = newData;
     // console.log(vis.newData);
     //const aggregatedDataMap = d3.rollups(newData, v => d3.mean(v, d => d.avg), d => d.countryName);
@@ -114,30 +117,28 @@ class LineChart {
 
     // Add line path
     vis.lines.selectAll('.line-group')
-    .data(vis.data)
-    .enter()
-    .append("g")
-    .attr("class", "line-group")
-    .append("path")
-    .attr("class", "line")
-    .attr("d", (d) => vis.line(d.values))
-    .style("stroke", (d, i) => vis.colorScale(i));
+      .data(vis.data)
+      .join("g")
+      .attr("class", "line-group")
+      .append("path")
+      .attr("class", "line")
+      .attr("d", (d) => vis.line(d.values))
+      .style("stroke", (d, i) => vis.colorScale(i));
 
     var mouseG = vis.lines.append("g")
-    .attr("class", "mouse-over-effects");
+      .attr("class", "mouse-over-effects");
 
-  mouseG.append("path") // this is the black vertical line to follow mouse
-    .attr("class", "mouse-line")
-    .style("stroke", "black")
-    .style("stroke-width", "1px")
-    .style("opacity", "0");
+    mouseG.append("path") // this is the black vertical line to follow mouse
+      .attr("class", "mouse-line")
+      .style("stroke", "black")
+      .style("stroke-width", "1px")
+      .style("opacity", "0");
 
     var lines = document.getElementsByClassName('line');
 
     var mousePerLine = mouseG.selectAll('.mouse-per-line')
       .data(vis.data)
-      .enter()
-      .append("g")
+      .join("g")
       .attr("class", "mouse-per-line");
 
     mousePerLine.append("circle")
@@ -150,12 +151,12 @@ class LineChart {
     mousePerLine.append("text")
       .attr("transform", "translate(10,3)");
 
-      mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
       .attr('width', vis.config.containerWidth) // can't catch mouse events on a g element
       .attr('height', vis.config.containerHeight)
       .attr('fill', 'none')
       .attr('pointer-events', 'all')
-      .on('mouseout', function() { // on mouse out hide line, circles and text
+      .on('mouseout', function () { // on mouse out hide line, circles and text
         d3.select(".mouse-line")
           .style("opacity", "0");
         d3.selectAll(".mouse-per-line circle")
@@ -163,7 +164,7 @@ class LineChart {
         d3.selectAll(".mouse-per-line text")
           .style("opacity", "0");
       })
-      .on('mouseover', function() { // on mouse in show line, circles and text
+      .on('mouseover', function () { // on mouse in show line, circles and text
         d3.select(".mouse-line")
           .style("opacity", "1");
         d3.selectAll(".mouse-per-line circle")
@@ -171,44 +172,44 @@ class LineChart {
         d3.selectAll(".mouse-per-line text")
           .style("opacity", "1");
       })
-      .on('mousemove', function(event) { // mouse moving over canvas
-        var mouse = d3.pointer(event,this)[0];
+      .on('mousemove', function (event) { // mouse moving over canvas
+        var mouse = d3.pointer(event, this)[0];
         d3.select(".mouse-line")
-          .attr("d", function() {
+          .attr("d", function () {
             var d = "M" + mouse + "," + vis.config.containerHeight;
             d += " " + mouse + "," + 0;
             return d;
           });
 
         d3.selectAll(".mouse-per-line")
-          .attr("transform", function(d, i) {
+          .attr("transform", function (d, i) {
             var xDate = vis.xScale.invert(mouse);
-            var bisect = d3.bisector(function(d) { return d.date; }).right;
-            var idx = bisect(d.values, xDate);
-            
+            var bisect = d3.bisector(d => { return d.date; }).right;
+            var index = bisect(d.values, xDate);
+
             var beginning = 0;
             var end = lines[i].getTotalLength();
             let target = null;
 
-            while (true){
+            while (true) {
               target = Math.floor((beginning + end) / 2);
               var pos = lines[i].getPointAtLength(target);
               if ((target === end || target === beginning) && pos.x !== mouse) {
-                  break;
+                break;
               }
-              if (pos.x > mouse)      end = target;
+              if (pos.x > mouse) end = target;
               else if (pos.x < mouse) beginning = target;
               else break; //position found
             }
-            
+
             d3.select(this).select('text')
               .text(vis.yScale.invert(pos.y).toFixed(2));
-              
-            return "translate(" + mouse + "," + pos.y +")";
+
+            return "translate(" + mouse + "," + pos.y + ")";
           });
       });
 
-    
+
     // Update the axes
     vis.xAxisG.call(vis.xAxis);
     vis.yAxisG.call(vis.yAxis);
