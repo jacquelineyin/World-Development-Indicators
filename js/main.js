@@ -28,7 +28,7 @@ d3.csv('data/Dataset.csv').then(_data => {
 
     // Initialize and render time slider
     yearSlider = new YearSlider({ parentElement: '#slider' }, data);
-    yearSlider.updateVis();
+
   });
 
   var map = new GeoMap();
