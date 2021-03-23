@@ -1,6 +1,11 @@
 @import './barChart.css';
 
 /** Chart Positioning */
+#parent-container {
+  margin: 15px;
+  margin-top: 25px;
+}
+
 #chart-container {
   display: flex;
 }
