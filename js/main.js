@@ -1,11 +1,12 @@
-/**
- * Load data from CSV file asynchronously and render charts
- */
 // Initialize constants and global variables
 const indicators = new Indicators();
 const selected = new Selected();
+
 let barChart, yearSlider, lineChart, data, filteredData;
 
+/**
+ * Load data from CSV file asynchronously and render charts
+ */
 /**
  * Load data from CSV file asynchronously and render charts
  */
@@ -15,21 +16,14 @@ d3.csv('data/Dataset.csv').then(_data => {
     let indicatorsOfInterest = indicators.getAllIndicatorsOfInterest();
     data = _data.filter(d => indicatorsOfInterest.includes(d.IndicatorName));
 
-    let years = getAllYears(data);
-    minYear = d3.min(years);
-    maxYear = d3.max(years);
-    selected.setItems({region: "World", country: ""}, indicators.BIRTH_RATE, minYear, maxYear);
-    selected.addComparisonArea("China");
-    selected.addComparisonArea("Canada");
-
     data.forEach(d => {
-        /* TODO */
-        d.year = parseTime(d.Year);
-        d.value = +d.Value;
-    });  
+      /* TODO */
+      d.year = parseTime(d.Year);
+      d.value = +d.Value;
+  });  
 
-    //Initialize views
-    filteredData = filterData();
+    //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
+    setTestSelectedItems();
 
     var cdata = [
       {
@@ -79,28 +73,50 @@ d3.csv('data/Dataset.csv').then(_data => {
       }
     ];
 
-    lineChart = new LineChart({ parentElement: '#linechart' }, cdata);
-    lineChart.updateVis();
-
-    // Initialize and render time slider
-    yearSlider = new YearSlider({ parentElement: '#slider' }, data);
+        //Initialize views
+        barChart = new BarChart({
+          parentElement: '#barchart'
+        }, data, selected);
+    
+        lineChart = new LineChart({ parentElement: '#linechart' }, cdata);
+        lineChart.updateVis();
+    
+        // Initialize and render time slider
+        yearSlider = new YearSlider({ parentElement: '#slider' }, data);
+    
   });
-
+ // var map = new GeoMap();
+    
   // ----------------- Helpers -------------------- //
 
-  let filterData = () => {
-    let filtered;
-    // Filter by selected indicator
-    filtered = data.filter(d => d.IndicatorName === selected.indicator);
-    return filtered;
-  }
-
   /**
-   * 
+   * Purpose: Returns an array of all the years in the given dataset
    * @param {Array} data 
+   * @returns {Array} of Objects
    */
   let getAllYears = (data) => {
     let years = data.map(d => d.Year);
     return years;
   }
- // var map = new GeoMap();
+
+  /**
+   * Purpose: Creates a mock "selected" state for testing purposes
+   */
+  let setTestSelectedItems = () => {
+    // test value timeInterval
+    let years = getAllYears(data);
+    selected.timeInterval = {min: d3.min(years), max: d3.max(years)};
+
+
+    // test value focusArea
+    selected.setArea({region: "World", country: "Japan"});
+
+    // test value comparison countries
+    selected.addComparisonArea("Canada");
+    selected.addComparisonArea("China");
+    selected.addComparisonArea("Brazil");
+
+    // test value indicator
+    selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
+  }
+
