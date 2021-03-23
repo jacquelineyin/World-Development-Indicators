@@ -6,7 +6,8 @@ class Selected {
     /**
      * Class constructor
      * @param {Object} selectedArea = {region: "", country: ""} : holds selected country and/or region of focus
-     * @param {Array} selectedComparisonAreas = ["", "", ...] : list of strings representing countries or regions we wish to compare focusedArea to
+     * @param {Array} selectedComparisonAreas = ["", "", ...] : 
+     *                                          list of strings representing countries or regions we wish to compare focusedArea to
      * @param {string} selectedIndicator : indicator that is selected. Default value: POPULATION_TOTAL 
      * @param {Object} selectedTimeInterval = {min, max} : min as lowerBound year and max as upperBound of timeInterval
      *                                                              Default = NULL;
