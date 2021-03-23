@@ -37,14 +37,18 @@ d3.csv('data/Dataset.csv').then(_data => {
   // ----------------- Helpers -------------------- //
 
   /**
-   * 
+   * Purpose: Returns an array of all the years in the given dataset
    * @param {Array} data 
+   * @returns {Array} of Objects
    */
   let getAllYears = (data) => {
     let years = data.map(d => d.Year);
     return years;
   }
 
+  /**
+   * Purpose: Creates a mock "selected" state for testing purposes
+   */
   let setTestSelectedItems = () => {
     // test value timeInterval
     let years = getAllYears(data);
