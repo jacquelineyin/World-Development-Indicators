@@ -108,7 +108,7 @@ class BarChart {
       vis.updateVis();
     }
 
-    // ------------------------------------------ Helper functions ------------------------------------ f//
+    // ------------------------------------------ Helper functions ------------------------------------ //
     
     /**
      * Purpose: Initializes x- and y-scales
