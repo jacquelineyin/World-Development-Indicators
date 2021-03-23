@@ -138,7 +138,7 @@ class BarChart {
         .tickSize(-vis.width)
         .tickSizeOuter([0])
         .tickPadding(10)
-        .tickFormat(d3.format(".0s"));
+        .tickFormat(d3.format(".2~s"));
     }
 
     /**
