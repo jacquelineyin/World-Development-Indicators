@@ -74,19 +74,20 @@ class LineChart {
    */
   updateVis() {
     let vis = this;
-    // const newData = [];
+    const newData = [];
 
-    // vis.data.forEach((d) => {
-    //   const obj = {
-    //     countryName: d.CountryName,
-    //     values: [
-    //       { year: d.year, avg: d.value }
-    //     ]
-    //   }
-    //   newData.push(obj);
-    // })
-
-    // vis.newData = newData;
+    vis.data.forEach((d) => {
+      const obj = {
+        countryName: d.CountryName,
+        values: [
+          { year: d.year, avg: d.value }
+        ]
+      }
+      newData.push(obj);
+    })
+    console.log(newData);
+    console.log(vis.data);
+    //vis.data = newData;
     // console.log(vis.newData);
     //const aggregatedDataMap = d3.rollups(newData, v => d3.mean(v, d => d.avg), d => d.countryName);
     //vis.aggregatedData = Array.from(aggregatedDataMap, ([country, years]) => ({ country, years }));
@@ -121,6 +122,91 @@ class LineChart {
     .attr("class", "line")
     .attr("d", (d) => vis.line(d.values))
     .style("stroke", (d, i) => vis.colorScale(i));
+
+    var mouseG = vis.lines.append("g")
+    .attr("class", "mouse-over-effects");
+
+  mouseG.append("path") // this is the black vertical line to follow mouse
+    .attr("class", "mouse-line")
+    .style("stroke", "black")
+    .style("stroke-width", "1px")
+    .style("opacity", "0");
+
+    var lines = document.getElementsByClassName('line');
+
+    var mousePerLine = mouseG.selectAll('.mouse-per-line')
+      .data(vis.data)
+      .enter()
+      .append("g")
+      .attr("class", "mouse-per-line");
+
+    mousePerLine.append("circle")
+      .attr("r", 7)
+      .style("stroke", (d, i) => vis.colorScale(i))
+      .style("fill", "none")
+      .style("stroke-width", "1px")
+      .style("opacity", "0");
+
+    mousePerLine.append("text")
+      .attr("transform", "translate(10,3)");
+
+      mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+      .attr('width', vis.config.containerWidth) // can't catch mouse events on a g element
+      .attr('height', vis.config.containerHeight)
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all')
+      .on('mouseout', function() { // on mouse out hide line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "0");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "0");
+      })
+      .on('mouseover', function() { // on mouse in show line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line text")
+          .style("opacity", "1");
+      })
+      .on('mousemove', function(event) { // mouse moving over canvas
+        var mouse = d3.pointer(event,this)[0];
+        d3.select(".mouse-line")
+          .attr("d", function() {
+            var d = "M" + mouse + "," + vis.config.containerHeight;
+            d += " " + mouse + "," + 0;
+            return d;
+          });
+
+        d3.selectAll(".mouse-per-line")
+          .attr("transform", function(d, i) {
+            var xDate = vis.xScale.invert(mouse);
+            var bisect = d3.bisector(function(d) { return d.date; }).right;
+            var idx = bisect(d.values, xDate);
+            
+            var beginning = 0;
+            var end = lines[i].getTotalLength();
+            let target = null;
+
+            while (true){
+              target = Math.floor((beginning + end) / 2);
+              var pos = lines[i].getPointAtLength(target);
+              if ((target === end || target === beginning) && pos.x !== mouse) {
+                  break;
+              }
+              if (pos.x > mouse)      end = target;
+              else if (pos.x < mouse) beginning = target;
+              else break; //position found
+            }
+            
+            d3.select(this).select('text')
+              .text(vis.yScale.invert(pos.y).toFixed(2));
+              
+            return "translate(" + mouse + "," + pos.y +")";
+          });
+      });
 
     
     // Update the axes
