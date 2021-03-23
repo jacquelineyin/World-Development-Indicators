@@ -10,45 +10,31 @@ let data, filteredData;
  * Load data from CSV file asynchronously and render charts
  */
 d3.csv('data/Dataset.csv').then(_data => {
-  // Filter all irrelevant data
-  let indicatorsOfInterest = indicators.getAllIndicatorsOfInterest();
-  data = _data.filter(d => indicatorsOfInterest.includes(d.IndicatorName));
-  
-  
-  //TODO: get rid of this after we implement for all selectable items
-    let years = getAllYears(data);
-    minYear = d3.min(years);
-    maxYear = d3.max(years);
-    selected.setItems({region: "World", country: ""}, indicators.BIRTH_RATE, minYear, maxYear);
-    selected.addComparisonArea("China");
-    selected.addComparisonArea("Canada");
+    // Filter all irrelevant data
+    let indicatorsOfInterest = indicators.getAllIndicatorsOfInterest();
+    data = _data.filter(d => indicatorsOfInterest.includes(d.IndicatorName));
 
     data.forEach(d => {
         /* TODO */
     });  
 
-    filteredData = filterData();
+    //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
+    setTestSelectedItems();
 
     //Initialize views
     barChart = new BarChart({
       parentElement: '#barchart'
-    }, filteredData, selected);
+    }, data, selected);
 
     // Initialize and render time slider
     yearSlider = new YearSlider({ parentElement: '#slider' }, data);
     yearSlider.updateVis();
   });
 
-
+  var map = new GeoMap();
+  
+  
   // ----------------- Helpers -------------------- //
-
-  let filterData = () => {
-    let filtered;
-    // Filter by selected indicator
-    filtered = data.filter(d => d.IndicatorName === selected.indicator);
-    console.log(filtered);
-    return filtered;
-  }
 
   /**
    * 
@@ -59,4 +45,21 @@ d3.csv('data/Dataset.csv').then(_data => {
     return years;
   }
 
-  var map = new GeoMap();
+  let setTestSelectedItems = () => {
+    // test value timeInterval
+    let years = getAllYears(data);
+    selected.timeInterval = {min: d3.min(years), max: d3.max(years)};
+
+
+    // test value focusArea
+    selected.setArea({region: "World", country: "Japan"});
+
+    // test value comparison countries
+    selected.addComparisonArea("Canada");
+    selected.addComparisonArea("China");
+    selected.addComparisonArea("Brazil");
+
+    // test value indicator
+    selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
+  }
+
