@@ -9,7 +9,7 @@ class LineChart {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 900,
-      containerHeight: _config.containerHeight || 400,
+      containerHeight: _config.containerHeight || 500,
       margin: _config.margin || { top: 25, right: 20, bottom: 30, left: 50 }
     }
     this.data = _data;
@@ -117,25 +117,12 @@ class LineChart {
     .enter()
     .append("g")
     .attr("class", "line-group")
-    .on("mouseover", function (d, i) {
-      vis.svg
-        .append("text")
-        .attr("class", "title-text")
-        .style("fill", vis.colorScale(i))
-        .text(d.countryName)
-        .attr("text-anchor", "middle")
-        .attr("x", (vis.config.containerWidth - 50) / 2)
-        .attr("y", 5);
-    })
-    .on("mouseout", function (d) {
-      vis.svg.select(".title-text").remove();
-    })
     .append("path")
     .attr("class", "line")
     .attr("d", (d) => vis.line(d.values))
     .style("stroke", (d, i) => vis.colorScale(i));
 
-
+    
     // Update the axes
     vis.xAxisG.call(vis.xAxis);
     vis.yAxisG.call(vis.yAxis);

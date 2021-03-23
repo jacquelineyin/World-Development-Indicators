@@ -103,4 +103,4 @@ d3.csv('data/Dataset.csv').then(_data => {
     let years = data.map(d => d.Year);
     return years;
   }
-  var map = new GeoMap();
+ // var map = new GeoMap();
