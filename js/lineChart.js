@@ -113,6 +113,31 @@ class LineChart {
   renderVis() {
     let vis = this;
 
+
+    var legend = vis.lines.selectAll('g')
+      .data(vis.data)
+      .enter()
+      .append('g')
+      .attr('class', 'legend');
+
+    legend.append('rect')
+      .attr('x', vis.width - 20)
+      .attr('y', function(d, i) {
+        return i * 20;
+      })
+      .attr('width', 10)
+      .attr('height', 10)
+      .style("fill", (d, i) => vis.colorScale(i));
+
+    legend.append('text')
+      .attr('x', vis.width - 8)
+      .attr('y', function(d, i) {
+        return (i * 20) + 9;
+      })
+      .text(function(d) {
+        return d.name;
+      });
+
     // Add line path
     vis.lines.selectAll('.country')
       .data(vis.data)
