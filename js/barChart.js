@@ -137,7 +137,8 @@ class BarChart {
       vis.yAxis = d3.axisLeft(vis.yScale)
         .tickSize(-vis.width)
         .tickSizeOuter([0])
-        .tickPadding(10);
+        .tickPadding(10)
+        .tickFormat(d3.format(".0s"));
     }
 
     /**
