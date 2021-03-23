@@ -59,7 +59,7 @@ d3.csv('data/Dataset.csv').then(_data => {
           { year: "2006", avg: "20" },
           { year: "2007", avg: "65" },
           { year: "2008", avg: "21" },
-          { year: "2009", avg: "10" }
+          { year: "2009", avg: "60" }
         ]
       },
       {

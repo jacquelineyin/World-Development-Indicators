@@ -11,7 +11,7 @@ class LineChart {
       containerWidth: _config.containerWidth || 900,
       containerHeight: _config.containerHeight || 500,
       legendWidth: 250,
-      margin: _config.margin || { top: 25, right: 20, bottom: 30, left: 50 }
+      margin: _config.margin || { top: 25, right: 100, bottom: 30, left: 50 }
     }
     this.data = _data;
     this.initVis();
@@ -68,8 +68,6 @@ class LineChart {
     // We need to make sure that the tracking area is on top of other chart elements
     vis.lines = vis.chart.append('g')
       .attr('class', 'lines');
-
-    vis.updateVis();
   }
 
   /**
@@ -116,15 +114,31 @@ class LineChart {
     let vis = this;
 
     // Add line path
-    vis.lines.selectAll('.line-group')
+    vis.lines.selectAll('.country')
       .data(vis.data)
       .join("g")
-      .attr("class", "line-group")
+      .attr("class", "country")
       .append("path")
       .attr("class", "line")
       .attr("d", (d) => vis.line(d.values))
       .style("stroke", (d, i) => vis.colorScale(i));
 
+    vis.lines.selectAll('.country')
+      .append("text")
+      .datum(function (d) {
+        return {
+          name: d.name,
+          value: d.values[d.values.length - 1]
+        };
+      })
+      .attr("transform", function (d) {
+        return "translate(" + vis.xScale(d.value.year) + "," + vis.yScale(d.value.avg) + ")";
+      })
+      .attr("x", 3)
+      .attr("dy", ".35em")
+      .text(function (d) {
+        return d.name;
+      });
     var mouseG = vis.lines.append("g")
       .attr("class", "mouse-over-effects");
 
@@ -183,10 +197,6 @@ class LineChart {
 
         d3.selectAll(".mouse-per-line")
           .attr("transform", function (d, i) {
-            var xDate = vis.xScale.invert(mouse);
-            var bisect = d3.bisector(d => { return d.date; }).right;
-            var index = bisect(d.values, xDate);
-
             var beginning = 0;
             var end = lines[i].getTotalLength();
             let target = null;
