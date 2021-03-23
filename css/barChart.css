@@ -1,0 +1,11 @@
+/** Styles specific to barChart, which overrides common classes */
+
+/** Axes */
+.x-axis-barchart line {
+    visibility: hidden;
+}
+
+.y-axis-barchart line {
+    stroke: grey;
+    opacity: 0.7;
+}
