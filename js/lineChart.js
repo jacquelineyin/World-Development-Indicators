@@ -5,7 +5,7 @@ class LineChart {
    * @param {Object}
    * @param {Array}
    */
-  constructor(_config, _data) {
+  constructor(_config, _data, _selectedItems) {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 900,
@@ -13,6 +13,7 @@ class LineChart {
       legendWidth: 250,
       margin: _config.margin || { top: 25, right: 100, bottom: 30, left: 50 }
     }
+    this.selected = _selectedItems;
     this.data = _data;
     this.initVis();
   }
@@ -75,37 +76,41 @@ class LineChart {
    */
   updateVis() {
     let vis = this;
-    const newData = [];
+    const selectedCountries = vis.selected.allSelectedAreas;
+    const selectedIndicator = vis.selected.indicator; // IndicatorName in csv
+    const selectedYears = vis.selected.selectedYears;
+    const filteredSelectedData = vis.data.filter(d => d.IndicatorName == selectedIndicator 
+      && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
 
-    vis.data.forEach((d) => {
-      const obj = {
-        countryName: d.CountryName,
-        values: [
-          { year: d.year, avg: d.value }
-        ]
-      }
-      newData.push(obj);
+    filteredSelectedData.forEach(d => {
+      delete d.CountryCode;
+      delete d.IndicatorCode;
+      delete d.Value;
     })
-    //console.log(newData);
-    //console.log(vis.data);
-    //vis.data = newData;
-    // console.log(vis.newData);
-    //const aggregatedDataMap = d3.rollups(newData, v => d3.mean(v, d => d.avg), d => d.countryName);
-    //vis.aggregatedData = Array.from(aggregatedDataMap, ([country, years]) => ({ country, years }));
 
-    //console.log(vis.aggregatedData.years);
+    const group = d3.groups(filteredSelectedData, d => d.CountryName);
+
+    vis.newData = [];
+    group.forEach(g => {
+      const obj = {
+        name: g[0],
+        values: g[1]
+      }
+      vis.newData.push(obj);
+    })
+
     // Specificy x- and y-accessor functions
-    vis.xValue = d => d.year;
+    vis.xValue = d => d.Year;
     vis.yValue = d => d.value;
     // Initialize line generator
     vis.line = d3.line()
       .curve(d3.curveBasis)
-      .x(d => vis.xScale(d.year))
-      .y(d => vis.yScale(d.avg));
+      .x(d => vis.xScale(d.Year))
+      .y(d => vis.yScale(d.value));
 
     // Set the scale input domains
-    vis.xScale.domain(d3.extent(vis.data[0].values, d => d.year));
-    vis.yScale.domain([0, d3.max(vis.data[0].values, d => d.avg)]);
+    vis.xScale.domain(d3.extent(vis.newData[0].values, d => d.Year));
+    vis.yScale.domain([0, d3.max(vis.newData[0].values, d => d.value)]);
 
     vis.renderVis();
   }
@@ -115,7 +120,7 @@ class LineChart {
 
 
     var legend = vis.lines.selectAll('g')
-      .data(vis.data)
+      .data(vis.newData)
       .enter()
       .append('g')
       .attr('class', 'legend');
@@ -140,7 +145,7 @@ class LineChart {
 
     // Add line path
     vis.lines.selectAll('.country')
-      .data(vis.data)
+      .data(vis.newData)
       .join("g")
       .attr("class", "country")
       .append("path")
@@ -153,11 +158,11 @@ class LineChart {
       .datum(function (d) {
         return {
           name: d.name,
-          value: d.values[d.values.length - 1]
+          values: d.values[d.values.length - 1]
         };
       })
       .attr("transform", function (d) {
-        return `translate(${vis.xScale(d.value.year)}, ${vis.yScale(d.value.avg) + 20})`;
+        return `translate(${vis.xScale(d.values.Year)}, ${vis.yScale(d.values.value) + 20})`;
       })
       .attr("x", 3)
       .attr("dy", ".35em")
@@ -176,7 +181,7 @@ class LineChart {
     var lines = document.getElementsByClassName('line');
 
     var mousePerLine = mouseG.selectAll('.mouse-per-line')
-      .data(vis.data)
+      .data(vis.newData)
       .join("g")
       .attr("class", "mouse-per-line");
 
