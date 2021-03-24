@@ -9,9 +9,9 @@ class LineChart {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 900,
-      containerHeight: _config.containerHeight || 500,
+      containerHeight: _config.containerHeight || 600,
       legendWidth: 250,
-      margin: _config.margin || { top: 25, right: 100, bottom: 30, left: 50 }
+      margin: _config.margin || { top: 25, right: 100, bottom: 100, left: 100 }
     }
     this.selected = _selectedItems;
     this.data = _data;
@@ -79,7 +79,7 @@ class LineChart {
     const selectedCountries = vis.selected.allSelectedAreas;
     const selectedIndicator = vis.selected.indicator; // IndicatorName in csv
     const selectedYears = vis.selected.selectedYears;
-    const filteredSelectedData = vis.data.filter(d => d.IndicatorName == selectedIndicator 
+    const filteredSelectedData = vis.data.filter(d => d.IndicatorName == selectedIndicator
       && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
 
     filteredSelectedData.forEach(d => {
@@ -93,7 +93,7 @@ class LineChart {
     vis.newData = [];
     group.forEach(g => {
       const obj = {
-        name: g[0],
+        countryName: g[0],
         values: g[1]
       }
       vis.newData.push(obj);
@@ -118,7 +118,6 @@ class LineChart {
   renderVis() {
     let vis = this;
 
-
     var legend = vis.lines.selectAll('g')
       .data(vis.newData)
       .enter()
@@ -126,21 +125,20 @@ class LineChart {
       .attr('class', 'legend');
 
     legend.append('rect')
-      .attr('x', vis.width - 20)
-      .attr('y', function(d, i) {
-        return i * 20;
-      })
+      //.attr('y', -vis.config.margin.top)
+      //.attr('x', -vis.config.margin.left)
+      //.attr('dy', '.71em');
+      .attr('x', (d,i) => (i*100) + 130)
+      .attr('y', vis.config.containerHeight-60)
       .attr('width', 10)
       .attr('height', 10)
       .style("fill", (d, i) => vis.colorScale(i));
 
     legend.append('text')
-      .attr('x', vis.width - 8)
-      .attr('y', function(d, i) {
-        return (i * 20) + 9;
-      })
-      .text(function(d) {
-        return d.name;
+      .attr('x', (d,i) => (i*100) + 145)
+      .attr('y', vis.config.containerHeight-50)
+      .text(function (d) {
+        return d.countryName;
       });
 
     // Add line path
@@ -153,22 +151,24 @@ class LineChart {
       .attr("d", (d) => vis.line(d.values))
       .style("stroke", (d, i) => vis.colorScale(i));
 
-    vis.lines.selectAll('.country')
-      .append("text")
-      .datum(function (d) {
-        return {
-          name: d.name,
-          values: d.values[d.values.length - 1]
-        };
-      })
-      .attr("transform", function (d) {
-        return `translate(${vis.xScale(d.values.Year)}, ${vis.yScale(d.values.value) + 20})`;
-      })
-      .attr("x", 3)
-      .attr("dy", ".35em")
-      .text(function (d) {
-        return d.name;
-      });
+    // MAYBE: add labels next to lines
+    // vis.lines.selectAll('.country')
+    //   .append("text")
+    //   .datum(function (d) {
+    //     return {
+    //       name: d.countryName,
+    //       values: d.values[d.values.length - 1]
+    //     };
+    //   })
+    //   .attr("transform", function (d) {
+    //     return `translate(${vis.xScale(d.values.Year)}, ${vis.yScale(d.values.value) + 20})`;
+    //   })
+    //   .attr("x", 3)
+    //   .attr("dy", ".35em")
+    //   .text(function (d) {
+    //     return d.countryName;
+    //   });
+
     var mouseG = vis.lines.append("g")
       .attr("class", "mouse-over-effects");
 
