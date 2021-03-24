@@ -37,7 +37,8 @@ d3.csv('data/Dataset.csv').then(_data => {
   yearSlider = new YearSlider({ parentElement: '#slider' }, data);
 
 });
-// var map = new GeoMap();
+
+var map = new GeoMap();
 
 // ----------------- Helpers -------------------- //
 

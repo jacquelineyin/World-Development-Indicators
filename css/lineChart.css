@@ -1,0 +1,29 @@
+
+#linechart {
+    border: 1px solid #ddd;
+    position: absolute;
+    left: 900px;
+    top: 500px;
+}
+
+  body {
+    font: 10px sans-serif;
+  }
+  
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #ddd;
+    shape-rendering: crispEdges;
+  }
+  
+  .x.axis path {
+    display: none;
+  }
+  
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+  

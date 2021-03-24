@@ -45,6 +45,7 @@ class LineChart {
 
     vis.yAxis = d3.axisLeft(vis.yScale)
       .ticks(6)
+      .tickSize(-vis.width)
       .tickSizeOuter(0)
       .tickPadding(10);
 
@@ -69,6 +70,27 @@ class LineChart {
     // We need to make sure that the tracking area is on top of other chart elements
     vis.lines = vis.chart.append('g')
       .attr('class', 'lines');
+
+    // Initialize clipping mask that covers the whole chart
+    vis.lines.append('defs')
+      .append('clipPath')
+      .attr('id', 'chart-mask')
+      .append('rect')
+      .attr('width', vis.width)
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('height', vis.height);
+
+    // Apply clipping mask to 'vis.chart' to clip semicircles at the very beginning and end of a year
+    vis.lines = vis.lines.append('g')
+      .attr('clip-path', 'url(#chart-mask)');
+
+
+    vis.countries = vis.lines.append('g')
+      .attr('class', 'countries');
+
+    vis.legends = vis.chart.append('g')
+      .attr('class', 'legend');
   }
 
   /**
@@ -99,9 +121,12 @@ class LineChart {
       vis.formattedData.push(obj);
     })
 
+    console.log(vis.formattedData);
+
     // Specificy x- and y-accessor functions
     vis.xValue = d => d.Year;
     vis.yValue = d => d.value;
+
     // Initialize line generator
     vis.line = d3.line()
       .curve(d3.curveBasis)
@@ -118,27 +143,27 @@ class LineChart {
   renderVis() {
     let vis = this;
 
-    const legend = vis.lines.selectAll('g')
+    const legend = vis.legends.selectAll('g')
       .data(vis.formattedData)
       .join('g')
       .attr('class', 'legend');
 
     legend.append('rect')
-      .attr('x', (d,i) => (i*100) + 130)
-      .attr('y', vis.config.containerHeight-60)
+      .attr('x', (d, i) => (i * 100) + 130)
+      .attr('y', vis.config.containerHeight - 60)
       .attr('width', 10)
       .attr('height', 10)
       .style('fill', (d, i) => vis.colorScale(i));
 
     legend.append('text')
-      .attr('x', (d,i) => (i*100) + 145)
-      .attr('y', vis.config.containerHeight-50)
+      .attr('x', (d, i) => (i * 100) + 145)
+      .attr('y', vis.config.containerHeight - 50)
       .text(function (d) {
         return d.countryName;
       });
 
     // Add line path
-    vis.lines.selectAll('.country')
+    vis.countries.selectAll('.country')
       .data(vis.formattedData)
       .join('g')
       .attr('class', 'country')
