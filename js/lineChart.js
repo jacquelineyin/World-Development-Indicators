@@ -177,24 +177,6 @@ class LineChart {
       .attr('d', (d) => vis.line(d.values))
       .style('stroke', (d, i) => vis.colorScale(i));
 
-    // MAYBE: add labels next to lines
-    // vis.lines.selectAll('.country')
-    //   .append('text')
-    //   .datum(function (d) {
-    //     return {
-    //       countryName: d.countryName,
-    //       values: d.values[d.values.length - 1]
-    //     };
-    //   })
-    //   .attr('transform', function (d) {
-    //     return `translate(${vis.xScale(d.values.Year)}, ${vis.yScale(d.values.value) + 20})`;
-    //   })
-    //   .attr('x', 3)
-    //   .attr('dy', '.35em')
-    //   .text(function (d) {
-    //     return d.countryName;
-    //   });
-
     vis.mouseG.append('path') // this is the black vertical line to follow mouse
       .attr('class', 'mouse-line')
       .style('stroke', 'black')
