@@ -269,10 +269,28 @@ class LineChart {
             d3.select(this).select('text')
               .text(vis.yScale.invert(pos.y).toFixed(0));
 
-              //compareValues.selectAll('text')
-              //.text(d => d.countryName + ' - ' + vis.yScale.invert(pos.y).toFixed(0));
-    
-            return `translate(${mouse},${pos.y})`;
+              return `translate(${mouse},${pos.y})`;
+          });
+
+          d3.selectAll('.value')
+          .attr('transform', function (d, i) {
+            let beginning = 0;
+            let end = lines[i].getTotalLength();
+            let target = null;
+
+            while (true) {
+              target = Math.floor((beginning + end) / 2);
+              var pos = lines[i].getPointAtLength(target);
+              if ((target === end || target === beginning) && pos.x !== mouse) {
+                break;
+              }
+              if (pos.x > mouse) end = target;
+              else if (pos.x < mouse) beginning = target;
+              else break; //position found
+            }
+            
+            d3.select(this).select('text')
+              .text(d => d.countryName + ': ' + vis.yScale.invert(pos.y).toFixed(0));
           });
       });
 
