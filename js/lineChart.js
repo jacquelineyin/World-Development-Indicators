@@ -42,7 +42,7 @@ class LineChart {
       .tickSize(-vis.height - 4)
       .tickSizeOuter(0)
       .tickPadding(10);
-      //.tickFormat(d3.format('d'));
+    //.tickFormat(d3.format('d'));
 
     vis.yAxis = d3.axisLeft(vis.yScale)
       //.ticks(6)
@@ -77,7 +77,7 @@ class LineChart {
 
     vis.legends = vis.chart.append('g')
       .attr('class', 'legend');
-    
+
     vis.values = vis.chart.append('g')
       .attr('class', 'values');
 
@@ -127,7 +127,7 @@ class LineChart {
 
     // Set the scale input domains
     vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
-    vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]); 
+    vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
 
     vis.renderVis();
   }
@@ -153,7 +153,7 @@ class LineChart {
       .text(function (d) {
         return d.countryName;
       });
-      
+
     const compareValues = vis.values.selectAll('g')
       .data(vis.formattedData)
       .join('g')
@@ -231,13 +231,17 @@ class LineChart {
           .style('opacity', '0');
         d3.selectAll('.mouse-per-line text')
           .style('opacity', '0');
+        d3.selectAll('.value')
+          .style('opacity', '0');
       })
       .on('mouseover', function () { // on mouse in show line, circles and text
         d3.select('.mouse-line')
           .style('opacity', '1');
         d3.selectAll('.mouse-per-line circle')
-          .style('opacity', '1'); 
+          .style('opacity', '1');
         d3.selectAll('.mouse-per-line text')
+          .style('opacity', '1');
+        d3.selectAll('.value')
           .style('opacity', '1');
       })
       .on('mousemove', function (event) { // mouse moving over canvas
@@ -265,14 +269,14 @@ class LineChart {
               else if (pos.x < mouse) beginning = target;
               else break; //position found
             }
-            
+
             d3.select(this).select('text')
               .text(vis.yScale.invert(pos.y).toFixed(0));
 
-              return `translate(${mouse},${pos.y})`;
+            return `translate(${mouse},${pos.y})`;
           });
 
-          d3.selectAll('.value')
+        d3.selectAll('.value')
           .attr('transform', function (d, i) {
             let beginning = 0;
             let end = lines[i].getTotalLength();
@@ -288,7 +292,7 @@ class LineChart {
               else if (pos.x < mouse) beginning = target;
               else break; //position found
             }
-            
+
             d3.select(this).select('text')
               .text(d => d.countryName + ': ' + vis.yScale.invert(pos.y).toFixed(0));
           });
