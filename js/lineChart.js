@@ -225,6 +225,8 @@ class LineChart {
             d += ' ' + mouse + ',' + 0;
             return d;
           });
+          
+        const formatNumbers = d3.format(",")
 
         d3.selectAll('.mouse-per-line')
           .attr('transform', function (d, i) {
@@ -244,7 +246,7 @@ class LineChart {
             }
 
             d3.select(this).select('text')
-              .text(vis.yScale.invert(pos.y).toFixed(0));
+              .text(formatNumbers(vis.yScale.invert(pos.y).toFixed(0)));
 
             return `translate(${mouse},${pos.y})`;
           });
@@ -267,7 +269,7 @@ class LineChart {
             }
 
             d3.select(this).select('text')
-              .text(d => d.countryName + ': ' + vis.yScale.invert(pos.y).toFixed(0));
+              .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(pos.y).toFixed(0)));
           });
       });
 
