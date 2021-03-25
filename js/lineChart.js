@@ -38,14 +38,11 @@ class LineChart {
 
     // Initialize axes
     vis.xAxis = d3.axisBottom(vis.xScale)
-      //.ticks(6)
       .tickSize(-vis.height - 4)
       .tickSizeOuter(0)
       .tickPadding(10);
-    //.tickFormat(d3.format('d'));
 
     vis.yAxis = d3.axisLeft(vis.yScale)
-      //.ticks(6)
       .tickSize(-vis.width - 20)
       .tickSizeOuter(0)
       .tickPadding(10);
@@ -90,20 +87,17 @@ class LineChart {
    */
   updateVis() {
     let vis = this;
+
     const selectedCountries = vis.selected.allSelectedAreas;
     const selectedIndicator = vis.selected.indicator;
     const selectedYears = vis.selected.selectedYears;
     const filteredSelectedData = vis.data.filter(d => d.IndicatorName == selectedIndicator
       && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
 
-    filteredSelectedData.forEach(d => {
-      delete d.CountryCode;
-      delete d.IndicatorCode;
-      delete d.Value;
-    })
-
+    // group data by country
     const countryGroups = d3.groups(filteredSelectedData, d => d.CountryName);
 
+    // re-arrange data
     vis.formattedData = [];
     countryGroups.forEach(g => {
       const obj = {
@@ -112,8 +106,6 @@ class LineChart {
       }
       vis.formattedData.push(obj);
     })
-
-    console.log(vis.formattedData);
 
     // Specificy x- and y-accessor functions
     vis.xValue = d => d.year;
@@ -160,7 +152,6 @@ class LineChart {
       .attr('class', 'value');
 
     compareValues.append('text')
-      //.attr('class', 'valuesText')
       .attr('x', vis.width + 90)
       .attr('y', function (d, i) {
         return (i * 20) + 12;
