@@ -114,7 +114,6 @@ class LineChart {
 
     // Initialize line generator
     vis.line = d3.line()
-      .curve(d3.curveBasis)
       .x(d => vis.xScale(d.year))
       .y(d => vis.yScale(d.value));
 
@@ -134,7 +133,9 @@ class LineChart {
       .attr('class', 'legend');
 
     legend.append('rect')
-      .attr('x', (d, i) => (i * 100) + 130)
+      .attr('x', (d, i) => {
+        return (i * 100) + 130
+      })
       .attr('y', vis.config.containerHeight - 60)
       .attr('width', 10)
       .attr('height', 10)
@@ -143,9 +144,7 @@ class LineChart {
     legend.append('text')
       .attr('x', (d, i) => (i * 100) + 145)
       .attr('y', vis.config.containerHeight - 50)
-      .text(function (d) {
-        return d.countryName;
-      });
+      .text(d => d.countryName );
 
     const compareValues = vis.values.selectAll('g')
       .data(vis.formattedData)
@@ -154,20 +153,29 @@ class LineChart {
 
     compareValues.append('text')
       .attr('x', vis.width + 90)
-      .attr('y', function (d, i) {
-        return (i * 20) + 12;
+      .attr('y', (d, i) => {
+        return (i * 20) + 12
       });
 
 
     // Add line path
-    vis.countries.selectAll('.country')
+    const country = vis.countries.selectAll('.country')
       .data(vis.formattedData)
       .join('g')
-      .attr('class', 'country')
-      .append('path')
+      .attr('class', 'country');
+
+    country.append('path')
       .attr('class', 'line')
       .attr('d', (d) => vis.line(d.values))
       .style('stroke', (d, i) => vis.colorScale(i));
+
+
+    country.selectAll('circle')
+      .data(d => d.values)
+      .join('circle')
+      .attr('r', 3)
+      .attr('cx', d => vis.xScale(d.year))
+      .attr('cy', d => vis.yScale(d.value));
 
     vis.mouseG.append('path') // this is the black vertical line to follow mouse
       .attr('class', 'mouse-line')
@@ -198,7 +206,7 @@ class LineChart {
       .attr('height', vis.height)
       .attr('fill', 'none')
       .attr('pointer-events', 'all')
-      .on('mouseout', function () { // on mouse out hide line, circles and text
+      .on('mouseout', () => { // on mouse out hide line, circles and text
         d3.select('.mouse-line')
           .style('opacity', '0');
         d3.selectAll('.mouse-per-line circle')
@@ -208,7 +216,7 @@ class LineChart {
         d3.selectAll('.value')
           .style('opacity', '0');
       })
-      .on('mouseover', function () { // on mouse in show line, circles and text
+      .on('mouseover', () => { // on mouse in show line, circles and text
         d3.select('.mouse-line')
           .style('opacity', '1');
         d3.selectAll('.mouse-per-line circle')
@@ -221,13 +229,13 @@ class LineChart {
       .on('mousemove', function (event) { // mouse moving over canvas
         const mouse = d3.pointer(event, this)[0];
         d3.select('.mouse-line')
-          .attr('d', function () {
+          .attr('d', () => {
             let d = 'M' + mouse + ',' + vis.height;
             d += ' ' + mouse + ',' + 0;
             return d;
           });
-          
-        const formatNumbers = d3.format(",")
+
+        const formatNumbers = d3.format(',')
 
         d3.selectAll('.mouse-per-line')
           .attr('transform', function (d, i) {
