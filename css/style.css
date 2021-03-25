@@ -9,6 +9,11 @@
   display: flex;
 }
 
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
 /** Axes */
 .axis-title {
     font-weight: bold;
@@ -20,6 +25,7 @@
     height: 500px; 
 }
 
+/** Slider */
 #slider {
   display: block;
   align-items: center;
