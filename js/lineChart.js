@@ -109,16 +109,16 @@ class LineChart {
     })
 
     // Specificy x- and y-accessor functions
-    vis.xValue = d => d.Year;
+    vis.xValue = d => d.year;
     vis.yValue = d => d.value;
 
     // Initialize line generator
     vis.line = d3.line()
-      .x(d => vis.xScale(d.Year))
+      .x(d => vis.xScale(d.year))
       .y(d => vis.yScale(d.value));
 
     // Set the scale input domains
-    vis.xScale.domain(d3.extent(filteredSelectedData, d => d.Year));
+    vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
     vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
 
     vis.renderVis();
@@ -179,7 +179,7 @@ class LineChart {
       .attr('class', 'circle')
       .append('circle')
       .attr('r', 3)
-      .attr('cx', d => vis.xScale(d.Year))
+      .attr('cx', d => vis.xScale(d.year))
       .attr('cy', d => vis.yScale(d.value));
 
 
