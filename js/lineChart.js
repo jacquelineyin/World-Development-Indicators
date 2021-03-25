@@ -109,16 +109,16 @@ class LineChart {
     })
 
     // Specificy x- and y-accessor functions
-    vis.xValue = d => d.year;
+    vis.xValue = d => d.Year;
     vis.yValue = d => d.value;
 
     // Initialize line generator
     vis.line = d3.line()
-      .x(d => vis.xScale(d.year))
+      .x(d => vis.xScale(d.Year))
       .y(d => vis.yScale(d.value));
 
     // Set the scale input domains
-    vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
+    vis.xScale.domain(d3.extent(filteredSelectedData, d => d.Year));
     vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
 
     vis.renderVis();
@@ -144,7 +144,7 @@ class LineChart {
     legend.append('text')
       .attr('x', (d, i) => (i * 100) + 145)
       .attr('y', vis.config.containerHeight - 50)
-      .text(d => d.countryName );
+      .text(d => d.countryName);
 
     const compareValues = vis.values.selectAll('g')
       .data(vis.formattedData)
@@ -169,13 +169,19 @@ class LineChart {
       .attr('d', (d) => vis.line(d.values))
       .style('stroke', (d, i) => vis.colorScale(i));
 
-
-    country.selectAll('circle')
+    country.selectAll("circle-group")
+      .data(vis.formattedData)
+      .join("g")
+      .style("fill", (d, i) => vis.colorScale(i))
+      .selectAll('circle')
       .data(d => d.values)
-      .join('circle')
+      .join('g')
+      .attr('class', 'circle')
+      .append('circle')
       .attr('r', 3)
-      .attr('cx', d => vis.xScale(d.year))
+      .attr('cx', d => vis.xScale(d.Year))
       .attr('cy', d => vis.yScale(d.value));
+
 
     vis.mouseG.append('path') // this is the black vertical line to follow mouse
       .attr('class', 'mouse-line')
