@@ -38,6 +38,7 @@ class LineChart {
 
     // Initialize axes
     vis.xAxis = d3.axisBottom(vis.xScale)
+      .ticks(5)
       .tickSize(-vis.height - 4)
       .tickSizeOuter(0)
       .tickPadding(10);
