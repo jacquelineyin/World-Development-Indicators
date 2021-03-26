@@ -1,6 +1,9 @@
 // Initialize constants and global variables
 const indicators = new Indicators();
 const selected = new Selected();
+const regionMapper = new RegionMapper();
+const regions = new Regions();
+const countries = new Countries();
 
 let barChart, yearSlider, lineChart, data, filteredData;
 
@@ -13,8 +16,7 @@ let barChart, yearSlider, lineChart, data, filteredData;
 const parseTime = d3.timeParse("%Y");
 
 d3.csv('data/Dataset.csv').then(_data => {
-  let indicatorsOfInterest = indicators.getAllIndicatorsOfInterest();
-  data = _data.filter(d => indicatorsOfInterest.includes(d.IndicatorName));
+  data = _data;
 
   data.forEach(d => {
     /* TODO */
@@ -63,12 +65,12 @@ let setTestSelectedItems = () => {
 
 
   // test value focusArea
-  selected.setArea({ region: "World", country: "Japan" });
+  selected.setArea({ region: regions.WORLD, country: countries.JAPAN });
 
   // test value comparison countries
-  selected.addComparisonArea("Canada");
-  selected.addComparisonArea("China");
-  selected.addComparisonArea("Brazil");
+  selected.addComparisonArea(countries.CANADA);
+  selected.addComparisonArea(countries.CHINA);
+  selected.addComparisonArea(countries.BRAZIL);
 
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
