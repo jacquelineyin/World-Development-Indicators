@@ -5,7 +5,7 @@ class LineChart {
    * @param {Object}
    * @param {Array}
    */
-  constructor(_config, _data, _selectedItems) {
+  constructor(_config, _data, _selectedItems, _dispatcher, _selectedYears) {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 1500,
@@ -14,6 +14,8 @@ class LineChart {
     }
     this.selected = _selectedItems;
     this.data = _data;
+    this.dispatcher = _dispatcher;
+    this.selectedYears = _selectedYears;
     this.initVis();
   }
 
@@ -188,7 +190,6 @@ class LineChart {
       .attr('r', 3)
       .attr('cx', d => vis.xScale(d.year))
       .attr('cy', d => vis.yScale(d.value));
-
 
     vis.mouseG.append('path') // this is the black vertical line to follow mouse
       .attr('class', 'mouse-line')

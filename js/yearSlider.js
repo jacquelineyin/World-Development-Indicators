@@ -5,7 +5,7 @@ class YearSlider {
    * @param {Object}
    * @param {Array}
    */
-  constructor(_config, _data) {
+  constructor(_config, _data, _dispatcher) {
     this.config = {
       parentElement: _config.parentElement,
       width: 2000,
@@ -13,6 +13,7 @@ class YearSlider {
       margin: { top: 10, right: 10, bottom: 100, left: 45 },
     }
     this.data = _data;
+    this.dispatcher = _dispatcher;
     this.initVis();
   }
 
@@ -32,6 +33,10 @@ class YearSlider {
       .fill('#2196f3')
       .on('onchange', val => {
         d3.select('p#value-range').text(val.map(d3.format('d')).join('-'));
+        const selectedYears = val.map(d3.format('d')).join('-');
+        //console.log(selectedYears);
+        //console.log(typeof selectedYears);
+        vis.dispatcher.call('filterYear', selectedYears);
       });
 
     var gRange = d3
