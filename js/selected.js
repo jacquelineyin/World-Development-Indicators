@@ -1,8 +1,7 @@
-
 /**
  * Class to store selectedItems
  */
-class Selected {
+ class Selected {
     /**
      * Class constructor
      * @param {Object} selectedArea = {region: "", country: ""} : holds selected country and/or region of focus

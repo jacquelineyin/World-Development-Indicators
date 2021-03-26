@@ -7,8 +7,10 @@
 
 /** Map */
 #map { 
-    width: 800px;
-    height: 500px; 
+  position: absolute;
+  top: 100px;
+  width: 800px;
+  height: 500px; 
 }
 
 #slider {
@@ -17,6 +19,8 @@
   flex-wrap: wrap;
   margin-left: -15px;
   margin-right: -15px;
+  position: absolute;
+  top: 1300px;
 }
 
 #value-range {

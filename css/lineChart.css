@@ -1,0 +1,33 @@
+#linechart {
+    border: 1px solid #ddd;
+    position: absolute;
+    left: 900px;
+    top: 650px;
+}
+
+  body {
+    font: 10px sans-serif;
+  }
+  
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #ddd;
+    shape-rendering: crispEdges;
+  }
+  
+  .x.axis path {
+    display: none;
+  }
+  
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+  
+  .mouse-text {
+    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;    
+    -webkit-font-smoothing: antialiased;
+  }
+  
