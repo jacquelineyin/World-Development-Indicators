@@ -8,9 +8,9 @@ class LineChart {
   constructor(_config, _data, _selectedItems) {
     this.config = {
       parentElement: _config.parentElement,
-      containerWidth: _config.containerWidth || 1500,
-      containerHeight: _config.containerHeight || 600,
-      margin: _config.margin || { top: 50, right: 300, bottom: 100, left: 150 }
+      containerWidth: _config.containerWidth || 1000,
+      containerHeight: _config.containerHeight || 400,
+      margin: _config.margin || { top: 50, right: 300, bottom: 70, left: 50 }
     }
     this.selected = _selectedItems;
     this.data = _data;
@@ -36,6 +36,10 @@ class LineChart {
       .nice();
 
     // Initialize axes
+
+    // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
+    let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/,"B"); 
+
     vis.xAxis = d3.axisBottom(vis.xScale)
       .ticks(5)
       .tickSize(-vis.height - 4)
@@ -45,12 +49,12 @@ class LineChart {
     vis.yAxis = d3.axisLeft(vis.yScale)
       .tickSize(-vis.width - 20)
       .tickSizeOuter(0)
-      .tickPadding(10);
+      .tickPadding(10)
+      .tickFormat(format);
 
     // Define size of SVG drawing area
     vis.svg = d3.select(vis.config.parentElement)
-      .attr('width', vis.config.containerWidth)
-      .attr('height', vis.config.containerHeight);
+      .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
 
     // Append group element that will contain our actual chart (see margin convention)
     vis.chart = vis.svg.append('g')
@@ -140,16 +144,16 @@ class LineChart {
 
     legend.append('rect')
       .attr('x', (d, i) => {
-        return (i * 100) + 250
+        return (i * 100) + 150;
       })
-      .attr('y', vis.config.containerHeight - 90)
+      .attr('y', vis.config.containerHeight - 85)
       .attr('width', 10)
       .attr('height', 10)
       .style('fill', (d, i) => vis.colorScale(i));
 
     legend.append('text')
-      .attr('x', (d, i) => (i * 100) + 265)
-      .attr('y', vis.config.containerHeight - 80)
+      .attr('x', (d, i) => (i * 100) + 165)
+      .attr('y', vis.config.containerHeight - 75)
       .text(d => d.countryName);
 
     const compareValues = vis.values.selectAll('g')
