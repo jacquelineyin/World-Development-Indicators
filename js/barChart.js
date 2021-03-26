@@ -10,8 +10,8 @@ class BarChart {
     constructor(_config, _data, _selectedItems, _dispatcher) {
       this.config = {
         parentElement: _config.parentElement,
-        containerWidth: _config.containerWidth || 600,
-        containerHeight: _config.containerHeight || 500,
+        containerWidth: _config.containerWidth || 1000,
+        containerHeight: _config.containerHeight || 300,
         margin: _config.margin || {top: 50, right: 50, bottom: 50, left: 50},
         colour: _config.colour || 
                 {
@@ -218,7 +218,6 @@ class BarChart {
   
       vis.yAxisG
         .call(vis.yAxis)
-        .call(g => g.select('.domain').remove());
     }
 
     /**
