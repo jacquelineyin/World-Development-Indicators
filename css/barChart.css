@@ -1,10 +1,10 @@
 /** Styles specific to barChart, which overrides common classes */
 
 #barchart {
-    border: 2px #ddd solid;
-    /* position: absolute;
-    left: 900px;
-    top: 100px; */
+    /* width: 80%;
+    height: 50%; */
+    /* width: 100%; */
+    margin: 5px;
 }
 /** Axes */
 .x-axis-barchart line {

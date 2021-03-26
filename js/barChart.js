@@ -11,8 +11,9 @@ class BarChart {
       this.config = {
         parentElement: _config.parentElement,
         containerWidth: _config.containerWidth || 1000,
-        containerHeight: _config.containerHeight || 300,
-        margin: _config.margin || {top: 50, right: 50, bottom: 50, left: 50},
+        containerHeight: _config.containerHeight || 400,
+        // margin: _config.margin || {top: 50, right: 150, bottom: 50, left: 50},
+        margin: _config.margin || { top: 50, right: 320, bottom: 70, left: 50 },
         colour: _config.colour || 
                 {
                   selectedCountryBar: 'blue',
@@ -37,12 +38,16 @@ class BarChart {
 
       // Define size of SVG drawing area
       vis.svg = d3.select(vis.config.parentElement)
-          .attr('width', vis.config.containerWidth)
-          .attr('height', vis.config.containerHeight);
+          // .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
+          .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
+          // .attr("viewBox", `0 0 ${vis.width} ${vis.height}`);
+          // .attr('width', vis.config.containerWidth)
+          // .attr('height', vis.config.containerHeight);
 
       // Append group element that will contain our actual chart 
       // and position it according to the given margin config
       vis.chartArea = vis.svg.append('g')
+          // .attr('transform', `translate(0,${vis.config.margin.top})`);
           .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
       vis.chart = vis.chartArea.append('g');
@@ -119,7 +124,8 @@ class BarChart {
 
       vis.xScale = d3.scaleBand()
         .range([0, vis.width])
-        .paddingInner(0.2);
+        .paddingInner(0.2)
+        .paddingOuter(0.1);
 
       vis.yScale = d3.scaleLinear()
         .range([vis.height, 0]);
@@ -130,6 +136,7 @@ class BarChart {
      */
     initAxes() {
       let vis = this;
+      let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/,"B");
 
       vis.xAxis = d3.axisBottom(vis.xScale)
         .tickSizeOuter([0]);
@@ -138,7 +145,7 @@ class BarChart {
         .tickSize(-vis.width)
         .tickSizeOuter([0])
         .tickPadding(10)
-        .tickFormat(d3.format(".2~s"));
+        .tickFormat(format);
     }
 
     /**
@@ -161,6 +168,7 @@ class BarChart {
      */
     renderAxisTitles(xAxisTitle, yAxisTitle) {
       let vis = this; 
+      let newYAxisTitle = 'Average ' + yAxisTitle + ' from ' + vis.selected.timeInterval.min + '-' + vis.selected.timeInterval.max;
 
       // Append x-axis title to svg
       vis.chartArea.selectAll('.barchart-x-axis-title')
@@ -179,11 +187,11 @@ class BarChart {
             .data([yAxisTitle])
           .join('text')
             .attr('class', 'axis-title barchart-y-axis-title')
-            .attr('y', -vis.config.margin.top)
-            .attr('x', -vis.config.margin.left)
+            .attr('y', -vis.config.margin.top + 10)
+            .attr('x', -50)
             .attr('dy', '.71em')
             .style('text-anchor', 'start')
-            .text(yAxisTitle);
+            .text(newYAxisTitle);
       }
     }
 
