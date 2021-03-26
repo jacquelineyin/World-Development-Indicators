@@ -8,7 +8,7 @@ class YearSlider {
   constructor(_config, _data, _dispatcher) {
     this.config = {
       parentElement: _config.parentElement,
-      width: 2000,
+      width: 1500,
       height: 150,
       margin: { top: 10, right: 10, bottom: 100, left: 45 },
     }
@@ -42,8 +42,7 @@ class YearSlider {
     var gRange = d3
       .select('div#slider-range')
       .append('svg')
-      .attr('width', vis.config.width + 100)
-      .attr('height', vis.config.height)
+      .attr("viewBox", `0 0 ${vis.config.width + 100} ${vis.config.height}`)
       .append('g')
       .attr('transform', 'translate(30,50)');
 
