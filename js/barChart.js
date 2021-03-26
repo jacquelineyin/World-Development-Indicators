@@ -164,7 +164,7 @@ class BarChart {
      */
     renderAxisTitles(xAxisTitle, yAxisTitle) {
       let vis = this; 
-      let newYAxisTitle = 'Average ' + yAxisTitle + ' from ' + vis.selected.timeInterval.min + '-' + vis.selected.timeInterval.max;
+      let newYAxisTitle = `Average ${yAxisTitle} from ${vis.selected.timeInterval.min}-${vis.selected.timeInterval.max}`;
 
       // Append x-axis title to svg
       vis.chartArea.selectAll('.barchart-x-axis-title')
