@@ -2,6 +2,7 @@ class GeoMap {
 
     constructor(_data, _geoJsonData, _selected) {
       this.data = _data;
+      this.populationData = this.data.filter(d => d.IndicatorName == new Indicators().POPULATION_TOTAL);
       this.geoJson = _geoJsonData;
       this.countries = this.geoJson.features.map(d => d.properties.ISO_A3);
       this.selected = _selected;
@@ -28,15 +29,21 @@ class GeoMap {
   
     // Prepare data and scales
     updateVis() {
-      // Filter by selected years, selected indicator
+      // Filter data by selected years and selected indicator
       var filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
+      var filteredPopulationData = this.populationData.filter(d => this.selected.selectedYears.includes(d.Year));
 
       // Aggregate data by country and calculate the mean
       var groupedData = d3.rollup(filteredData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
+      var groupedPopulationData = d3.rollup(filteredPopulationData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
 
+      // Calculate the normalized value 
       // Remove countries for which we do not have a corresponding vector tile, e.g. "WLD"
       for (let country of groupedData.keys()) { 
-        if (!this.countries.includes(country)) { 
+        if (this.countries.includes(country)) { 
+          var normalizedByPopulationValue = groupedData.get(country) / groupedPopulationData.get(country); 
+          groupedData.set(country, normalizedByPopulationValue);
+        } else {
           groupedData.delete(country);
         }
       } 
@@ -48,7 +55,7 @@ class GeoMap {
       this.geoJson.features.forEach(d => {
         d.properties.indicatorValue = this.indicatorScale(groupedData.get(d.properties.ISO_A3));
       });
-      
+
       this.renderVis();
     }
   
