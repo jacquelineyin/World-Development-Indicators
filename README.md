@@ -34,7 +34,9 @@
 #### Styling
 - [A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
 - [A Simple Way to Make D3.js Charts Responsive](https://medium.com/@louisemoxy/a-simple-way-to-make-d3-js-charts-svgs-responsive-7afb04bc2e4b)
+- [D3-format](https://github.com/d3/d3-format#format)
 - [D3: Formatting tick value. To show B (Billion) instead of G (Giga)](https://stackoverflow.com/a/40774969)
+- [Viewbox](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox)
 
 ## Dataset
 ### Sources
