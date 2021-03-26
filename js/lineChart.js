@@ -36,7 +36,9 @@ class LineChart {
       .nice();
 
     // Initialize axes
-    let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/,"B");
+
+    // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
+    let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/,"B"); 
 
     vis.xAxis = d3.axisBottom(vis.xScale)
       .ticks(5)
