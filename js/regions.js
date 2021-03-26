@@ -10,6 +10,6 @@ class Regions {
     }
 
     getAllRegions() {
-        return Object.keys(this);
+        return Object.values(this);
     }
 }
