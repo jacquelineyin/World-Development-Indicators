@@ -19,7 +19,7 @@
         
         <div id="chart-container">
             <div class="col" id="left-col">
-                <div class="select-container">
+                <div class="select-container" id="select-focus">
                     <div id="country-selector-container"></div>
                     <div id="region-selector-container"></div>
                 </div>
@@ -27,6 +27,10 @@
                 <!----- Todo: Wedges go here-->
             </div>
             <div class="col" id="right-col">
+                <div class="select-container" id="select-comparison">
+                    <div id="comparison-selector-container"></div>
+                    <div id="warning-container"></div>
+                </div>
                 <svg id="barchart"></svg>
                 <svg id="linechart"></svg>
             </div>
