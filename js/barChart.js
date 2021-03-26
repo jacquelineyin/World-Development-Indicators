@@ -12,7 +12,6 @@ class BarChart {
         parentElement: _config.parentElement,
         containerWidth: _config.containerWidth || 1000,
         containerHeight: _config.containerHeight || 400,
-        // margin: _config.margin || {top: 50, right: 150, bottom: 50, left: 50},
         margin: _config.margin || { top: 50, right: 320, bottom: 70, left: 50 },
         colour: _config.colour || 
                 {
@@ -38,16 +37,11 @@ class BarChart {
 
       // Define size of SVG drawing area
       vis.svg = d3.select(vis.config.parentElement)
-          // .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
           .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
-          // .attr("viewBox", `0 0 ${vis.width} ${vis.height}`);
-          // .attr('width', vis.config.containerWidth)
-          // .attr('height', vis.config.containerHeight);
 
       // Append group element that will contain our actual chart 
       // and position it according to the given margin config
       vis.chartArea = vis.svg.append('g')
-          // .attr('transform', `translate(0,${vis.config.margin.top})`);
           .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
       vis.chart = vis.chartArea.append('g');

@@ -53,8 +53,6 @@ class LineChart {
     // Define size of SVG drawing area
     vis.svg = d3.select(vis.config.parentElement)
       .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
-      // .attr('width', vis.config.containerWidth)
-      // .attr('height', vis.config.containerHeight);
 
     // Append group element that will contain our actual chart (see margin convention)
     vis.chart = vis.svg.append('g')
@@ -152,8 +150,8 @@ class LineChart {
       .style('fill', (d, i) => vis.colorScale(i));
 
     legend.append('text')
-      .attr('x', (d, i) => (i * 100) + 150 + 15)
-      .attr('y', vis.config.containerHeight - 85 + 10)
+      .attr('x', (d, i) => (i * 100) + 165)
+      .attr('y', vis.config.containerHeight - 75)
       .text(d => d.countryName);
 
     const compareValues = vis.values.selectAll('g')
