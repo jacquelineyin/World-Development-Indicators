@@ -8,10 +8,9 @@ class LineChart {
   constructor(_config, _data, _selectedItems) {
     this.config = {
       parentElement: _config.parentElement,
-      containerWidth: _config.containerWidth || 1200,
+      containerWidth: _config.containerWidth || 1500,
       containerHeight: _config.containerHeight || 600,
-      legendWidth: 250,
-      margin: _config.margin || { top: 25, right: 300, bottom: 100, left: 100 }
+      margin: _config.margin || { top: 50, right: 300, bottom: 100, left: 150 }
     }
     this.selected = _selectedItems;
     this.data = _data;
@@ -77,10 +76,17 @@ class LineChart {
       .attr('class', 'legend');
 
     vis.values = vis.chart.append('g')
-      .attr('class', 'values');
+      .attr('class', 'values')
 
     vis.mouseG = vis.lines.append('g')
       .attr('class', 'mouse-over-effects');
+    
+    vis.svg.append('text')
+      .attr('class', 'axis-title')
+      .attr('y', 20)
+      .attr('x', 10)
+      .attr('dy', '.71em')
+      .text(vis.selected.indicator);
   }
 
   /**
@@ -134,16 +140,16 @@ class LineChart {
 
     legend.append('rect')
       .attr('x', (d, i) => {
-        return (i * 100) + 130
+        return (i * 100) + 250
       })
-      .attr('y', vis.config.containerHeight - 60)
+      .attr('y', vis.config.containerHeight - 90)
       .attr('width', 10)
       .attr('height', 10)
       .style('fill', (d, i) => vis.colorScale(i));
 
     legend.append('text')
-      .attr('x', (d, i) => (i * 100) + 145)
-      .attr('y', vis.config.containerHeight - 50)
+      .attr('x', (d, i) => (i * 100) + 265)
+      .attr('y', vis.config.containerHeight - 80)
       .text(d => d.countryName);
 
     const compareValues = vis.values.selectAll('g')
@@ -152,9 +158,9 @@ class LineChart {
       .attr('class', 'value');
 
     compareValues.append('text')
-      .attr('x', vis.width + 90)
+      .attr('x', vis.width + 120)
       .attr('y', (d, i) => {
-        return (i * 20) + 12
+        return (i * 20) + 5
       });
 
 
@@ -172,6 +178,7 @@ class LineChart {
     country.selectAll("circle-group")
       .data(vis.formattedData)
       .join("g")
+      .attr('class', 'circle-group')
       .style("fill", (d, i) => vis.colorScale(i))
       .selectAll('circle')
       .data(d => d.values)
@@ -204,7 +211,7 @@ class LineChart {
       .style('opacity', '0');
 
     mousePerLine.append('text')
-      .attr('class', 'mouseText')
+      .attr('class', 'mouse-text')
       .attr('transform', `translate(10,3)`);
 
     vis.mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas

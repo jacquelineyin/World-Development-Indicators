@@ -8,7 +8,7 @@ class YearSlider {
   constructor(_config, _data) {
     this.config = {
       parentElement: _config.parentElement,
-      width: 1400,
+      width: 2000,
       height: 150,
       margin: { top: 10, right: 10, bottom: 100, left: 45 },
     }
