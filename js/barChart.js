@@ -184,7 +184,7 @@ class BarChart {
           .join('text')
             .attr('class', 'axis-title barchart-y-axis-title')
             .attr('y', -vis.config.margin.top + 10)
-            .attr('x', -50)
+            .attr('x', -vis.config.margin.left)
             .attr('dy', '.71em')
             .style('text-anchor', 'start')
             .text(newYAxisTitle);
