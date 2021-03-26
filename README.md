@@ -27,6 +27,9 @@
 #### Year slider
 - [d3 simple slider](https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518)
 
+#### Multi-line chart
+- [d3 mouseover multi-line chart](https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91)
+- [multi-line chart example](https://codesandbox.io/s/5ylwv650lx)
 
 ## Dataset
 ### Sources

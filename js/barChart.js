@@ -10,9 +10,9 @@ class BarChart {
     constructor(_config, _data, _selectedItems, _dispatcher) {
       this.config = {
         parentElement: _config.parentElement,
-        containerWidth: _config.containerWidth || 400,
-        containerHeight: _config.containerHeight || 300,
-        margin: _config.margin || {top: 15, right: 15, bottom: 40, left: 75},
+        containerWidth: _config.containerWidth || 600,
+        containerHeight: _config.containerHeight || 500,
+        margin: _config.margin || {top: 50, right: 50, bottom: 50, left: 50},
         colour: _config.colour || 
                 {
                   selectedCountryBar: 'blue',
