@@ -4,13 +4,15 @@ const selected = new Selected();
 const regionMapper = new RegionMapper();
 const regions = new Regions();
 const countries = new Countries();
+const parseTime = d3.timeParse("%Y");
 
 let barChart, yearSlider, lineChart, data, filteredData;
+
+
 
 /**
  * Load data from CSV file asynchronously and render charts
  */
-const parseTime = d3.timeParse("%Y");
 d3.csv('data/Dataset.csv').then(_data => {
   data = _data;
 
@@ -23,6 +25,7 @@ d3.csv('data/Dataset.csv').then(_data => {
   //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
   setTestSelectedItems();
 
+  
   // Initialize select country/region for focused area
   createSelectFocusArea();
 
@@ -70,6 +73,11 @@ let createSelectCountryDropdown = () => {
 
   appendOptions(countryList, select);
   
+  select.addEventListener('change', e => {
+    selected.setArea({country: e.target.value});
+    console.log(selected);
+  })
+
   parent.appendChild(select);
 }
 
