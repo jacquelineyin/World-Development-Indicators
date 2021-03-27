@@ -101,7 +101,7 @@ class LineChart {
     const selectedCountries = vis.selected.allSelectedAreas;
     const selectedIndicator = vis.selected.indicator;
     const selectedYears = vis.selected.selectedYears;
-    const filteredSelectedData = vis.data.filter(d => d.IndicatorName == selectedIndicator
+    const filteredSelectedData = vis.data.filter(d => d.IndicatorName === selectedIndicator
       && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
 
     // group data by country
