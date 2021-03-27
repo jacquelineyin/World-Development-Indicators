@@ -6,7 +6,7 @@ const indicators = new Indicators();
 const selected = new Selected();
 
 // Initialize dispatcher that is used to orchestrate events
-const dispatcherYear = d3.dispatch('filterYear');
+const dispatcher = d3.dispatch('filterYear');
 
 
 /**
@@ -41,7 +41,7 @@ d3.csv('data/Dataset.csv').then(_data => {
   lineChart = new LineChart({ parentElement: '#linechart' }, data, selected);
 
   // Initialize and render time slider
-  yearSlider = new YearSlider({ parentElement: '#slider' }, data, dispatcherYear);
+  yearSlider = new YearSlider({ parentElement: '#slider' }, data, dispatcher);
 
   // Show linechart
   lineChart.updateVis();
@@ -49,7 +49,7 @@ d3.csv('data/Dataset.csv').then(_data => {
 
 // ----------------- Dispatcher -------------------- //
 
-dispatcherYear.on('filterYear', selectedYears => {
+dispatcher.on('filterYear', selectedYears => {
   lineChart.selected.selectedYears = selectedYears;
   barChart.selected.timeInterval = { min: selectedYears[0], max: selectedYears[selectedYears.length-1] };
 
