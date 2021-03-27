@@ -10,11 +10,7 @@ let barChart, yearSlider, lineChart, data, filteredData;
 /**
  * Load data from CSV file asynchronously and render charts
  */
-/**
- * Load data from CSV file asynchronously and render charts
- */
 const parseTime = d3.timeParse("%Y");
-
 d3.csv('data/Dataset.csv').then(_data => {
   data = _data;
 
@@ -31,19 +27,24 @@ d3.csv('data/Dataset.csv').then(_data => {
   createSelectFocusArea();
 
   //Initialize views
+  // Load in GeoJSON data and initialize map view
+  d3.json("./data/countries.geojson").then(geoJsonData => { 
+    map = new GeoMap(data, geoJsonData, selected);
+    map.updateVis();
+  });
+
+  // Initialize bar chart
   barChart = new BarChart({
     parentElement: '#barchart'
   }, data, selected);
 
+  // Initialize line chart
   lineChart = new LineChart({ parentElement: '#linechart' }, data, selected);
   lineChart.updateVis();
 
   // Initialize and render time slider
   yearSlider = new YearSlider({ parentElement: '#slider' }, data);
-
 });
-
-var map = new GeoMap();
 
 // ----------------- Helpers -------------------- //
 
@@ -61,7 +62,6 @@ let createSelectFocusArea = () => {
  */
 let createSelectCountryDropdown = () => {
   let countryList = regionMapper.getCountriesOfRegion(selected.area.region);
-  console.log(countryList);
 
   let parent = document.getElementById("country-selector-container");
   let select = document.createElement("select");
@@ -161,5 +161,3 @@ let setTestSelectedItems = () => {
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
 }
-
-
