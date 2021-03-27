@@ -128,9 +128,9 @@ let setTestSelectedItems = () => {
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
 
   // test value comparison countries
-  selected.addComparisonArea(countries.CANADA);
   selected.addComparisonArea(countries.CHINA);
   selected.addComparisonArea(countries.BRAZIL);
+  selected.addComparisonArea(countries.JAPAN);
 
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
