@@ -28,6 +28,10 @@ class GeoMap {
   
     // Prepare data and scales
     updateVis() {
+      if (this.geoJsonLayer != undefined) {
+        this.map.removeLayer(this.geoJsonLayer);
+      }
+
       // Filter data by selected years and selected indicator
       var filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
       var filteredPopulationData = this.populationData.filter(d => this.selected.selectedYears.includes(d.Year));
@@ -60,7 +64,7 @@ class GeoMap {
   
     // Bind data to visual elements, update axes
     renderVis() {
-      L.geoJson(this.geoJson, {style: this.styleFeature}).addTo(this.map);
+      this.geoJsonLayer = L.geoJson(this.geoJson, {style: this.styleFeature}).addTo(this.map);
     }
 
     static getTileColor(d) { 
