@@ -74,7 +74,6 @@ let getAllYears = (data) => {
  */
 let setTestSelectedItems = () => {
   // test value timeInterval
-  //let years = getAllYears(data);
   const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,5)
   selected.selectedYears = defaultYears;
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
