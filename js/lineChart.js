@@ -5,7 +5,7 @@ class LineChart {
    * @param {Object}
    * @param {Array}
    */
-  constructor(_config, _data, _selectedItems, _dispatcher, _selectedYears) {
+  constructor(_config, _data, _selectedItems, _dispatcher) {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 1000,
@@ -15,7 +15,6 @@ class LineChart {
     this.selected = _selectedItems;
     this.data = _data;
     this.dispatcher = _dispatcher;
-    this.selectedYears = _selectedYears;
     this.initVis();
   }
 
@@ -43,7 +42,6 @@ class LineChart {
     let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/,"B"); 
 
     vis.xAxis = d3.axisBottom(vis.xScale)
-      .ticks(5)
       .tickSize(-vis.height - 4)
       .tickSizeOuter(0)
       .tickPadding(10);
@@ -92,7 +90,7 @@ class LineChart {
       .attr('y', 20)
       .attr('x', 10)
       .attr('dy', '.71em')
-      .text(vis.selected.indicator);
+      .text('Total ' + vis.selected.indicator);
   }
 
   /**

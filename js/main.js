@@ -1,10 +1,13 @@
+// Global objects
+let barChart, yearSlider, lineChart, data, filteredData;
+
 // Initialize constants and global variables
 const indicators = new Indicators();
 const selected = new Selected();
 
-let barChart, yearSlider, lineChart, data, filteredData;
-const dispatcherLinechart = d3.dispatch('filterLineYear');
+// Initialize dispatcher that is used to orchestrate events
 const dispatcherYear = d3.dispatch('filterYear');
+
 
 /**
  * Load data from CSV file asynchronously and render charts
@@ -32,23 +35,23 @@ d3.csv('data/Dataset.csv').then(_data => {
     parentElement: '#barchart'
   }, data, selected);
 
-  lineChart = new LineChart({ parentElement: '#linechart' }, data, selected, dispatcherLinechart);
-  lineChart.updateVis();
+  lineChart = new LineChart({ parentElement: '#linechart' }, data, selected);
 
   // Initialize and render time slider
   yearSlider = new YearSlider({ parentElement: '#slider' }, data, dispatcherYear);
 
+
+  lineChart.updateVis();
 });
 
 var map = new GeoMap();
 
-dispatcherLinechart.on('filterLineYear', selectedYears => {
-  lineChart.config.selectedYears = selectedYears;
-  console.log(lineChart.config.selectedYears);
+// ----------------- Dispatcher -------------------- //
+
+dispatcherYear.on('filterYear', selectedYears => {
+  lineChart.selected.selectedYears = selectedYears;
   lineChart.updateVis();
 })
-
-
 
 // ----------------- Helpers -------------------- //
 
@@ -69,8 +72,7 @@ let setTestSelectedItems = () => {
   // test value timeInterval
   let years = getAllYears(data);
   selected.timeInterval = { min: d3.min(years), max: d3.max(years) };
-  selected.selectedYears = ['1994', '1995', '1996', '1997', '1998'];
-
+  selected.selectedYears = [...new Set(data.map(d => d.Year))].slice(0,5);
 
   // test value focusArea
   selected.setArea({ region: "World", country: "Japan" });
@@ -83,4 +85,5 @@ let setTestSelectedItems = () => {
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
 }
+
 

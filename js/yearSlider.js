@@ -33,10 +33,16 @@ class YearSlider {
       .fill('#2196f3')
       .on('onchange', val => {
         d3.select('p#value-range').text(val.map(d3.format('d')).join('-'));
-        const selectedYears = val.map(d3.format('d')).join('-');
-        //console.log(selectedYears);
-        //console.log(typeof selectedYears);
-        vis.dispatcher.call('filterYear', selectedYears);
+        
+        const minYear = val.map(d3.format('d'))[0];
+        const maxYear = val.map(d3.format('d'))[1];
+        const selectedYears = [];
+
+        for (let i = minYear; i <= maxYear; i++) {
+         selectedYears.push(i.toString());
+       }
+
+       vis.dispatcher.call('filterYear', this, selectedYears);
       });
 
     var gRange = d3
