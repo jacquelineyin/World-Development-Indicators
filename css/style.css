@@ -32,6 +32,15 @@
     font-weight: bold;
 }
 
+/** Select Focus Area ***/
+#select-focus {
+  display: flex;
+}
+
+#region-country-container {
+  flex-grow: 3;
+}
+
 /** Map */
 #map { 
   width: 100%;
