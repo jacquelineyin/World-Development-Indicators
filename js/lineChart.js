@@ -178,7 +178,7 @@ class LineChart {
       .style('stroke', (d, i) => vis.colorScale(i));
 
     country.selectAll('circle-group')
-      .data(vis.formattedData)
+      .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'circle-group')
       .style('fill', (d, i) => vis.colorScale(i))
@@ -191,7 +191,12 @@ class LineChart {
       .attr('cx', d => vis.xScale(d.year))
       .attr('cy', d => vis.yScale(d.value));
 
-    vis.mouseG.append('path') // this is the black vertical line to follow mouse
+    const mouseG = vis.mouseG.selectAll('.mouseG')
+      .data(vis.formattedData, d => d.values)
+      .join('g')
+      .attr('class', 'mouseG');
+
+    mouseG.append('path') // this is the black vertical line to follow mouse
       .attr('class', 'mouse-line')
       .style('stroke', 'black')
       .style('stroke-width', '1px')
@@ -200,7 +205,7 @@ class LineChart {
     const lines = document.getElementsByClassName('line');
 
     const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
-      .data(vis.formattedData)
+      .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'mouse-per-line');
 
@@ -215,7 +220,7 @@ class LineChart {
       .attr('class', 'mouse-text')
       .attr('transform', `translate(10,3)`);
 
-    vis.mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+    mouseG.append('rect') // append a rect to catch mouse movements on canvas
       .attr('width', vis.width) // can't catch mouse events on a g element
       .attr('height', vis.height)
       .attr('fill', 'none')
