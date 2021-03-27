@@ -47,9 +47,6 @@ d3.csv('data/Dataset.csv').then(_data => {
   lineChart.updateVis();
 });
 
-// Show map
-var map = new GeoMap();
-
 // ----------------- Dispatcher -------------------- //
 
 dispatcherYear.on('filterYear', selectedYears => {
@@ -93,5 +90,4 @@ let setTestSelectedItems = () => {
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
 }
-
 
