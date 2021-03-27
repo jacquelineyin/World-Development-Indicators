@@ -5,7 +5,7 @@ class LineChart {
    * @param {Object}
    * @param {Array}
    */
-  constructor(_config, _data, _selectedItems, _dispatcher) {
+  constructor(_config, _data, _selectedItems) {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 1000,
@@ -14,7 +14,6 @@ class LineChart {
     }
     this.selected = _selectedItems;
     this.data = _data;
-    this.dispatcher = _dispatcher;
     this.initVis();
   }
 
@@ -39,7 +38,7 @@ class LineChart {
     // Initialize axes
 
     // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
-    let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/,"B"); 
+    let format = (strInput) => d3.format('.2~s')(strInput).replace(/G/, 'B');
 
     vis.xAxis = d3.axisBottom(vis.xScale)
       .tickSize(-vis.height - 4)
@@ -54,7 +53,7 @@ class LineChart {
 
     // Define size of SVG drawing area
     vis.svg = d3.select(vis.config.parentElement)
-      .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
+      .attr('viewBox', `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
 
     // Append group element that will contain our actual chart (see margin convention)
     vis.chart = vis.svg.append('g')
@@ -84,7 +83,7 @@ class LineChart {
 
     vis.mouseG = vis.lines.append('g')
       .attr('class', 'mouse-over-effects');
-    
+
     vis.svg.append('text')
       .attr('class', 'axis-title')
       .attr('y', 20)
@@ -138,7 +137,7 @@ class LineChart {
     let vis = this;
 
     const legend = vis.legends.selectAll('g')
-      .data(vis.formattedData)
+      .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'legend');
 
@@ -157,7 +156,7 @@ class LineChart {
       .text(d => d.countryName);
 
     const compareValues = vis.values.selectAll('g')
-      .data(vis.formattedData)
+      .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'value');
 
@@ -167,10 +166,9 @@ class LineChart {
         return (i * 20) + 5
       });
 
-
     // Add line path
     const country = vis.countries.selectAll('.country')
-      .data(vis.formattedData)
+      .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'country');
 
@@ -179,11 +177,11 @@ class LineChart {
       .attr('d', (d) => vis.line(d.values))
       .style('stroke', (d, i) => vis.colorScale(i));
 
-    country.selectAll("circle-group")
+    country.selectAll('circle-group')
       .data(vis.formattedData)
-      .join("g")
+      .join('g')
       .attr('class', 'circle-group')
-      .style("fill", (d, i) => vis.colorScale(i))
+      .style('fill', (d, i) => vis.colorScale(i))
       .selectAll('circle')
       .data(d => d.values)
       .join('g')
