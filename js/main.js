@@ -30,7 +30,7 @@ d3.csv('data/Dataset.csv').then(_data => {
   //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
   setTestSelectedItems();
 
-  //Initialize views
+  // Initialize views
   barChart = new BarChart({
     parentElement: '#barchart'
   }, data, selected);
@@ -40,10 +40,11 @@ d3.csv('data/Dataset.csv').then(_data => {
   // Initialize and render time slider
   yearSlider = new YearSlider({ parentElement: '#slider' }, data, dispatcherYear);
 
-
+  // Show linechart
   lineChart.updateVis();
 });
 
+// Show map
 var map = new GeoMap();
 
 // ----------------- Dispatcher -------------------- //
