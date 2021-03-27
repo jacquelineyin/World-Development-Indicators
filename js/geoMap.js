@@ -28,7 +28,8 @@ class GeoMap {
   
     // Prepare data and scales
     updateVis() {
-      if (this.geoJsonLayer != undefined) {
+      // If a GeoJSON layer already exists, remove it
+      if (this.geoJsonLayer) {
         this.map.removeLayer(this.geoJsonLayer);
       }
 
