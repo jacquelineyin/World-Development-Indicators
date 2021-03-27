@@ -50,7 +50,10 @@ var map = new GeoMap();
 
 dispatcherYear.on('filterYear', selectedYears => {
   lineChart.selected.selectedYears = selectedYears;
+  barChart.selected.timeInterval = { min: selectedYears[0], max: selectedYears[selectedYears.length-1] };
+
   lineChart.updateVis();
+  barChart.updateVis();
 })
 
 // ----------------- Helpers -------------------- //
@@ -70,9 +73,10 @@ let getAllYears = (data) => {
  */
 let setTestSelectedItems = () => {
   // test value timeInterval
-  let years = getAllYears(data);
-  selected.timeInterval = { min: d3.min(years), max: d3.max(years) };
-  selected.selectedYears = [...new Set(data.map(d => d.Year))].slice(0,5);
+  //let years = getAllYears(data);
+  const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,5)
+  selected.selectedYears = defaultYears;
+  selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
 
   // test value focusArea
   selected.setArea({ region: "World", country: "Japan" });
