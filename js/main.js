@@ -69,7 +69,6 @@ dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
 })
 
 dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
-  // Updates selected object
   updateSelectedArea(type, value);
 
   barChart.updateVis();
@@ -82,8 +81,14 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
  * Purpose: Initializes Country dropdown and Region radio buttons
  */
  let createSelectFocusArea = () => {
+  // Initialize dropdown + radios
   createSelectCountryDropdown();
   createRegionRadioButtons();
+
+  // Update selected with values from initialized dropdown + radios
+  let selectedRegion = getSelectedRadioButtonNode().value;
+  let selectedCountry = document.getElementById('country-selector').value;
+  selected.setArea({region: selectedRegion, country: selectedCountry});
 }
 
 /**
@@ -189,17 +194,45 @@ let clearChildNodes = (parentNode) =>{
  * @param {string} type = 'region' if setting region, 'country' if setting country
  * @param {string} value is a capitalized (first letter only) country or region name
  */
- function updateSelectedArea(type, value) {
+ let updateSelectedArea = (type, value) => {
   if (type === 'country') {
     selected.setArea({ country: value });
   } else if (type === 'region') {
-    selected.setArea({ region: value });
+    handleSelectRegion(value);
+  }
+}
+
+/**
+ * Purpose: Updates the selected object
+ *          and updates default country of dropdown list to fit selected region 
+ * @param {string} _region = name of region that's selected
+ */
+let handleSelectRegion = (_region) => {
+    selected.setArea({ region: _region });
+    
+    // Update dropdown to display only countries of that region
     createSelectCountryDropdown();
 
     // Update selected country to the default of updated dropdown
     let selectElem = document.getElementById('country-selector');
     selected.setArea({ country: selectElem.value });
+}
+
+/**
+ * Purpose: Returns the DOM element of the selected radio input
+ * @returns {Object} DOM element or null if none selected
+ */
+let getSelectedRadioButtonNode = () => {
+  let radios = document.getElementsByClassName('radio-button');
+  let selectedButton = null;
+
+  for (let radio of radios) {
+    if (radio.checked) {
+      selectedButton = radio;
+    }
   }
+
+  return selectedButton;
 }
 
 /**
@@ -210,9 +243,6 @@ let setTestSelectedItems = () => {
   const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,5)
   selected.selectedYears = defaultYears;
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
-
-  // test value focusArea
-  selected.setArea({ region: regions.WORLD, country: countries.JAPAN });
 
   // test value comparison countries
   selected.addComparisonArea(countries.CANADA);
