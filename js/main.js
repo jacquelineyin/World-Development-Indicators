@@ -58,17 +58,6 @@ dispatcher.on('filterYear', selectedYears => {
 })
 
 // ----------------- Helpers -------------------- //
-
-/**
- * Purpose: Returns an array of all the years in the given dataset
- * @param {Array} data 
- * @returns {Array} of Objects
- */
-let getAllYears = (data) => {
-  let years = data.map(d => d.Year);
-  return years;
-}
-
 /**
  * Purpose: Creates a mock "selected" state for testing purposes
  */
