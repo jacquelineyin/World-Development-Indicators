@@ -38,10 +38,9 @@ class LineChart {
     // Initialize axes
 
     // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
-    let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/,"B"); 
+    let format = (strInput) => d3.format('.2~s')(strInput).replace(/G/, 'B');
 
     vis.xAxis = d3.axisBottom(vis.xScale)
-      .ticks(5)
       .tickSize(-vis.height - 4)
       .tickSizeOuter(0)
       .tickPadding(10);
@@ -54,7 +53,7 @@ class LineChart {
 
     // Define size of SVG drawing area
     vis.svg = d3.select(vis.config.parentElement)
-      .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
+      .attr('viewBox', `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
 
     // Append group element that will contain our actual chart (see margin convention)
     vis.chart = vis.svg.append('g')
@@ -84,13 +83,13 @@ class LineChart {
 
     vis.mouseG = vis.lines.append('g')
       .attr('class', 'mouse-over-effects');
-    
+
     vis.svg.append('text')
       .attr('class', 'axis-title')
       .attr('y', 20)
       .attr('x', 10)
       .attr('dy', '.71em')
-      .text(vis.selected.indicator);
+      .text('Total ' + vis.selected.indicator);
   }
 
   /**
@@ -138,7 +137,7 @@ class LineChart {
     let vis = this;
 
     const legend = vis.legends.selectAll('g')
-      .data(vis.formattedData)
+      .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'legend');
 
@@ -157,7 +156,7 @@ class LineChart {
       .text(d => d.countryName);
 
     const compareValues = vis.values.selectAll('g')
-      .data(vis.formattedData)
+      .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'value');
 
@@ -167,10 +166,9 @@ class LineChart {
         return (i * 20) + 5
       });
 
-
     // Add line path
     const country = vis.countries.selectAll('.country')
-      .data(vis.formattedData)
+      .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'country');
 
@@ -179,11 +177,11 @@ class LineChart {
       .attr('d', (d) => vis.line(d.values))
       .style('stroke', (d, i) => vis.colorScale(i));
 
-    country.selectAll("circle-group")
-      .data(vis.formattedData)
-      .join("g")
+    country.selectAll('circle-group')
+      .data(vis.formattedData, d => d.values)
+      .join('g')
       .attr('class', 'circle-group')
-      .style("fill", (d, i) => vis.colorScale(i))
+      .style('fill', (d, i) => vis.colorScale(i))
       .selectAll('circle')
       .data(d => d.values)
       .join('g')
@@ -193,8 +191,12 @@ class LineChart {
       .attr('cx', d => vis.xScale(d.year))
       .attr('cy', d => vis.yScale(d.value));
 
+    const mouseG = vis.mouseG.selectAll('.mouseG')
+      .data(vis.formattedData, d => d.values)
+      .join('g')
+      .attr('class', 'mouseG');
 
-    vis.mouseG.append('path') // this is the black vertical line to follow mouse
+    mouseG.append('path') // this is the black vertical line to follow mouse
       .attr('class', 'mouse-line')
       .style('stroke', 'black')
       .style('stroke-width', '1px')
@@ -203,7 +205,7 @@ class LineChart {
     const lines = document.getElementsByClassName('line');
 
     const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
-      .data(vis.formattedData)
+      .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'mouse-per-line');
 
@@ -218,7 +220,7 @@ class LineChart {
       .attr('class', 'mouse-text')
       .attr('transform', `translate(10,3)`);
 
-    vis.mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+    mouseG.append('rect') // append a rect to catch mouse movements on canvas
       .attr('width', vis.width) // can't catch mouse events on a g element
       .attr('height', vis.height)
       .attr('fill', 'none')
