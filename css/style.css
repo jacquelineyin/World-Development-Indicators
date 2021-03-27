@@ -1,5 +1,3 @@
-@import './barChart.css';
-
 /** Chart Positioning */
 #parent-container {
   margin: 15px;
@@ -32,7 +30,7 @@
     font-weight: bold;
 }
 
-/** Select Focus Area ***/
+/* * Select Focus Area **
 #select-focus {
   display: flex;
   flex-direction: column-reverse;
@@ -62,7 +60,7 @@
 .radio-label {
   margin-left: 5px;
   vertical-align: middle;
-}
+} */
 
 
 /** Map */
@@ -96,7 +94,7 @@
 }
 
 
-@media only screen and (min-width: 1677px){
+/* @media only screen and (min-width: 1677px){
   #select-focus {
     display: flex;
     flex-direction: row;
@@ -123,4 +121,4 @@
     margin-left: 5px;
     vertical-align: middle;
   }
-}
+} */

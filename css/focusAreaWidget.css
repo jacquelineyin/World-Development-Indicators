@@ -1,0 +1,61 @@
+/** Select Focus Area ***/
+#select-focus {
+    display: flex;
+    flex-direction: column-reverse;
+    margin-bottom: 15px;
+  }
+  
+  
+  #country-selector-container {
+    font-size: 0.8em;
+  }
+  
+  #country-selector {
+    width: 200px;
+  }
+  
+  #region-selector-container {
+    width: 100%;
+    font-size: 0.8em;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .radio-option {
+    margin-right: 15px;
+  }
+  
+  .radio-label {
+    margin-left: 5px;
+    vertical-align: middle;
+  }
+
+  /* -------------------  Bigger Screens -----------------------*/
+  @media only screen and (min-width: 1677px){
+    #select-focus {
+      display: flex;
+      flex-direction: row;
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+  
+    #country-selector-container {
+      font-size: 0.8em;
+    }
+  
+    #region-selector-container {
+      width: 80%;
+      margin-left: 20px;
+      font-size: 0.8em;
+      display: flex;
+    }
+  
+    .radio-option {
+      margin-right: 15px;
+    }
+  
+    .radio-label {
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+  }
