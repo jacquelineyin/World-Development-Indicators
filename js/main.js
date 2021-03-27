@@ -26,7 +26,9 @@ d3.csv('data/Dataset.csv').then(_data => {
 
   //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
   setTestSelectedItems();
-  createFocusAreaSection();
+
+  // Initialize select country/region for focused area
+  createSelectFocusArea();
 
   //Initialize views
   barChart = new BarChart({
@@ -45,11 +47,18 @@ var map = new GeoMap();
 
 // ----------------- Helpers -------------------- //
 
-let createFocusAreaSection = () => {
+/**
+ * Purpose: Initializes Country dropdown and Region radio buttons
+ */
+let createSelectFocusArea = () => {
   createSelectCountryDropdown();
   createRegionRadioButtons();
 }
 
+/**
+ * Purpose: Initializes Country dropdown selection 
+ *          with options populated relative to selected region
+ */
 let createSelectCountryDropdown = () => {
   let countryList = regionMapper.getCountriesOfRegion(selected.area.region);
   console.log(countryList);
@@ -59,6 +68,19 @@ let createSelectCountryDropdown = () => {
   select.name = "country-selector";
   select.id = select.name;
 
+  appendOptions(countryList, select);
+  
+  parent.appendChild(select);
+}
+
+/**
+ * Purpose: Creates and appends an option 
+ *          to given select elem for each country in countryList
+ * @param {Arrau} countryList of strings representing countries
+ * @param {Object} select is DOM object of element type "select" 
+ *                        to which we will attach our options
+ */
+let appendOptions = (countryList, select) => {
   for (let country of countryList) {
     let option = document.createElement("option");
     option.value = country;
@@ -73,24 +95,21 @@ let createSelectCountryDropdown = () => {
 
     select.appendChild(option);
   }
-
-
-
-  // let label = document.createElement("label");
-  // label.innerHTML = "Select a Country: "
-  // label.htmlFor = "country-selector";
-
-  parent
-  // .appendChild(label)
-  .appendChild(select);
 }
 
+/**
+ * Purpose: Initializes and appends radio buttons for all relevant regions
+ */
 let createRegionRadioButtons = () => {
   let regionList = regions.getAllRegions();
 
   let parent = document.getElementById("region-selector-container");
 
   for (let region of regionList) {
+    let div = document.createElement("div");
+    div.className = "radio-option";
+
+    // Create radio buttons
     let radio = document.createElement("input");
     radio.type = "radio";
     radio.className = "radio-button";
@@ -98,13 +117,16 @@ let createRegionRadioButtons = () => {
     radio.id = `region-${region}`;
     radio.value = region;
   
+    // Create labels for radio buttons
     let label = document.createElement("label");
     label.className = "radio-label";
     label.htmlFor = radio.id;
     label.innerHTML = radio.value;
 
-    parent.appendChild(radio);
-    parent.appendChild(label);
+    div.appendChild(radio);
+    div.appendChild(label);
+
+    parent.appendChild(div);
   }
 }
 
@@ -139,4 +161,5 @@ let setTestSelectedItems = () => {
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
 }
+
 
