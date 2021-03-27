@@ -38,8 +38,8 @@ class YearSlider {
         const maxYear = val.map(d3.format('d'))[1];
         const selectedYears = [];
 
-        for (let year = minYear; year <= maxYear; i++) {
-         selectedYears.push(i.toString());
+        for (let year = minYear; year <= maxYear; year++) {
+         selectedYears.push(year.toString());
        }
 
        vis.dispatcher.call('filterYear', this, selectedYears);
