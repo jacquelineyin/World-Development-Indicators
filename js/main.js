@@ -64,7 +64,7 @@ d3.csv('data/Dataset.csv').then(_data => {
   lineChart = new LineChart({ parentElement: '#linechart' }, data, selected);
 
   // Initialize and render time slider
-  yearSlider = new YearSlider({ parentElement: '#slider' }, data, dispatcher);
+  yearSlider = new YearSlider({ parentElement: '#slider' }, data, dispatcher, dispatcherEvents);
 
   // Show linechart
   lineChart.updateVis();
