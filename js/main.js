@@ -7,10 +7,15 @@ const selected = new Selected();
 const regionMapper = new RegionMapper();
 const regions = new Regions();
 const countries = new Countries();
+const dispatcherEvents = new DispatcherEvents();
 const parseTime = d3.timeParse("%Y");
 
 // Initialize dispatcher that is used to orchestrate events
-const dispatcher = d3.dispatch(dispatcherEvents.FILTER_YEAR);
+const dispatcher = d3.dispatch(
+  dispatcherEvents.FILTER_YEAR, 
+  dispatcherEvents.SELECT_FOCUS_AREA,
+  dispatcherEvents.SELECT_COMPARISON_ITEM
+  );
 
 
 /**
@@ -57,12 +62,20 @@ d3.csv('data/Dataset.csv').then(_data => {
 // ----------------- Dispatcher -------------------- //
 
 dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
-  lineChart.selected.selectedYears = selectedYears;
-  barChart.selected.timeInterval = { min: selectedYears[0], max: selectedYears[selectedYears.length-1] };
+  selected.selectedYears = selectedYears;
+  selected.setTimeInterval(selectedYears[0], selectedYears[selectedYears.length-1]);
 
   lineChart.updateVis();
   barChart.updateVis();
 })
+
+dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
+  // Updates selected object
+  updateSelectedArea(type, value);
+
+  barChart.updateVis();
+  lineChart.updateVis();
+}) 
 
 // ----------------- Helpers -------------------- //
 
@@ -82,6 +95,9 @@ let createSelectCountryDropdown = () => {
   let countryList = regionMapper.getCountriesOfRegion(selected.area.region);
 
   let parent = document.getElementById("country-selector-container");
+
+  clearChildNodes(parent);
+
   let select = document.createElement("select");
   select.name = "country-selector";
   select.id = select.name;
@@ -89,8 +105,7 @@ let createSelectCountryDropdown = () => {
   appendOptions(countryList, select);
   
   select.addEventListener('change', e => {
-    selected.setArea({country: e.target.value});
-    console.log(selected);
+    dispatcher.call(dispatcherEvents.SELECT_FOCUS_AREA, e, 'country', e.target.value);
   })
 
   parent.appendChild(select);
@@ -127,6 +142,7 @@ let createRegionRadioButtons = () => {
   let regionList = regions.getAllRegions();
 
   let parent = document.getElementById("region-selector-container");
+  clearChildNodes(parent);
 
   for (let region of regionList) {
     let div = document.createElement("div");
@@ -139,7 +155,10 @@ let createRegionRadioButtons = () => {
     radio.name = "region";
     radio.id = `region-${region}`;
     radio.value = region;
-  
+    radio.addEventListener('change', (e) => {
+      dispatcher.call(dispatcherEvents.SELECT_FOCUS_AREA, e, 'region', e.target.value);
+    })
+
     // Create labels for radio buttons
     let label = document.createElement("label");
     label.className = "radio-label";
@@ -150,6 +169,15 @@ let createRegionRadioButtons = () => {
     div.appendChild(label);
 
     parent.appendChild(div);
+  }
+
+  let defaultBtn = document.querySelector(`#region-World`);
+  defaultBtn.checked = true;
+}
+
+let clearChildNodes = (parentNode) =>{
+  while (parentNode.firstChild) {
+    parentNode.firstChild.remove();
   }
 }
 
@@ -172,5 +200,18 @@ let setTestSelectedItems = () => {
 
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
+}
+
+function updateSelectedArea(type, value) {
+  if (type === 'country') {
+    selected.setArea({ country: value });
+  } else if (type === 'region') {
+    selected.setArea({ region: value });
+    createSelectCountryDropdown();
+
+    // Update selected country to the default of updated dropdown
+    let selectElem = document.getElementById('country-selector');
+    selected.setArea({ country: selectElem.value });
+  }
 }
 
