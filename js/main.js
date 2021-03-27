@@ -17,7 +17,6 @@ const dispatcher = d3.dispatch(
   dispatcherEvents.SELECT_COMPARISON_ITEM
   );
 
-
 /**
  * Load data from CSV file asynchronously and render charts
  */
