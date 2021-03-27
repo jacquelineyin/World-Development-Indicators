@@ -12,11 +12,7 @@ const dispatcherYear = d3.dispatch('filterYear');
 /**
  * Load data from CSV file asynchronously and render charts
  */
-/**
- * Load data from CSV file asynchronously and render charts
- */
 const parseTime = d3.timeParse("%Y");
-
 d3.csv('data/Dataset.csv').then(_data => {
   let indicatorsOfInterest = indicators.getAllIndicatorsOfInterest();
   data = _data.filter(d => indicatorsOfInterest.includes(d.IndicatorName));
@@ -30,11 +26,18 @@ d3.csv('data/Dataset.csv').then(_data => {
   //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
   setTestSelectedItems();
 
-  // Initialize views
+  // Load in GeoJSON data and initialize map view
+  d3.json("./data/countries.geojson").then(geoJsonData => { 
+    map = new GeoMap(data, geoJsonData, selected);
+    map.updateVis();
+  });
+
+  // Initialize bar chart
   barChart = new BarChart({
     parentElement: '#barchart'
   }, data, selected);
 
+  // Initialize line chart
   lineChart = new LineChart({ parentElement: '#linechart' }, data, selected);
 
   // Initialize and render time slider
