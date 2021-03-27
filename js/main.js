@@ -1,8 +1,13 @@
+// Global objects
+let barChart, yearSlider, lineChart, data, filteredData;
+
 // Initialize constants and global variables
 const indicators = new Indicators();
 const selected = new Selected();
 
-let barChart, yearSlider, lineChart, data, filteredData;
+// Initialize dispatcher that is used to orchestrate events
+const dispatcher = d3.dispatch('filterYear');
+
 
 /**
  * Load data from CSV file asynchronously and render charts
@@ -34,33 +39,33 @@ d3.csv('data/Dataset.csv').then(_data => {
 
   // Initialize line chart
   lineChart = new LineChart({ parentElement: '#linechart' }, data, selected);
-  lineChart.updateVis();
 
   // Initialize and render time slider
-  yearSlider = new YearSlider({ parentElement: '#slider' }, data);
+  yearSlider = new YearSlider({ parentElement: '#slider' }, data, dispatcher);
+
+  // Show linechart
+  lineChart.updateVis();
 });
 
+// ----------------- Dispatcher -------------------- //
+
+dispatcher.on('filterYear', selectedYears => {
+  lineChart.selected.selectedYears = selectedYears;
+  barChart.selected.timeInterval = { min: selectedYears[0], max: selectedYears[selectedYears.length-1] };
+
+  lineChart.updateVis();
+  barChart.updateVis();
+})
+
 // ----------------- Helpers -------------------- //
-
-/**
- * Purpose: Returns an array of all the years in the given dataset
- * @param {Array} data 
- * @returns {Array} of Objects
- */
-let getAllYears = (data) => {
-  let years = data.map(d => d.Year);
-  return years;
-}
-
 /**
  * Purpose: Creates a mock "selected" state for testing purposes
  */
 let setTestSelectedItems = () => {
   // test value timeInterval
-  let years = getAllYears(data);
-  selected.timeInterval = { min: d3.min(years), max: d3.max(years) };
-  selected.selectedYears = ['1994', '1995', '1996', '1997', '1998', '1999'];
-
+  const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,5)
+  selected.selectedYears = defaultYears;
+  selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
 
   // test value focusArea
   selected.setArea({ region: "World", country: "Japan" });
@@ -73,3 +78,4 @@ let setTestSelectedItems = () => {
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
 }
+
