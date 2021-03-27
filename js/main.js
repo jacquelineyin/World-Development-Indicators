@@ -17,6 +17,18 @@ const dispatcher = d3.dispatch(
   dispatcherEvents.SELECT_COMPARISON_ITEM
   );
 
+const focusedAreaWidget = new FocusAreaWidget(
+  "country-selector-container", 
+  selected, 
+  {  
+    regionMapper, 
+    countries,
+    regions,
+    dispatcherEvents
+  },
+  dispatcher,
+  );
+
 /**
  * Load data from CSV file asynchronously and render charts
  */
@@ -34,7 +46,7 @@ d3.csv('data/Dataset.csv').then(_data => {
 
   
   // Initialize select country/region for focused area
-  createSelectFocusArea();
+  focusedAreaWidget.createSelectFocusArea();
 
   //Initialize views
   // Load in GeoJSON data and initialize map view
@@ -78,118 +90,6 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
 // ----------------- Helpers -------------------- //
 
 /**
- * Purpose: Initializes Country dropdown and Region radio buttons
- */
- let createSelectFocusArea = () => {
-  // Initialize dropdown + radios
-  createSelectCountryDropdown();
-  createRegionRadioButtons();
-
-  // Update selected with values from initialized dropdown + radios
-  let selectedRegion = getSelectedRadioButtonNode().value;
-  let selectedCountry = document.getElementById('country-selector').value;
-  selected.setArea({region: selectedRegion, country: selectedCountry});
-}
-
-/**
- * Purpose: Initializes Country dropdown selection 
- *          with options populated relative to selected region
- */
-let createSelectCountryDropdown = () => {
-  let countryList = regionMapper.getCountriesOfRegion(selected.area.region);
-
-  let parent = document.getElementById("country-selector-container");
-
-  clearChildNodes(parent);
-
-  let select = document.createElement("select");
-  select.name = "country-selector";
-  select.id = select.name;
-
-  appendOptions(countryList, select);
-  
-  select.addEventListener('change', e => {
-    dispatcher.call(dispatcherEvents.SELECT_FOCUS_AREA, e, 'country', e.target.value);
-  })
-
-  parent.appendChild(select);
-}
-
-/**
- * Purpose: Creates and appends an option 
- *          to given select elem for each country in countryList
- * @param {Arrau} countryList of strings representing countries
- * @param {Object} select is DOM object of element type "select" 
- *                        to which we will attach our options
- */
-let appendOptions = (countryList, select) => {
-  for (let country of countryList) {
-    let option = document.createElement("option");
-    option.value = country;
-
-    // Capitalize first letter
-    option.text = country.charAt(0).toUpperCase() + country.slice(1);
-
-    // Set default selected
-    if (country === countries.CANADA) {
-      option.selected = "selected";
-    }
-
-    select.appendChild(option);
-  }
-}
-
-/**
- * Purpose: Initializes and appends radio buttons for all relevant regions
- */
-let createRegionRadioButtons = () => {
-  let regionList = regions.getAllRegions();
-
-  let parent = document.getElementById("region-selector-container");
-  clearChildNodes(parent);
-
-  for (let region of regionList) {
-    let div = document.createElement("div");
-    div.className = "radio-option";
-
-    // Create radio buttons
-    let radio = document.createElement("input");
-    radio.type = "radio";
-    radio.className = "radio-button";
-    radio.name = "region";
-    radio.id = `region-${region}`;
-    radio.value = region;
-    radio.addEventListener('change', (e) => {
-      dispatcher.call(dispatcherEvents.SELECT_FOCUS_AREA, e, 'region', e.target.value);
-    })
-
-    // Create labels for radio buttons
-    let label = document.createElement("label");
-    label.className = "radio-label";
-    label.htmlFor = radio.id;
-    label.innerHTML = radio.value;
-
-    div.appendChild(radio);
-    div.appendChild(label);
-
-    parent.appendChild(div);
-  }
-
-  let defaultBtn = document.querySelector(`#region-World`);
-  defaultBtn.checked = true;
-}
-
-/**
- * Purpose: Removes all child nodes from given parent
- * @param {Object} parentNode 
- */
-let clearChildNodes = (parentNode) =>{
-  while (parentNode.firstChild) {
-    parentNode.firstChild.remove();
-  }
-}
-
-/**
  * Purpose: Updates selected.area with the appropriate values
  * @param {string} type = 'region' if setting region, 'country' if setting country
  * @param {string} value is a capitalized (first letter only) country or region name
@@ -211,28 +111,11 @@ let handleSelectRegion = (_region) => {
     selected.setArea({ region: _region });
     
     // Update dropdown to display only countries of that region
-    createSelectCountryDropdown();
+    focusedAreaWidget.createSelectCountryDropdown();
 
     // Update selected country to the default of updated dropdown
     let selectElem = document.getElementById('country-selector');
     selected.setArea({ country: selectElem.value });
-}
-
-/**
- * Purpose: Returns the DOM element of the selected radio input
- * @returns {Object} DOM element or null if none selected
- */
-let getSelectedRadioButtonNode = () => {
-  let radios = document.getElementsByClassName('radio-button');
-  let selectedButton = null;
-
-  for (let radio of radios) {
-    if (radio.checked) {
-      selectedButton = radio;
-    }
-  }
-
-  return selectedButton;
 }
 
 /**
