@@ -202,8 +202,6 @@ class LineChart {
       .style('stroke-width', '1px')
       .style('opacity', '0');
 
-    const lines = document.getElementsByClassName('line');
-
     const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
       .data(vis.formattedData, d => d.values)
       .join('g')

@@ -30,6 +30,7 @@
 #### Multi-line chart
 - [D3 Mouseover Multi-line Chart](https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91)
 - [Multi-line Chart Example](https://codesandbox.io/s/5ylwv650lx)
+- [Tooltip tracking by data points](https://stackoverflow.com/questions/42080051/d3-single-and-multi-line-chart-tooltips)
 
 #### Styling
 - [A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
