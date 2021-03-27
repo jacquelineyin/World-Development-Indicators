@@ -13,11 +13,29 @@
 </head>
 
 <body>
-    <h1>World Development Indicators</h1>
-    <div id="chart-container">
-        <div id="map"></div>
-        <svg id="barchart"></svg>
-        <svg id="linechart"></svg>    
+    
+    <div id="parent-container">
+        <h4 class="title" id="project-title">World Development Indicators</h4>
+        
+        <div id="chart-container">
+            <div class="col" id="left-col">
+                <div class="select-container" id="select-focus">
+                    <div id="country-selector-container"></div>
+                    <div id="region-selector-container"></div>
+                </div>
+                <div id="map"></div>
+                <!----- Todo: Wedges go here-->
+            </div>
+            <div class="col" id="right-col">
+                <div class="select-container" id="select-comparison">
+                    <div id="comparison-selector-container"></div>
+                    <div id="warning-container"></div>
+                </div>
+                <svg id="barchart"></svg>
+                <svg id="linechart"></svg>
+            </div>
+        </div>
+        
         <div id="slider">
             <div class="col-sm-2">
                 <p id="value-range"></p>
