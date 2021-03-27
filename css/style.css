@@ -44,6 +44,10 @@
   font-size: 0.8em;
 }
 
+#country-selector {
+  width: 200px;
+}
+
 #region-selector-container {
   width: 100%;
   font-size: 0.8em;
