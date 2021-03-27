@@ -50,9 +50,11 @@ d3.csv('data/Dataset.csv').then(_data => {
 // ----------------- Dispatcher -------------------- //
 
 dispatcher.on('filterYear', selectedYears => {
+  map.selected.selectedYears = selectedYears;
   lineChart.selected.selectedYears = selectedYears;
   barChart.selected.timeInterval = { min: selectedYears[0], max: selectedYears[selectedYears.length-1] };
 
+  map.updateVis();
   lineChart.updateVis();
   barChart.updateVis();
 })
