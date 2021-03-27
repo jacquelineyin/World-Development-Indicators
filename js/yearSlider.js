@@ -43,7 +43,7 @@ class YearSlider {
          selectedYears.push(year.toString());
        }
 
-       vis.dispatcher.call(dispatcherEvents.FILTER_YEAR, this, selectedYears);
+       vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, this, selectedYears);
       });
 
     var gRange = d3
