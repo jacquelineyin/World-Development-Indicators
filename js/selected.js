@@ -88,14 +88,22 @@
      * @param {Object} area = {region: "", country: ""} 
      */
     setArea({region, country}) {
-        this.area.region = !!!region ? this.area.region : region;
-        this.area.country = !!!country ? this.area.country : this.regionMapper.getCountriesOfRegion(this.area.region).includes(country) ? country : this.area.country;
+        this.area.region = !region ? this.area.region : region;
+        this.setCountry(country);
 
         // If area was previously in Comparison list, remove
         this.updateComparisonArea({region, country})
 
         //update allSelectedAreas
         this.updateAllSelectedAreas(this.area, this.comparisonAreas);
+    }
+
+    setCountry(country) {
+        let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
+
+        if (!!country && countriesInSelectedRegion.includes(country)) {
+            this.area.country = country;
+        }
     }
 
     /**
