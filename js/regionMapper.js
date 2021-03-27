@@ -437,8 +437,8 @@ class RegionMapper {
         ]
     }
 
-    getCountriesOfContinent(continent) {
-        let key = continent.toUpperCase();
+    getCountriesOfRegion(region) {
+        let key = region.toUpperCase();
         key = key.replace(" ", "_");
         return this[key];
     }
