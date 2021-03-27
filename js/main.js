@@ -175,9 +175,31 @@ let createRegionRadioButtons = () => {
   defaultBtn.checked = true;
 }
 
+/**
+ * Purpose: Removes all child nodes from given parent
+ * @param {Object} parentNode 
+ */
 let clearChildNodes = (parentNode) =>{
   while (parentNode.firstChild) {
     parentNode.firstChild.remove();
+  }
+}
+
+/**
+ * Purpose: Updates selected.area with the appropriate values
+ * @param {string} type = 'region' if setting region, 'country' if setting country
+ * @param {string} value is a capitalized (first letter only) country or region name
+ */
+ function updateSelectedArea(type, value) {
+  if (type === 'country') {
+    selected.setArea({ country: value });
+  } else if (type === 'region') {
+    selected.setArea({ region: value });
+    createSelectCountryDropdown();
+
+    // Update selected country to the default of updated dropdown
+    let selectElem = document.getElementById('country-selector');
+    selected.setArea({ country: selectElem.value });
   }
 }
 
@@ -200,18 +222,5 @@ let setTestSelectedItems = () => {
 
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
-}
-
-function updateSelectedArea(type, value) {
-  if (type === 'country') {
-    selected.setArea({ country: value });
-  } else if (type === 'region') {
-    selected.setArea({ region: value });
-    createSelectCountryDropdown();
-
-    // Update selected country to the default of updated dropdown
-    let selectElem = document.getElementById('country-selector');
-    selected.setArea({ country: selectElem.value });
-  }
 }
 
