@@ -11,7 +11,6 @@ class GeoMap {
   
     // Create SVG area, initialize scales and axes
     initVis() {
-
       // Initialize map and retrieve raster layer
       this.map = L.map('map').setView([36.1408, 5.3536], 2);
       L.Icon.Default.imagePath = "images/";
