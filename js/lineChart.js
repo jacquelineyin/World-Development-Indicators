@@ -116,19 +116,24 @@ class LineChart {
 
     // re-arrange data
     vis.formattedData = [];
+
     countryGroups.forEach(g => {
       const obj = {
         countryName: g[0],
         values: g[1]
       }
-      vis.formattedData.push(obj);
-    })
-    console.log(vis.formattedData);
+      if (obj.countryName === vis.selected.area.country) {
+        vis.formattedData.unshift(obj);
+      } else {
+        vis.formattedData.push(obj);
+      }
+    });
 
     // Specificy x- and y-accessor functions
     vis.xValue = d => d.year;
     vis.yValue = d => d.value;
     vis.colorValue = d => d.countryName;
+
     // Initialize line generator
     vis.line = d3.line()
       .x(d => vis.xScale(d.year))
@@ -183,7 +188,7 @@ class LineChart {
     // Add line path
     vis.countries.selectAll('.line')
       .data(vis.formattedData, d => d.values)
-      .attr('class', d => d.countryName) //; //'country');
+      .attr('class', d => d.countryName)
       .join('path')
       .attr('class', 'line')
       .attr('d', (d) => vis.line(d.values))
@@ -194,7 +199,7 @@ class LineChart {
         return vis.colorScale(i);
       }});
 
-      const mouseG = vis.mouseG.selectAll('.mouseG')
+    const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'mouseG');
