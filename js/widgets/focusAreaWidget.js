@@ -9,10 +9,10 @@ class FocusAreaWidget {
         this.dispatcher = _dispatcher;
     }
 
-    /**
- * Purpose: Initializes Country dropdown and Region radio buttons
- */
- createSelectFocusArea() {
+ /**
+  * Purpose: Initializes Country dropdown and Region radio buttons
+  */
+  createSelectFocusArea() {
     // Initialize dropdown + radios
     this.createSelectCountryDropdown();
     this.createRegionRadioButtons();
@@ -62,7 +62,7 @@ class FocusAreaWidget {
       // Capitalize first letter
       option.text = country.charAt(0).toUpperCase() + country.slice(1);
   
-      // Set default selected
+      // Set default selected as Canada when Canada is an option
       if (country === this.countries.CANADA) {
         option.selected = "selected";
       }
@@ -81,36 +81,46 @@ class FocusAreaWidget {
     this.clearChildNodes(parent);
   
     for (let region of regionList) {
-      let div = document.createElement("div");
-      div.className = "radio-option";
-  
-      // Create radio buttons
-      let radio = document.createElement("input");
-      radio.type = "radio";
-      radio.className = "radio-button";
-      radio.name = "region";
-      radio.id = `region-${region}`;
-      radio.value = region;
-      radio.addEventListener('change', (e) => {
-        this.dispatcher.call(this.dispatcherEvents.SELECT_FOCUS_AREA, e, 'region', e.target.value);
-      })
-  
-      // Create labels for radio buttons
-      let label = document.createElement("label");
-      label.className = "radio-label";
-      label.htmlFor = radio.id;
-      label.innerHTML = radio.value;
-  
-      div.appendChild(radio);
-      div.appendChild(label);
-  
-      parent.appendChild(div);
+      this.createRegionRadioButton(region, parent);
     }
   
     let defaultBtn = document.querySelector(`#region-World`);
     defaultBtn.checked = true;
   }
   
+  /**
+   * Purpose: Creates a new div element to hold a radio button and label for a given region
+   *          Appends the new div to parent node
+   * @param {string} region : name of region to make radio button for
+   * @param {Object} parent = DOM node : parent node to attach radio button + label group to
+   */
+  createRegionRadioButton(region, parent) {
+    let div = document.createElement("div");
+    div.className = "radio-option";
+
+    // Create radio buttons
+    let radio = document.createElement("input");
+    radio.type = "radio";
+    radio.className = "radio-button";
+    radio.name = "region";
+    radio.id = `region-${region}`;
+    radio.value = region;
+    radio.addEventListener('change', (e) => {
+        this.dispatcher.call(this.dispatcherEvents.SELECT_FOCUS_AREA, e, 'region', e.target.value);
+    });
+
+    // Create labels for radio buttons
+    let label = document.createElement("label");
+    label.className = "radio-label";
+    label.htmlFor = radio.id;
+    label.innerHTML = radio.value;
+
+    div.appendChild(radio);
+    div.appendChild(label);
+
+    parent.appendChild(div);
+  }
+
   /**
    * Purpose: Removes all child nodes from given parent
    * @param {Object} parentNode 
