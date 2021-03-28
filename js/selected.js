@@ -98,6 +98,10 @@
         this.updateAllSelectedAreas(this.area, this.comparisonAreas);
     }
 
+    /**
+     * Purpose: Adds country as selected area if given country is in currently selected region
+     * @param {String} country : Name of country to add as selected (First letter capitalized)
+     */
     setCountry(country) {
         let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
 
