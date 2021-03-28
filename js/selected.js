@@ -101,7 +101,7 @@
     setCountry(country) {
         let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
 
-        if (!!country && countriesInSelectedRegion.includes(country)) {
+        if (country && countriesInSelectedRegion.includes(country)) {
             this.area.country = country;
         }
     }
