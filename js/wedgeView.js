@@ -25,7 +25,7 @@ class WedgeView {
       // Initialize pie generator
       this.pie = d3.pie()
         .startAngle(0)
-        .endAngle(5); 
+        .endAngle(6.28); // 360 degrees in rad
 
       // Intialize arc generators
       this.countryArc = d3.arc()
@@ -49,7 +49,6 @@ class WedgeView {
       this.maxDataMap = d3.rollup(filteredToYearsDataNoWLD, v => Math.max.apply(Math, v.map((o) => o.Value)), d => d.IndicatorName);
       this.countryDataMap = d3.rollup(filteredCountryData, v => d3.mean(v, i => i.Value), d => d.IndicatorName);
       this.worldDataMap = d3.rollup(filteredToYearsDataNoWLD, v => d3.mean(v, i => i.Value), d => d.IndicatorName);
-      console.log(this.worldDataMap);
       this.renderVis();
     }
   
@@ -64,6 +63,7 @@ class WedgeView {
         // Country
         if (max && countryAvg) {
         var countryData = [countryAvg, (max - countryAvg)];
+        console.log(this.pie(countryData));
         // https://stackoverflow.com/questions/24118919/how-do-i-get-the-index-number-from-the-array-in-d3/24118970
         d3.select('#' + d + ' svg g')
           .selectAll('.c-arc')
