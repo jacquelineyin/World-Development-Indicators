@@ -40,12 +40,12 @@ class FocusAreaWidget {
   createSelectCountryDropdown() {
     let countryList = this.regionMapper.getCountriesOfRegion(selected.area.region);
   
-    let parent = document.getElementById("country-selector-container");
+    let parent = document.getElementById('country-selector-container');
   
     this.clearChildNodes(parent);
   
-    let select = document.createElement("select");
-    select.name = "country-selector";
+    let select = document.createElement('select');
+    select.name = 'country-selector';
     select.id = select.name;
   
     this.appendOptions(countryList, select);
@@ -66,7 +66,7 @@ class FocusAreaWidget {
    */
   appendOptions(countryList, select) {
     for (let country of countryList) {
-      let option = document.createElement("option");
+      let option = document.createElement('option');
       option.value = country;
   
       // Capitalize first letter
@@ -74,7 +74,7 @@ class FocusAreaWidget {
   
       // Set default selected as Canada when Canada is an option
       if (country === this.countries.CANADA) {
-        option.selected = "selected";
+        option.selected = 'selected';
       }
   
       select.appendChild(option);
@@ -87,7 +87,7 @@ class FocusAreaWidget {
   createRegionRadioButtons() {
     let regionList = this.regions.getAllRegions();
   
-    let parent = document.getElementById("region-selector-container");
+    let parent = document.getElementById('region-selector-container');
     this.clearChildNodes(parent);
   
     for (let region of regionList) {
@@ -105,14 +105,14 @@ class FocusAreaWidget {
    * @param {Object} parent = DOM node : parent node to attach radio button + label group to
    */
   createRegionRadioButton(region, parent) {
-    let div = document.createElement("div");
-    div.className = "radio-option";
+    let div = document.createElement('div');
+    div.className = 'radio-option';
 
     // Create radio buttons
-    let radio = document.createElement("input");
-    radio.type = "radio";
-    radio.className = "radio-button";
-    radio.name = "region";
+    let radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.className = 'radio-button';
+    radio.name = 'region';
     radio.id = `region-${region}`;
     radio.value = region;
     radio.addEventListener('change', (e) => {
@@ -120,8 +120,8 @@ class FocusAreaWidget {
     });
 
     // Create labels for radio buttons
-    let label = document.createElement("label");
-    label.className = "radio-label";
+    let label = document.createElement('label');
+    label.className = 'radio-label';
     label.htmlFor = radio.id;
     label.innerHTML = radio.value;
 
