@@ -24,7 +24,79 @@
                     <div id="region-selector-container"></div>
                 </div>
                 <div id="map"></div>
-                <!----- Todo: Wedges go here-->
+                <div id="wedges">
+                    <table id="demographics" style="display: inline-block;">
+                        <tr><th>Demographics</th></tr>
+                        <tr>
+                            <td id="POPULATION_TOTAL">Population, total</td>
+                            <td id="RURAL_POPULATION">Rural population</td>
+                            <td id="URBAN_POPULATION">Urban population</td>
+                            <td id="POPULATION_DENSITY">Population density (people per sq. km of land area)</td>
+                            <td id="POPULATION_AGES_0_TO_14">Population, ages 0-14 (% of total)</td>
+                        </tr>
+                        <tr>
+                            <td id="POPULATION_AGES_15_TO_64">Population, ages 15-64 (% of total)</td>
+                            <td id="POPULATION_AGES_65_AND_ABOVE">Population ages 65 and above (% of total)</td>
+                            <td id="AGE_DEPENDENCY_RATIO">Age dependency ratio (% of working-age population)</td>
+                            <td id="AGE_DEPENDENCY_RATIO_OLD">Age dependency ratio, old (% of working-age population)</td>
+                            <td id="AGE_DEPENDENCY_RATIO_YOUNG">Age dependency ratio, young (% of working-age population)</td>
+                        </tr>
+                    </table>
+                    <table id="economic" style="display: inline-block;">
+                        <tr><th>Economics</th></tr>
+                        <tr>
+                            <td id="MERCHANDISE_EXPORTS">Merchandise exports (current US$)</td>
+                            <td id="MERCHANDISE_IMPORTS">Merchandise imports (current US$)</td>
+                            <td id="EXPORTS_OF_GOODS_AND_SERVICES">Exports of goods and services (current US$)</td>
+                            <td id="IMPORTS_OF_GOODS_AND_SERVICES">Imports of goods and services (current US$)</td>
+                            <td id="GDP_PER_CAPITA">GDP per capita (current US$)</td>
+                            <td id="NET_OFFICIAL_DEVELOPMENT_ASSISTANCE_AND_OFFICIAL_AID_RECEIVED">Net official development assistance and official aid received (current US$)</td>
+                        </tr>
+                        <tr>
+                            <td id="PERCENTAGE_OF_GDP_MERCHANDISE_TRADE">Merchandise trade (% of GDP) (goods)</td>
+                            <td id="PERCENTAGE_OF_GDP_TRADE">Trade (% of GDP)</td>
+                            <td id="GNI">GNI (current US$)</td>
+                            <td id="GROSS_NATIONAL_EXPENDITURE">Gross national expenditure (current US$)</td>
+                            <td id="INFLATION_GDP_DEFLATOR_ANNUAL_PERCENTAGE">Inflation, GDP deflator (annual %)</td>
+                        </tr>
+                    </table>
+                    <table id="expectancy" style="display: inline-block;">
+                        <tr><th>Life/Death Expectancy Statistics</th></tr>
+                        <tr>
+                            <td id="DEATH_RATE">Death rate, crude (per 1,000 people)</td>
+                            <td id="BIRTH_RATE">Birth rate, crude (per 1,000 people)</td>
+                            <td id="LIFE_EXPECTANCY_TOTAL">Life expectancy at birth, total (years)</td>
+                        </tr>
+                        <tr>
+                            <td id="LIFE_EXPECTANCY_MALE">Life expectancy at birth, male (years)</td>
+                            <td id="LIFE_EXPECTANCY_FEMALE">Life expectancy at birth, female (years)</td>
+                        </tr>
+                    </table>
+                    <table id="education" style="display: inline-block;">
+                        <tr><th>Education</th></tr>
+                        <tr>
+                            <td id="ENROLMENT_IN_PRIMARY_EDUCATION">Enrolment in primary education, both sexes (number)</td>
+                        </tr>
+                        <tr>
+                            <td id="ENROLMENT_IN_SECONDARY_GENERAL">Enrolment in secondary general, both sexes (number)</td>
+                        </tr>
+                    </table>
+                    <table id="expectancy" style="display: inline-block;">
+                        <tr><th>Environmental</th></tr>
+                        <tr>
+                            <td id="AGRICULTURAL_LAND_PERCENT_OF_LAND_AREA">Agricultural land (% of land area)</td>
+                        </tr>
+                        <tr>
+                            <td id="CO2_EMISSIONS_METRIC_TON_PER_CAPITA">CO2 emissions (metric tons per capita)</td>
+                        </tr>
+                    </table>
+                    <table id="other" style="display: inline-block;">
+                        <tr><th>Other</th></tr>
+                        <tr>
+                            <td id="MOBILE_CELLULAR_SUBSCRIPTIONS">Mobile cellular subscriptions</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
             <div class="col" id="right-col">
                 <div class="select-container" id="select-comparison">
@@ -57,7 +129,7 @@
     <script src="js/geoMap.js"></script>
     <script src="js/barChart.js"></script>
     <script src="js/lineChart.js"></script>
-    <script src="js/wedgeIcon.js"></script>
+    <script src="js/wedgeView.js"></script>
     <script src="js/yearSlider.js"></script>
     <script src="js/main.js"></script>
 </body>

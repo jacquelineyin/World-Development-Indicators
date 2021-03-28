@@ -1,5 +1,5 @@
 // Global objects
-let barChart, yearSlider, lineChart, data, filteredData;
+let barChart, yearSlider, lineChart, data, filteredData, wedgeView;
 
 // Initialize constants and global variables
 const indicators = new Indicators();
@@ -7,7 +7,6 @@ const selected = new Selected();
 
 // Initialize dispatcher that is used to orchestrate events
 const dispatcher = d3.dispatch('filterYear');
-
 
 /**
  * Load data from CSV file asynchronously and render charts
@@ -31,6 +30,10 @@ d3.csv('data/Dataset.csv').then(_data => {
     map = new GeoMap(data, geoJsonData, selected);
     map.updateVis();
   });
+
+  // Initialize the wedge view
+  wedgeView = new WedgeView(data, selected);
+  wedgeView.updateVis();
 
   // Initialize bar chart
   barChart = new BarChart({
