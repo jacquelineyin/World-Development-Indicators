@@ -314,7 +314,6 @@ class RegionMapper {
             "Uzbekistan",
             "Vietnam",
             "Yemen, Rep."
-
         ]
         this.EUROPE = [
             "Albania",
@@ -437,6 +436,12 @@ class RegionMapper {
         ]
     }
 
+    /**
+     * Purpose: Returns an array of Country names 
+     *          that are located within given region
+     * @param {string} region : name of region
+     * @returns {Array} of strings
+     */
     getCountriesOfRegion(region) {
         let key = region.toUpperCase();
         key = key.replace(" ", "_");

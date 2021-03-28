@@ -60,7 +60,7 @@ class FocusAreaWidget {
   /**
    * Purpose: Creates and appends an option 
    *          to given select elem for each country in countryList
-   * @param {Arrau} countryList of strings representing countries
+   * @param {Array} countryList of strings representing countries
    * @param {Object} select is DOM object of element type "select" 
    *                        to which we will attach our options
    */
