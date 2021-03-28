@@ -124,7 +124,7 @@ let handleSelectRegion = (_region) => {
  */
 let setTestSelectedItems = () => {
   // test value timeInterval
-  const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,5)
+  const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,6);
   selected.selectedYears = defaultYears;
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
 
