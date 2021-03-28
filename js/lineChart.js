@@ -90,6 +90,8 @@ class LineChart {
       .attr('x', 10)
       .attr('dy', '.71em')
       .text('Total ' + vis.selected.indicator);
+    
+    vis.updateVis();
   }
 
   /**
@@ -101,10 +103,10 @@ class LineChart {
     const selectedCountries = vis.selected.allSelectedAreas;
     const selectedIndicator = vis.selected.indicator;
     const selectedYears = vis.selected.selectedYears;
-    const filteredSelectedData = vis.data.filter(d => d.IndicatorName == selectedIndicator
+    const filteredSelectedData = vis.data.filter(d => d.IndicatorName === selectedIndicator
       && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
 
-    // group data by country
+      // group data by country
     const countryGroups = d3.groups(filteredSelectedData, d => d.CountryName);
 
     // re-arrange data
@@ -120,13 +122,15 @@ class LineChart {
     // Specificy x- and y-accessor functions
     vis.xValue = d => d.year;
     vis.yValue = d => d.value;
+    vis.colorValue = d => d.countryName;
 
     // Initialize line generator
     vis.line = d3.line()
       .x(d => vis.xScale(d.year))
       .y(d => vis.yScale(d.value));
 
-    // Set the scale input domains
+      // Set the scale input domains
+    vis.colorScale.domain(vis.selected.allSelectedAreas);
     vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
     vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
 
@@ -135,7 +139,6 @@ class LineChart {
 
   renderVis() {
     let vis = this;
-
     const legend = vis.legends.selectAll('g')
       .data(vis.formattedData, d => d.values)
       .join('g')
@@ -148,7 +151,13 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 85)
       .attr('width', 10)
       .attr('height', 10)
-      .style('fill', (d, i) => vis.colorScale(i));
+      .style('fill', (d, i) => {
+        if(d.countryName === vis.selected.area.country) {
+          return 'gold'
+      } else {
+        return vis.colorScale(i);
+      }
+    });
 
     legend.append('text')
       .attr('x', (d, i) => (i * 100) + 165)
@@ -175,13 +184,25 @@ class LineChart {
     country.append('path')
       .attr('class', 'line')
       .attr('d', (d) => vis.line(d.values))
-      .style('stroke', (d, i) => vis.colorScale(i));
+      .style('stroke', (d, i) => {
+        if(d.countryName === vis.selected.area.country) {
+          return 'gold'
+      } else {
+        return vis.colorScale(i);
+      }
+    });
 
     country.selectAll('circle-group')
       .data(vis.formattedData, d => d.values)
       .join('g')
       .attr('class', 'circle-group')
-      .style('fill', (d, i) => vis.colorScale(i))
+      .style('fill', (d, i) => {
+        if(d.countryName === vis.selected.area.country) {
+          return 'gold'
+      } else {
+        return vis.colorScale(i);
+      }
+    })
       .selectAll('circle')
       .data(d => d.values)
       .join('g')
@@ -209,7 +230,13 @@ class LineChart {
 
     mousePerLine.append('circle')
       .attr('r', 7)
-      .style('stroke', (d, i) => vis.colorScale(i))
+      .style('stroke', (d, i) => {
+        if(d.countryName === vis.selected.area.country) {
+          return 'gold'
+      } else {
+        return vis.colorScale(i);
+      }
+    })
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('opacity', '0');
