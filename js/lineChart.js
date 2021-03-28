@@ -202,8 +202,6 @@ class LineChart {
       .style('stroke-width', '1px')
       .style('opacity', '0');
 
-    const lines = document.getElementsByClassName('line');
-
     const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
       .data(vis.formattedData, d => d.values)
       .join('g')
@@ -247,57 +245,42 @@ class LineChart {
       })
       .on('mousemove', function (event) { // mouse moving over canvas
         const mouse = d3.pointer(event, this)[0];
-        d3.select('.mouse-line')
-          .attr('d', () => {
-            let d = 'M' + mouse + ',' + vis.height;
-            d += ' ' + mouse + ',' + 0;
-            return d;
-          });
-
         const formatNumbers = d3.format(',')
 
         d3.selectAll('.mouse-per-line')
           .attr('transform', function (d, i) {
-            let beginning = 0;
-            let end = lines[i].getTotalLength();
-            let target = null;
-
-            while (true) {
-              target = Math.floor((beginning + end) / 2);
-              var pos = lines[i].getPointAtLength(target);
-              if ((target === end || target === beginning) && pos.x !== mouse) {
-                break;
-              }
-              if (pos.x > mouse) end = target;
-              else if (pos.x < mouse) beginning = target;
-              else break; //position found
-            }
+            const xDate = vis.xScale.invert(mouse);
+            const bisect = d3.bisector(d => d.year).left;
+            const idx = bisect(d.values, xDate);
 
             d3.select(this).select('text')
-              .text(formatNumbers(vis.yScale.invert(pos.y).toFixed(0)));
+              .text(formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
 
-            return `translate(${mouse},${pos.y})`;
+            d3.select('.mouse-line')
+              .attr('d', function () {
+                var data = 'M' + vis.xScale(d.values[idx].year) + ',' + vis.height;
+                data += ' ' + vis.xScale(d.values[idx].year) + ',' + 0;
+                return data;
+              });
+
+            return `translate(${vis.xScale(d.values[idx].year)},${vis.yScale(d.values[idx].value)})`;
           });
 
         d3.selectAll('.value')
           .attr('transform', function (d, i) {
-            let beginning = 0;
-            let end = lines[i].getTotalLength();
-            let target = null;
-
-            while (true) {
-              target = Math.floor((beginning + end) / 2);
-              var pos = lines[i].getPointAtLength(target);
-              if ((target === end || target === beginning) && pos.x !== mouse) {
-                break;
-              }
-              if (pos.x > mouse) end = target;
-              else if (pos.x < mouse) beginning = target;
-              else break; //position found
-            }
+            const xDate = vis.xScale.invert(mouse);
+            const bisect = d3.bisector(d => d.year).left;
+            const idx = bisect(d.values, xDate);
 
             d3.select(this).select('text')
-              .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(pos.y).toFixed(0)));
+              .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
+
+            d3.select('.mouse-line')
+              .attr('d', function () {
+                var data = 'M' + vis.xScale(d.values[idx].year) + ',' + vis.height;
+                data += ' ' + vis.xScale(d.values[idx].year) + ',' + 0;
+                return data;
+              });
           });
       });
 
