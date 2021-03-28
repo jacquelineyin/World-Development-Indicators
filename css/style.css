@@ -62,6 +62,10 @@
   transform: translate(10px, -65px);
 }
 
+#wedges { 
+  display: flex;
+}
+
 table { 
   border: 2px solid rgb(200, 200, 200);
   border-radius: 5px;
