@@ -149,6 +149,7 @@ class LineChart {
 
   renderVis() {
     let vis = this;
+    
     vis.legend.selectAll('.legend-box')
       .data(vis.formattedData, d => d.values)
       .join('rect')

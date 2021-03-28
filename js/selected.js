@@ -14,6 +14,7 @@
     constructor(selectedArea, selectedComparisonAreas, selectedIndicator, selectedTimeInterval) {
         
         this.availableIndicators = new Indicators();
+        this.regionMapper = new RegionMapper();
         this.area = selectedArea ? selectedArea : {region: "World", country: ""};
         this.comparisonAreas = selectedComparisonAreas ? selectedComparisonAreas : [];
         this.indicator = selectedIndicator ? selectedIndicator : this.availableIndicators.POPULATION_TOTAL;
@@ -87,14 +88,26 @@
      * @param {Object} area = {region: "", country: ""} 
      */
     setArea({region, country}) {
-        this.area.region = !!!region ? this.area.region : region;
-        this.area.country = !!!country ? this.area.country : country;
+        this.area.region = !region ? this.area.region : region;
+        this.setCountry(country);
 
         // If area was previously in Comparison list, remove
         this.updateComparisonArea({region, country})
 
         //update allSelectedAreas
         this.updateAllSelectedAreas(this.area, this.comparisonAreas);
+    }
+
+    /**
+     * Purpose: Adds country as selected area if given country is in currently selected region
+     * @param {String} country : Name of country to add as selected (First letter capitalized)
+     */
+    setCountry(country) {
+        let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
+
+        if (country && countriesInSelectedRegion.includes(country)) {
+            this.area.country = country;
+        }
     }
 
     /**
