@@ -137,24 +137,24 @@ class LineChart {
     let vis = this;
 
     vis.legend.selectAll('.legend-box')
-    .data(vis.formattedData, d => d.values)
-    .join('rect')
-    .attr('class', 'legend-box')
-    .attr('x', (d, i) => {
-      return (i * 100) + 150;
-    })
-    .attr('y', vis.config.containerHeight - 85)
-    .attr('width', 10)
-    .attr('height', 10)
-    .style('fill', (d, i) => vis.colorScale(i));
+      .data(vis.formattedData, d => d.values)
+      .join('rect')
+      .attr('class', 'legend-box')
+      .attr('x', (d, i) => {
+        return (i * 100) + 150;
+      })
+      .attr('y', vis.config.containerHeight - 85)
+      .attr('width', 10)
+      .attr('height', 10)
+      .style('fill', (d, i) => vis.colorScale(i));
 
     vis.legend.selectAll('.box-label')
-    .data(vis.formattedData, d => d.values)
-    .join('text')
-    .attr('class', 'box-label')
-    .attr('x', (d, i) => (i * 100) + 165)
-    .attr('y', vis.config.containerHeight - 75)
-    .text(d => d.countryName);
+      .data(vis.formattedData, d => d.values)
+      .join('text')
+      .attr('class', 'box-label')
+      .attr('x', (d, i) => (i * 100) + 165)
+      .attr('y', vis.config.containerHeight - 75)
+      .text(d => d.countryName);
 
     const compareValues = vis.values.selectAll('g')
       .data(vis.formattedData, d => d.values)
