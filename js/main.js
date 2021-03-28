@@ -76,6 +76,7 @@ dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
   selected.selectedYears = selectedYears;
   selected.setTimeInterval(selectedYears[0], selectedYears[selectedYears.length-1]);
 
+  map.updateVis();
   lineChart.updateVis();
   barChart.updateVis();
 })
