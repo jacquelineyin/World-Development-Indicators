@@ -1,4 +1,14 @@
+/** 
+ * Class to create Country selection dropdown + Region radio buttons
+ * */
 class FocusAreaWidget {
+    /**
+     * Class constructor
+     * @param {string} _parentId : id of parent elem to which we will attach new nodes
+     * @param {Selected} _selected 
+     * @param {Object} _constants = {regionMapper, countries, regions, dispatcherEvents}
+     * @param {Object} _dispatcher : d3 dispatcher
+     */
     constructor(_parentId, _selected, _constants, _dispatcher) {
         this.parentElement = document.getElementById(_parentId);
         this.selected = _selected;
