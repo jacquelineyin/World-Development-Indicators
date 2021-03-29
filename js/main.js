@@ -18,7 +18,6 @@ const dispatcher = d3.dispatch(
   );
 
 const focusedAreaWidget = new FocusAreaWidget(
-  "country-selector-container", 
   selected, 
   {  
     regionMapper, 
