@@ -113,8 +113,7 @@ class ComparisonWidget {
             xButton.innerHTML = '&times;';
             xButton.value = chip.value;
             xButton.addEventListener('click', e => {
-                console.log(e.target.value);
-                this.removeTag(e.target.value);
+                this.dispatcher.call(this.dispatcherEvents.DELETE_COMPARISON_ITEM, e, e.target.value);
             });
 
             chip.appendChild(xButton);
@@ -122,17 +121,6 @@ class ComparisonWidget {
 
 
         parent.appendChild(chip);
-    }
-
-    removeTag(country) {
-        let parent = document.getElementById('tag-container');
-        
-        // get tag to remove
-        let lowercase = country.toLowerCase();
-        let id = `tag-${lowercase}`;
-        let tagToRemove = document.getElementById(id);
-
-        parent.removeChild(tagToRemove);
     }
 
     clearChildNodes(parentNode) {

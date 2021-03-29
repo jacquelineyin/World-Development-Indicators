@@ -14,7 +14,8 @@ const parseTime = d3.timeParse("%Y");
 const dispatcher = d3.dispatch(
   dispatcherEvents.FILTER_YEAR, 
   dispatcherEvents.SELECT_FOCUS_AREA,
-  dispatcherEvents.SELECT_COMPARISON_ITEM
+  dispatcherEvents.SELECT_COMPARISON_ITEM,
+  dispatcherEvents.DELETE_COMPARISON_ITEM
   );
 
 const focusedAreaWidget = new FocusAreaWidget(
@@ -100,6 +101,15 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   barChart.updateVis();
   lineChart.updateVis();
 }) 
+
+dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
+  selected.removeComparisonArea(comparisonItem);
+  comparisonWidget.updateTags();
+
+  map.updateVis();
+  barChart.updateVis();
+  lineChart.updateVis();
+})
 
 // ----------------- Helpers -------------------- //
 
