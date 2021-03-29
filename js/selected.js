@@ -52,9 +52,10 @@
      */
     removeComparisonArea(countryOrRegion) {
         let index = this.comparisonAreas.indexOf(countryOrRegion);
+    
         if (index > -1) {
             // Remove from list
-            this.comparisonAreas.splice(index);
+            this.comparisonAreas.splice(index, 1);
             
             //update allSelectedAreas
             this.updateAllSelectedAreas(this.area, this.comparisonAreas);
