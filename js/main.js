@@ -1,5 +1,5 @@
 // Global objects
-let barChart, yearSlider, lineChart, data, filteredData;
+let barChart, yearSlider, lineChart, data, filteredData, wedgeView;
 
 // Initialize global constants
 const indicators = new Indicators();
@@ -54,6 +54,10 @@ d3.csv('data/Dataset.csv').then(_data => {
     map.updateVis();
   });
 
+  // Initialize the wedge view
+  wedgeView = new WedgeView(data, selected);
+  wedgeView.updateVis();
+
   // Initialize bar chart
   barChart = new BarChart({
     parentElement: '#barchart'
@@ -76,6 +80,7 @@ dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
   selected.setTimeInterval(selectedYears[0], selectedYears[selectedYears.length-1]);
 
   map.updateVis();
+  wedgeView.updateVis();
   lineChart.updateVis();
   barChart.updateVis();
 })
@@ -83,6 +88,7 @@ dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
 dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   updateSelectedArea(type, value);
 
+  wedgeView.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
 }) 
