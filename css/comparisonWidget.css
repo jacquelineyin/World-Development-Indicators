@@ -4,7 +4,36 @@
 }
 
 #comparison-submit-button {
+    margin-left: 10px;
+    font-size: 0.9em;
+    width: 6em;
+    border-radius: 5px;
+    border: thin solid black;
+}
+
+#tag-container {
+    margin-left: 30px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.tag {
+    display: inline-block;
+    margin-right: 5px;
+    padding: 0 5px;
     font-size: 0.8em;
+    width: max-content;
+    border-radius: 25px;
+    background-color: lightgray;
+    cursor: default;
+}
+
+.close-button {
+    padding-left: 5px;
+    color: #888;
+    font-weight: bold;
+    float: right;
+    cursor: pointer;
 }
 
 /* -------------------  Bigger Screens -----------------------*/
