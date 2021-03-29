@@ -6,7 +6,7 @@ class WedgeView {
       this.initVis();
     }
   
-    // Create SVG area, initialize scales and axes
+    // Initialize drawing space for each wedge, plus pie and arc generators
     initVis() {
       this.wedgeWidth = 50;
       this.wedgeHeight = 50;
@@ -37,7 +37,7 @@ class WedgeView {
         .outerRadius(20);
     }
   
-    // Prepare data and scales
+    // Prepare data, render
     updateVis() {
       // Each wedge (indicator) needs three pieces of data from the subset of data within the range of selected years
       // 1. maximum value for that indicator (maxDataMap)
@@ -53,13 +53,13 @@ class WedgeView {
       this.renderVis();
     }
   
-    // Bind data to visual elements, update axes
+    // Loop through all indicators, rendering wedges for each
+    // If no data is available, render nothing
     renderVis() {
-
       Object.keys(this.indicators).forEach(d => {
-        var max = this.maxDataMap.get(this.indicators[d]);
-        var countryAvg = this.countryDataMap.get(this.indicators[d]);
-        var worldAvg = this.worldDataMap.get(this.indicators[d]);
+        const max = this.maxDataMap.get(this.indicators[d]);
+        const countryAvg = this.countryDataMap.get(this.indicators[d]);
+        const worldAvg = this.worldDataMap.get(this.indicators[d]);
         
         // Country
         if (max && countryAvg) {
