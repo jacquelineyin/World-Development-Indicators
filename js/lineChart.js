@@ -75,11 +75,17 @@ class LineChart {
     vis.countries = vis.lines.append('g')
       .attr('class', 'countries');
 
-    vis.legends = vis.chart.append('g')
+    vis.legend = vis.chart.append('g')
       .attr('class', 'legend');
 
     vis.values = vis.chart.append('g')
-      .attr('class', 'values')
+      .attr('class', 'values');
+
+    vis.yearValue = vis.svg.append('text')
+      .attr('class', 'yearValue')
+      .attr('y', 20)
+      .attr('x', vis.width + 180)
+      .attr('dy', '.71em');
 
     vis.mouseG = vis.lines.append('g')
       .attr('class', 'mouse-over-effects');
@@ -90,6 +96,8 @@ class LineChart {
       .attr('x', 10)
       .attr('dy', '.71em')
       .text('Total ' + vis.selected.indicator);
+
+      vis.updateVis();
   }
 
   /**
@@ -97,11 +105,10 @@ class LineChart {
    */
   updateVis() {
     let vis = this;
-
     const selectedCountries = vis.selected.allSelectedAreas;
     const selectedIndicator = vis.selected.indicator;
     const selectedYears = vis.selected.selectedYears;
-    const filteredSelectedData = vis.data.filter(d => d.IndicatorName == selectedIndicator
+    const filteredSelectedData = vis.data.filter(d => d.IndicatorName === selectedIndicator
       && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
 
     // group data by country
@@ -109,17 +116,23 @@ class LineChart {
 
     // re-arrange data
     vis.formattedData = [];
+
     countryGroups.forEach(g => {
       const obj = {
         countryName: g[0],
         values: g[1]
       }
-      vis.formattedData.push(obj);
-    })
+      if (obj.countryName === vis.selected.area.country) {
+        vis.formattedData.unshift(obj);
+      } else {
+        vis.formattedData.push(obj);
+      }
+    });
 
     // Specificy x- and y-accessor functions
     vis.xValue = d => d.year;
     vis.yValue = d => d.value;
+    vis.colorValue = d => d.countryName;
 
     // Initialize line generator
     vis.line = d3.line()
@@ -127,6 +140,7 @@ class LineChart {
       .y(d => vis.yScale(d.value));
 
     // Set the scale input domains
+    vis.colorScale.domain(vis.selected.allSelectedAreas);
     vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
     vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
 
@@ -135,23 +149,29 @@ class LineChart {
 
   renderVis() {
     let vis = this;
-
-    const legend = vis.legends.selectAll('g')
+    
+    vis.legend.selectAll('.legend-box')
       .data(vis.formattedData, d => d.values)
-      .join('g')
-      .attr('class', 'legend');
-
-    legend.append('rect')
+      .join('rect')
+      .attr('class', 'legend-box')
       .attr('x', (d, i) => {
-        return (i * 100) + 150;
+        return (i * 200) + 10;
       })
       .attr('y', vis.config.containerHeight - 85)
       .attr('width', 10)
       .attr('height', 10)
-      .style('fill', (d, i) => vis.colorScale(i));
+      .style('fill', (d, i) => {
+        if(d.countryName === vis.selected.area.country) {
+          return 'gold'
+      } else {
+        return vis.colorScale(i);
+      }});
 
-    legend.append('text')
-      .attr('x', (d, i) => (i * 100) + 165)
+    vis.legend.selectAll('.box-label')
+      .data(vis.formattedData, d => d.values)
+      .join('text')
+      .attr('class', 'box-label')
+      .attr('x', (d, i) => (i * 200) + 25)
       .attr('y', vis.config.containerHeight - 75)
       .text(d => d.countryName);
 
@@ -161,35 +181,24 @@ class LineChart {
       .attr('class', 'value');
 
     compareValues.append('text')
-      .attr('x', vis.width + 120)
+      .attr('x', vis.width + 130)
       .attr('y', (d, i) => {
         return (i * 20) + 5
       });
 
     // Add line path
-    const country = vis.countries.selectAll('.country')
+    vis.countries.selectAll('.line')
       .data(vis.formattedData, d => d.values)
-      .join('g')
-      .attr('class', 'country');
-
-    country.append('path')
+      .attr('class', d => d.countryName)
+      .join('path')
       .attr('class', 'line')
       .attr('d', (d) => vis.line(d.values))
-      .style('stroke', (d, i) => vis.colorScale(i));
-
-    country.selectAll('circle-group')
-      .data(vis.formattedData, d => d.values)
-      .join('g')
-      .attr('class', 'circle-group')
-      .style('fill', (d, i) => vis.colorScale(i))
-      .selectAll('circle')
-      .data(d => d.values)
-      .join('g')
-      .attr('class', 'circle')
-      .append('circle')
-      .attr('r', 3)
-      .attr('cx', d => vis.xScale(d.year))
-      .attr('cy', d => vis.yScale(d.value));
+      .style('stroke', (d, i) => {
+        if(d.countryName === vis.selected.area.country) {
+          return 'gold'
+      } else {
+        return vis.colorScale(i);
+      }});
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
@@ -202,8 +211,6 @@ class LineChart {
       .style('stroke-width', '1px')
       .style('opacity', '0');
 
-    const lines = document.getElementsByClassName('line');
-
     const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
       .data(vis.formattedData, d => d.values)
       .join('g')
@@ -211,7 +218,12 @@ class LineChart {
 
     mousePerLine.append('circle')
       .attr('r', 7)
-      .style('stroke', (d, i) => vis.colorScale(i))
+      .style('stroke', (d, i) => {
+        if(d.countryName === vis.selected.area.country) {
+          return 'gold'
+      } else {
+        return vis.colorScale(i);
+      }})
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('opacity', '0');
@@ -234,6 +246,8 @@ class LineChart {
           .style('opacity', '0');
         d3.selectAll('.value')
           .style('opacity', '0');
+        d3.select('.yearValue')
+          .style('opacity', '0');
       })
       .on('mouseover', () => { // on mouse in show line, circles and text
         d3.select('.mouse-line')
@@ -244,60 +258,36 @@ class LineChart {
           .style('opacity', '1');
         d3.selectAll('.value')
           .style('opacity', '1');
+        d3.select('.yearValue')
+          .style('opacity', '1');
       })
       .on('mousemove', function (event) { // mouse moving over canvas
         const mouse = d3.pointer(event, this)[0];
-        d3.select('.mouse-line')
-          .attr('d', () => {
-            let d = 'M' + mouse + ',' + vis.height;
-            d += ' ' + mouse + ',' + 0;
-            return d;
-          });
-
-        const formatNumbers = d3.format(',')
+        const formatNumbers = d3.format(',');
 
         d3.selectAll('.mouse-per-line')
           .attr('transform', function (d, i) {
-            let beginning = 0;
-            let end = lines[i].getTotalLength();
-            let target = null;
-
-            while (true) {
-              target = Math.floor((beginning + end) / 2);
-              var pos = lines[i].getPointAtLength(target);
-              if ((target === end || target === beginning) && pos.x !== mouse) {
-                break;
-              }
-              if (pos.x > mouse) end = target;
-              else if (pos.x < mouse) beginning = target;
-              else break; //position found
-            }
-
+            const xDate = vis.xScale.invert(mouse);
+            const bisect = d3.bisector(d => d.year).left;
+            const idx = bisect(d.values, xDate);
+            const currentYear = d.values[idx].Year;
             d3.select(this).select('text')
-              .text(formatNumbers(vis.yScale.invert(pos.y).toFixed(0)));
+              .text(formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
 
-            return `translate(${mouse},${pos.y})`;
-          });
+            d3.selectAll('.value').select('text')
+              .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
+            
+            d3.select('.yearValue')
+              .text(currentYear);
 
-        d3.selectAll('.value')
-          .attr('transform', function (d, i) {
-            let beginning = 0;
-            let end = lines[i].getTotalLength();
-            let target = null;
+            vis.svg.select('.mouse-line')
+              .attr('d', function () {
+                var data = 'M' + vis.xScale(d.values[idx].year) + ',' + vis.height;
+                data += ' ' + vis.xScale(d.values[idx].year) + ',' + 0;
+                return data;
+              });
 
-            while (true) {
-              target = Math.floor((beginning + end) / 2);
-              var pos = lines[i].getPointAtLength(target);
-              if ((target === end || target === beginning) && pos.x !== mouse) {
-                break;
-              }
-              if (pos.x > mouse) end = target;
-              else if (pos.x < mouse) beginning = target;
-              else break; //position found
-            }
-
-            d3.select(this).select('text')
-              .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(pos.y).toFixed(0)));
+            return `translate(${vis.xScale(d.values[idx].year)},${vis.yScale(d.values[idx].value)})`;
           });
       });
 

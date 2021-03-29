@@ -3,11 +3,13 @@
 
 <head>
     <title>World Development Indicators</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link rel="icon" href="data:;base64,iVBORwOKGO=" />
     <link rel="stylesheet" href="css/leaflet.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/barChart.css">
     <link rel="stylesheet" href="css/lineChart.css">
+    <link rel="stylesheet" href="css/focusAreaWidget.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
 </head>
@@ -123,7 +125,11 @@
     <script src="js/d3.v6.min.js"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
     <script src="js/leaflet.js"></script>
-    <script src="js/indicators.js"></script>
+    <script src="js/constants/indicators.js"></script>
+    <script src="js/constants/regions.js"></script>
+    <script src="js/constants/countries.js"></script>
+    <script src="js/constants/dispatcherEvents.js"></script>
+    <script src="js/regionMapper.js"></script>
     <script src="js/selected.js"></script>
     <script src="js/topojson.v3.js"></script>
     <script src="js/geoMap.js"></script>
@@ -131,6 +137,7 @@
     <script src="js/lineChart.js"></script>
     <script src="js/wedgeView.js"></script>
     <script src="js/yearSlider.js"></script>
+    <script src="js/widgets/focusAreaWidget.js"></script>
     <script src="js/main.js"></script>
 </body>
 
