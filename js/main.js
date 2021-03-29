@@ -109,7 +109,6 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
 
 dispatcher.on(dispatcherEvents.SELECT_COMPARISON_ITEM, comparisonItem => {
   selected.addComparisonArea(comparisonItem);
-  console.log(selected.allSelectedAreas);
   comparisonWidget.updateTags();
 
   map.updateVis();
