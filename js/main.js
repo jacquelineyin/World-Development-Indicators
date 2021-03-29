@@ -29,6 +29,17 @@ const focusedAreaWidget = new FocusAreaWidget(
   dispatcher,
   );
 
+  const comparisonWidget = new ComparisonWidget(
+    selected,
+    { 
+      regionMapper, 
+      countries, 
+      regions, 
+      dispatcherEvents 
+    },
+    dispatcher,
+  );
+
 /**
  * Load data from CSV file asynchronously and render charts
  */
@@ -47,7 +58,8 @@ d3.csv('data/Dataset.csv').then(_data => {
   
   // Initialize select country/region for focused area
   focusedAreaWidget.createSelectFocusArea();
-
+  comparisonWidget.createComparisonSection();
+  
   //Initialize views
   // Load in GeoJSON data and initialize map view
   d3.json("./data/countries.geojson").then(geoJsonData => { 
