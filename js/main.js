@@ -102,6 +102,16 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   lineChart.updateVis();
 }) 
 
+dispatcher.on(dispatcherEvents.SELECT_COMPARISON_ITEM, comparisonItem => {
+  selected.addComparisonArea(comparisonItem);
+  console.log(selected.allSelectedAreas);
+  comparisonWidget.updateTags();
+
+  map.updateVis();
+  barChart.updateVis();
+  lineChart.updateVis();
+})
+
 dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
   selected.removeComparisonArea(comparisonItem);
   comparisonWidget.updateTags();

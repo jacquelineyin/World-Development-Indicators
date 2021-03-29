@@ -62,12 +62,29 @@ class ComparisonWidget {
         submitButton.className = 'button';
         submitButton.name = 'comparison-submit-button';
         submitButton.id = submitButton.name;
+        submitButton.addEventListener('click', e => this.handleSubmitInput(e))
 
         div.appendChild(input);
         div.appendChild(submitButton);
 
         parent.appendChild(div);
 
+    }
+
+    handleSubmitInput(event) {
+        let inputValue = this.getInputValue();
+        this.dispatcher.call(this.dispatcherEvents.SELECT_COMPARISON_ITEM, event, inputValue);
+        this.clearInputValue();
+    }
+
+    getInputValue() {
+        let input = document.getElementById('comparison-input');
+        return input.value;
+    }
+
+    clearInputValue() {
+        let input = document.getElementById('comparison-input');
+        input.value = '';
     }
 
     updateWarningSection() {
@@ -108,19 +125,22 @@ class ComparisonWidget {
 
         if (!isFocusedArea) {
             // Create delete button for tag
-            let xButton = document.createElement('span');
-            xButton.className = 'close-button';
-            xButton.innerHTML = '&times;';
-            xButton.value = chip.value;
-            xButton.addEventListener('click', e => {
-                this.dispatcher.call(this.dispatcherEvents.DELETE_COMPARISON_ITEM, e, e.target.value);
-            });
-
-            chip.appendChild(xButton);
+            this.createDeleteForTag(chip);
         }
 
-
         parent.appendChild(chip);
+    }
+
+    createDeleteForTag(chip) {
+        let xButton = document.createElement('span');
+        xButton.className = 'close-button';
+        xButton.innerHTML = '&times;';
+        xButton.value = chip.value;
+        xButton.addEventListener('click', e => {
+            this.dispatcher.call(this.dispatcherEvents.DELETE_COMPARISON_ITEM, e, e.target.value);
+        });
+
+        chip.appendChild(xButton);
     }
 
     clearChildNodes(parentNode) {
