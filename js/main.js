@@ -58,7 +58,7 @@ d3.csv('data/Dataset.csv').then(_data => {
   // Initialize select country/region for focused area
   focusedAreaWidget.createSelectFocusArea();
   comparisonWidget.createComparisonSection();
-  
+
   //Initialize views
   // Load in GeoJSON data and initialize map view
   d3.json("./data/countries.geojson").then(geoJsonData => { 
@@ -94,6 +94,8 @@ dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
 
 dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   updateSelectedArea(type, value);
+
+  comparisonWidget.updateTags();
 
   barChart.updateVis();
   lineChart.updateVis();
