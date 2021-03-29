@@ -20,8 +20,8 @@ class ComparisonWidget {
     createComparisonSection() {
         this.createTitleSection();
         this.createInputSection();
-        this.createWarningSection();
-        this.createTagSection();
+
+        this.updateTags();
     }
 
     /**
@@ -70,11 +70,74 @@ class ComparisonWidget {
 
     }
 
-    createWarningSection() {
+    updateWarningSection() {
 
     }
 
-    createTagSection() {
-        let div = document.createElement('div');
+    updateTags() {
+        // Clear previous tags
+        let parent = document.getElementById('tag-container');
+        this.clearChildNodes(parent);
+
+        let {area, comparisonAreas} = this.selected;
+
+        // Create tag for focused country
+        this.createTag(area.country, true);
+
+        // Create tag for each comparison area
+        for (let i = 0; i < comparisonAreas.length; i++) {
+            this.createTag(comparisonAreas[i], false);
+        }
+    }
+
+    /**
+     * 
+     * @param {string} countryOrRegion 
+     */
+    createTag(countryOrRegion, isFocusedArea) {
+        let parent = document.getElementById('tag-container');
+
+        // Create tag
+        let chip = document.createElement('div');
+        chip.className = isFocusedArea ? 
+                                'tag chip tag-focusedArea' : 
+                                'tag chip';
+        chip.innerText = countryOrRegion;
+        chip.value = countryOrRegion;
+        chip.id = `tag-${countryOrRegion.toLowerCase()}`
+
+        if (!isFocusedArea) {
+            // Create delete button for tag
+            let xButton = document.createElement('span');
+            xButton.className = 'close-button';
+            xButton.innerHTML = '&times;';
+            xButton.value = chip.value;
+            xButton.addEventListener('click', e => {
+                console.log(e.target.value);
+                this.removeTag(e.target.value);
+            });
+
+            chip.appendChild(xButton);
+        }
+
+
+        parent.appendChild(chip);
+    }
+
+    removeTag(country) {
+        let parent = document.getElementById('tag-container');
+        
+        // get tag to remove
+        let lowercase = country.toLowerCase();
+        let id = `tag-${lowercase}`;
+        let tagToRemove = document.getElementById(id);
+
+        parent.removeChild(tagToRemove);
+    }
+
+    clearChildNodes(parentNode) {
+        while (parentNode.firstChild) {
+          parentNode.firstChild.remove();
+        }
     }
 }
