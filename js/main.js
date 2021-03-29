@@ -88,6 +88,7 @@ dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
 dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   updateSelectedArea(type, value);
 
+  wedgeView.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
 }) 

@@ -14,7 +14,7 @@ class WedgeView {
       // Add an svg drawing space to each td
       this.indicators = new Indicators(); 
       Object.keys(indicators).forEach(d => {
-        var td = d3.select('#' + d);
+        const td = d3.select('#' + d);
         td.append('svg')
           .attr('width', this.wedgeWidth)
           .attr('height', this.wedgeHeight)
@@ -43,8 +43,9 @@ class WedgeView {
       // 1. maximum value for that indicator (maxDataMap)
       // 2. average value for the selected country (countryDataMap)
       // 3. average value for the world (worldDataMap)
-      var filteredToYearsDataNoWLD = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.CountryCode != "WLD");
-      var filteredCountryData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.CountryName == "Canada");
+      const filteredToYearsDataNoWLD = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.CountryCode != "WLD");
+      const filteredCountryData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.CountryName == selected.area.country);
+      console.log(selected.area.country);
       // https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
       this.maxDataMap = d3.rollup(filteredToYearsDataNoWLD, v => Math.max.apply(Math, v.map((o) => o.Value)), d => d.IndicatorName);
       this.countryDataMap = d3.rollup(filteredCountryData, v => d3.mean(v, i => i.Value), d => d.IndicatorName);
@@ -62,32 +63,29 @@ class WedgeView {
         
         // Country
         if (max && countryAvg) {
-        var countryData = [countryAvg, (max - countryAvg)];
-        console.log(this.pie(countryData));
+        const countryData = [countryAvg, (max - countryAvg)];
         // https://stackoverflow.com/questions/24118919/how-do-i-get-the-index-number-from-the-array-in-d3/24118970
-        d3.select('#' + d + ' svg g')
+        const countryWedges = d3.select('#' + d + ' svg g')
           .selectAll('.c-arc')
-          .data(this.pie(countryData), d => d.data)
-          .join(
-            enter => enter.append('path')
+          .data(this.pie(countryData), d => d.data);
+        countryWedges.enter().append('path')
               .attr('class', 'c-arc')
               .attr('num', d => d.index)
-              .attr('d', this.countryArc),
-          exit => exit.remove())
+              .attr('d', this.countryArc);
+        countryWedges.exit().remove();
         }
 
         // World
         if (max && worldAvg) {
-        var worldData = [worldAvg, (max - worldAvg)];
-        d3.select('#' + d + ' svg g')
+        const worldData = [worldAvg, (max - worldAvg)];
+        const worldWedges = d3.select('#' + d + ' svg g')
           .selectAll('.w-arc')
-          .data(this.pie(worldData), d => d.data)
-          .join(
-            enter => enter.append('path')
+          .data(this.pie(worldData), d => d.data);
+        worldWedges.enter().append('path')
               .attr('class', 'w-arc')
               .attr('num', d => d.index)
-              .attr('d', this.worldArc),
-            exit => exit.remove())
+              .attr('d', this.worldArc);
+        worldWedges.exit().remove();
         }
       });
     }
