@@ -34,7 +34,7 @@
 
 #### Comparison Section
 - [W3School: How To - Autocomplete](https://www.w3schools.com/howto/howto_js_autocomplete.asp)
-- [Slack Overflow: Chrome ignores autocomplete="off"](https://stackoverflow.com/a/32578659)
+- [Slack Overflow: Chrome ignores autocomplete="off"](https://stackoverflow.com/questions/12374442/chrome-ignores-autocomplete-off/32578659#32578659)
 - [W3School: How To - Contact Chips](https://www.w3schools.com/howto/howto_css_contact_chips.asp)
 
 #### Styling
