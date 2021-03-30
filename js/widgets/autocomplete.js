@@ -4,17 +4,18 @@
  */
 class AutocompleteCreator {
 
-    constructor() {
+    constructor(_inputElem, _submitButton) {
         this.keyEventMapper = new KeyEventMapper();
+        this.inputElem = _inputElem;
+        this.submitButton = _submitButton;
     }
 
     /*the autocomplete function takes two arguments,
     the text field element and an array of possible autocompleted values:*/
-    autocomplete(inputElem, submitButton, arr) {
-        let indexOfFocus;
+    autocomplete(arr) {
         let autoCreator = this;
-        autoCreator.inputElem = inputElem;
-        autoCreator.submitButton = submitButton;
+        let {inputElem} = autoCreator;
+        let indexOfFocus;
 
         /*execute a function when someone writes in the text field:*/
         inputElem.addEventListener("input", function(e) {
@@ -30,10 +31,10 @@ class AutocompleteCreator {
             indexOfFocus = -1;
             
             /*create a DIV element that will contain the items (values):*/
-            const itemContainer = autoCreator.createItemContainer(inputElem);
+            const itemContainer = autoCreator.createItemContainer();
 
             /*for each item in the array...*/
-            autoCreator.createItems(arr, autoCreator, val, inputElem, itemContainer);
+            autoCreator.createItems(arr, autoCreator, val, itemContainer);
         });
         
         /*execute a function presses a key on the keyboard:*/
@@ -96,20 +97,21 @@ class AutocompleteCreator {
         this.closeAllLists();
     }
 
-    closeAllLists(clickedElem, isEsc) {
+    closeAllLists(clickedElem) {
         /*close all autocomplete lists in the document,
         except the one passed as an argument:*/
         let autocompleteItems = document.getElementsByClassName("autocomplete-items");
+
         for (let i = 0; i < autocompleteItems.length; i++) {
-            if (this.isClickOutside(clickedElem, autocompleteItems, i, this.inputElem) || isEsc) {
+            let isClickAutoItem = clickedElem === autocompleteItems[i];
+            let isClickInputElem = clickedElem === this.inputElem;
+
+            if (!isClickAutoItem && !isClickInputElem) {
                 autocompleteItems[i].parentNode.removeChild(autocompleteItems[i]);
             }
         }
     }
 
-    isClickOutside(clickedElem, autocompleteItems, index, inputElem) {
-        return clickedElem !== autocompleteItems[index] && clickedElem !== inputElem;
-    }
 
     /*a function to classify an item as "active":*/
     addActive(items, index) {
@@ -135,18 +137,18 @@ class AutocompleteCreator {
       }
 
 
-    createItems(arr, autoCreator, val, inputElem, closeAllLists, itemContainer) {
+    createItems(arr, autoCreator, val, itemContainer) {
         let index;
         for (index = 0; index < arr.length; index++) {
             /*check if the item starts with the same letters as the text field value:*/
             if (autoCreator.checkIfSameString(arr, index, val)) {
                 /*create a DIV element for each matching element:*/
-                this.createItem(arr, index, val, inputElem, closeAllLists, itemContainer);
+                this.createItem(arr, index, val, itemContainer);
             }
         }
     }
 
-    createItem(arr, index, val, inputElem, itemContainer) {
+    createItem(arr, index, val, itemContainer) {
         let item = document.createElement('div');
         let autoCreator = this;
 
@@ -160,7 +162,7 @@ class AutocompleteCreator {
         /*execute a function when someone clicks on the item value (DIV element):*/
         item.addEventListener("click", function (e) {
             /*insert the value for the autocomplete text field:*/
-            inputElem.value = this.getElementsByTagName("input")[0].value;
+            autoCreator.inputElem.value = this.getElementsByTagName("input")[0].value;
 
             autoCreator.closeAllLists();
         });
@@ -175,13 +177,13 @@ class AutocompleteCreator {
         item.innerHTML += restOfSubstr;
     }
 
-    createItemContainer(inputElem) {
+    createItemContainer() {
         const itemContainer = document.createElement('div');
-        itemContainer.setAttribute("id", inputElem.id + "-autocomplete-list");
+        itemContainer.setAttribute("id", this.inputElem.id + "-autocomplete-list");
         itemContainer.setAttribute("class", "autocomplete-items");
         
         /*append the DIV element as a child of the autocomplete container:*/
-        inputElem.parentNode.appendChild(itemContainer);
+        this.inputElem.parentNode.appendChild(itemContainer);
         return itemContainer;
     }
 

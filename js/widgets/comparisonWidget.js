@@ -15,7 +15,6 @@ class ComparisonWidget {
         this.regions = _constants.regions;
         this.dispatcherEvents = _constants.dispatcherEvents;
         this.dispatcher = _dispatcher;
-        this.autocompleteCreator = new AutocompleteCreator();
     }
 
     createComparisonSection() {
@@ -70,8 +69,10 @@ class ComparisonWidget {
         submitButton.id = submitButton.name;
         submitButton.addEventListener('click', e => this.handleSubmitInput(e))
 
+        const autocompleteCreator = new AutocompleteCreator(input, submitButton);
+
         // Autocomplete dropdown functionality
-        this.autocompleteCreator.autocomplete(input, submitButton, this.regionMapper.getCountriesOfRegion(this.regions.WORLD))
+        autocompleteCreator.autocomplete(this.regionMapper.getCountriesOfRegion(this.regions.WORLD))
 
         autocomplete.appendChild(input);
 
