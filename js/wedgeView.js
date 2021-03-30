@@ -9,6 +9,7 @@ class WedgeView {
     }
   
     // Initialize drawing space for each wedge, plus pie and arc generators
+    // Bind event listeners to each table cell
     initVis() {
       let vis = this; 
 
@@ -66,7 +67,6 @@ class WedgeView {
   
     // Loop through all indicators, rendering wedges for each
     // If no data is available, render nothing
-    // Bind event listener to radio buttons
     renderVis() {
       Object.keys(this.indicators).forEach(d => {
         const max = this.maxDataMap.get(this.indicators[d]);
