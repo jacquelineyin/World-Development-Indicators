@@ -1,5 +1,5 @@
 /**
- * Class to create
+ * Class to create Comparison Country/Region input field + tags
  */
 class ComparisonWidget {
     /**
@@ -17,6 +17,9 @@ class ComparisonWidget {
         this.dispatcher = _dispatcher;
     }
 
+    /**
+     * Purpose: Initailizes or Updates Comparison Country/Region Input field, Submit Button, and tags
+     */
     updateComparisonSection() {
         this.createTitleSection();
         this.createInputSection();
@@ -79,6 +82,10 @@ class ComparisonWidget {
         parent.appendChild(div);
     }
 
+    /**
+     * Purpose: Creates a "submit" button
+     * @returns {Node} : DOM element of tag type 'button'
+     */
     createSubmitButton() {
         let submitButton = document.createElement('button');
         submitButton.innerHTML = 'Submit';
@@ -90,6 +97,10 @@ class ComparisonWidget {
         return submitButton;
     }
 
+    /**
+     * Purpose: Creates an input field with default autocomplete turned off
+     * @returns {Node} : DOM element of type 'input'
+     */
     createInputElem() {
         let input = document.createElement('input');
         input.placeholder = 'Add country to compare...';
@@ -98,6 +109,11 @@ class ComparisonWidget {
         return input;
     }
 
+    /**
+     * Purpose: Adds comparison area to selected and updates view if valid input
+     * TODO: implement warning display
+     * @param {Event} event : Native JS event
+     */
     handleSubmitInput(event) {
         let inputValue = this.getInputValue();
         inputValue = this.capitalizeFirstLetterOnly(inputValue);
@@ -112,20 +128,32 @@ class ComparisonWidget {
         this.clearInputValue();
     }
 
+    /**
+     * Purpose: Retrieves value in input field
+     * @returns {string} : value in text field
+     */
     getInputValue() {
         let input = document.getElementById('comparison-input');
         return input.value;
     }
 
+    /**
+     * Purpose: Clears input field
+     */
     clearInputValue() {
         let input = document.getElementById('comparison-input');
         input.value = '';
     }
 
+    
     updateWarningSection() {
-
+        //TODO
     }
 
+    /**
+     * Purpose: Updates tags to display tags 
+     *          of selected focused area and selected comparison countries
+     */
     updateTags() {
         // Clear previous tags
         let parent = document.getElementById('tag-container');
@@ -143,48 +171,60 @@ class ComparisonWidget {
     }
 
     /**
-     * 
+     * Purpose: Creates individual tag (div element) and appends it to parent
      * @param {string} countryOrRegion 
      */
     createTag(countryOrRegion, isFocusedArea) {
         let parent = document.getElementById('tag-container');
 
         // Create tag
-        let chip = document.createElement('div');
-        chip.className = isFocusedArea ? 
+        let tag = document.createElement('div');
+        tag.className = isFocusedArea ? 
                                 'tag chip tag-focusedArea' : 
                                 'tag chip';
-        chip.innerText = countryOrRegion;
-        chip.value = countryOrRegion;
-        chip.id = `tag-${countryOrRegion.toLowerCase()}`
+        tag.innerText = countryOrRegion;
+        tag.value = countryOrRegion;
+        tag.id = `tag-${countryOrRegion.toLowerCase()}`
 
         if (!isFocusedArea) {
             // Create delete button for tag
-            this.createDeleteForTag(chip);
+            this.createDeleteForTag(tag);
         }
 
-        parent.appendChild(chip);
+        parent.appendChild(tag);
     }
 
-    createDeleteForTag(chip) {
+    /**
+     * Purpose: Creates the "x" (i.e. close) button for each tag item
+     * @param {Node} tag : div element representing a tag
+     */
+    createDeleteForTag(tag) {
         let xButton = document.createElement('span');
         xButton.className = 'close-button';
         xButton.innerHTML = '&times;';
-        xButton.value = chip.value;
+        xButton.value = tag.value;
         xButton.addEventListener('click', e => {
             this.dispatcher.call(this.dispatcherEvents.DELETE_COMPARISON_ITEM, e, e.target.value);
         });
 
-        chip.appendChild(xButton);
+        tag.appendChild(xButton);
     }
 
+    /**
+     * Purpose: Removes all child nodes from given parentNode
+     * @param {Node} parentNode 
+     */
     clearChildNodes(parentNode) {
         while (parentNode.firstChild) {
           parentNode.firstChild.remove();
         }
     }
 
-    // Capitalize first letter
+    /**
+     * Purpose: Capitalizes the first letter of each word in given string
+     * @param {string} str 
+     * @returns {string} formatted string
+     */
     capitalizeFirstLetterOnly(str) {
       let words = str.split(' ');
       let capitalizedWords = [];
