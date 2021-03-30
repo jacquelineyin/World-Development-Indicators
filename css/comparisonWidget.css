@@ -37,7 +37,7 @@
 }
 
 
-/**Credit: */
+/**Autocomplete Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp*/
 .autocomplete {
     position: relative;
     display: inline-block;
