@@ -32,6 +32,10 @@
 - [Multi-line Chart Example](https://codesandbox.io/s/5ylwv650lx)
 - [Tooltip tracking by data points](https://stackoverflow.com/questions/42080051/d3-single-and-multi-line-chart-tooltips)
 
+#### Custom Autocomplete form
+- [How To - Autocomplete](https://www.w3schools.com/howto/howto_js_autocomplete.asp)
+- [Slack Overflow: Chrome ignores autocomplete="off"](https://stackoverflow.com/a/32578659)
+
 #### Styling
 - [A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
 - [A Simple Way to Make D3.js Charts Responsive](https://medium.com/@louisemoxy/a-simple-way-to-make-d3-js-charts-svgs-responsive-7afb04bc2e4b)
