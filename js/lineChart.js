@@ -192,7 +192,7 @@ class LineChart {
       .attr('class', d => d.countryName)
       .join('path')
       .attr('class', 'line')
-      .attr('d', (d) => vis.line(d.values))
+      .attr('d', d => vis.line(d.values))
       .style('stroke', (d, i) => {
         if(d.countryName === vis.selected.area.country) {
           return 'gold'
@@ -270,24 +270,29 @@ class LineChart {
             const xDate = vis.xScale.invert(mouse);
             const bisect = d3.bisector(d => d.year).left;
             const idx = bisect(d.values, xDate);
-            const currentYear = d.values[idx].Year;
-            d3.select(this).select('text')
-              .text(formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
-
-            d3.selectAll('.value').select('text')
-              .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
-            
-            d3.select('.yearValue')
-              .text(currentYear);
-
-            vis.svg.select('.mouse-line')
-              .attr('d', function () {
-                var data = 'M' + vis.xScale(d.values[idx].year) + ',' + vis.height;
-                data += ' ' + vis.xScale(d.values[idx].year) + ',' + 0;
-                return data;
-              });
-
-            return `translate(${vis.xScale(d.values[idx].year)},${vis.yScale(d.values[idx].value)})`;
+            const item = d.values[idx];
+            if (item) {
+              const currentYear = item.Year;
+              d3.select(this).select('text')
+                .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
+  
+              d3.selectAll('.value').select('text')
+                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
+              
+              if (currentYear) {
+                d3.select('.yearValue')
+                  .text(currentYear);
+              }
+  
+              vis.svg.select('.mouse-line')
+                .attr('d', function () {
+                  var data = 'M' + vis.xScale(item.year) + ',' + vis.height;
+                  data += ' ' + vis.xScale(item.year) + ',' + 0;
+                  return data;
+                });
+  
+              return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
+            } return null;
           });
       });
 

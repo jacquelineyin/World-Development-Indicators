@@ -50,7 +50,8 @@ d3.csv('data/Dataset.csv').then(_data => {
   data.forEach(d => {
     /* TODO */
     d.year = parseTime(d.Year);
-    d.value = +d.Value;
+    d.value = d.Value !== 'NULL' ? +d.Value : null;
+    d.Value = d.Value !== 'NULL' ? +d.Value : null;
   });
 
   //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
