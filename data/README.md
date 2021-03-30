@@ -11,6 +11,7 @@
 #### Data Sources
 1. [Kaggle: Indicators.csv](https://www.kaggle.com/worldbank/world-development-indicators?select=Indicators.csv)
 2. [Kaggle: continents2.csv](https://www.kaggle.com/andradaolteanu/country-mapping-iso-continent-region)
+3. [Personally Created Google Sheets: Years](https://docs.google.com/spreadsheets/d/1qVCd1GF66L7wIZHcAGr2FQtYr0I32V1K3377csnTd9k/edit?usp=sharing)
 
 #### Referenced Material
 1. [Create Table And Put Data In SQL Server Using CSV File](https://www.c-sharpcorner.com/article/create-table-and-put-data-in-sql-server-using-csv-file/) by Yogeshkumar Hadiya
@@ -28,6 +29,8 @@
     |   Operating System						     | 10.0.19041         |
 2. Visual Studios Code
     - version: 1.54.2
+3. Google Sheets
+    - version: N/A
   
 
 ## Pre-processing
@@ -94,4 +97,38 @@
     ORDER BY IndicatorName, Year ASC;
     ```
 
-6. We then exported the results to a new `.csv` file. Because the results didn't export the column names, we then opened the newly created file in vscode and manually added the column names. We use this new csv file as our `Dataset.csv` for this project.
+6. We then exported the results to a new `.csv` file. Because the results didn't export the column names, we then opened the newly created file in vscode and manually added the column names. Unfortunately, we realized that we were missing data for some years for some {country, indicator} pairs, thus we continue to refine our data.
+
+7. We import the new results back into MSSM as `DatasetNew` table. Similarily, we create a [new spreadsheet in Google sheets](https://docs.google.com/spreadsheets/d/1qVCd1GF66L7wIZHcAGr2FQtYr0I32V1K3377csnTd9k/edit?usp=sharing) with all years from the minYear (1960) to maxYear (2014) of the Dataset. We import the `Years.csv` into MSSM as its own table `Years`. Finally, we create a new view from the result of doing a full join on our two tables `Years` and `DatasetNew`;
+
+    ```
+    CREATE VIEW temp AS
+    SELECT DISTINCT d.CountryName, d.CountryCode, 
+                    d.IndicatorName, d.IndicatorCode, 
+                    y.Year, d.Region, d.SubRegion
+    from Years y, DatasetNew d;
+   ```
+
+8. We join the new `temp` view with our `DatasetNew` table to create a full dataset with the values of previously missing years set as `'NULL'`. We export the result as `withNulls.csv`. 
+   ```
+   SELECT temp.CountryName, temp.CountryCode, 
+          temp.IndicatorName, temp.IndicatorCode, 
+          temp.Year, d.Value, temp.Region, temp.SubRegion
+   FROM temp
+        LEFT JOIN Dataset d
+        ON  d.CountryName = temp.CountryName
+            AND temp.IndicatorName = d.IndicatorName
+            AND temp.Year = d.Year
+            AND temp.Region = d.Region
+            AND temp.SubRegion = d.SubRegion
+   ORDER BY CountryName, IndicatorName, temp.Year;
+   ```
+
+9. Before we finish and use the new `withNulls.csv` as our data file, we replace `'NULL'` with `NULL` by importing the file as a new table `withNulls` and then running the following SQL script on it:
+   ```
+   UPDATE withNulls
+   SET Value = NULL
+   WHERE Value = 'Null'
+   ```
+
+10. We save the results as our new `Dataset.csv` and use this file in our project
