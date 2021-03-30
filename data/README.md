@@ -121,7 +121,7 @@
             AND temp.Year = d.Year
             AND temp.Region = d.Region
             AND temp.SubRegion = d.SubRegion
-   ORDER BY CountryName, IndicatorName, temp.Year;
+   ORDER BY IndicatorName, temp.Year;
    ```
 
 9. Before we finish and use the new `withNulls.csv` as our data file, we replace `'NULL'` with `NULL` by importing the file as a new table `withNulls` and then running the following SQL script on it:
