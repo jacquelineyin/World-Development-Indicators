@@ -61,10 +61,6 @@ class ComparisonWidget {
         input.autocomplete = 'off';
         input.id = 'comparison-input';
 
-        // Autocomplete dropdown functionality
-        this.autocompleteCreator.autocomplete(input, this.regionMapper.getCountriesOfRegion(this.regions.WORLD))
-
-
         // Create submit button
         let submitButton = document.createElement('button');
         submitButton.innerHTML = 'Submit';
@@ -73,6 +69,9 @@ class ComparisonWidget {
         submitButton.name = 'comparison-submit-button';
         submitButton.id = submitButton.name;
         submitButton.addEventListener('click', e => this.handleSubmitInput(e))
+
+        // Autocomplete dropdown functionality
+        this.autocompleteCreator.autocomplete(input, submitButton, this.regionMapper.getCountriesOfRegion(this.regions.WORLD))
 
         autocomplete.appendChild(input);
 
