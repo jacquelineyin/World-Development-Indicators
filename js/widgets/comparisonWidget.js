@@ -84,7 +84,13 @@ class ComparisonWidget {
 
     handleSubmitInput(event) {
         let inputValue = this.getInputValue();
-        this.dispatcher.call(this.dispatcherEvents.SELECT_COMPARISON_ITEM, event, inputValue);
+        let isCountry = this.regionMapper.getCountriesOfRegion(this.countries.WORLD).includes(inputValue);
+        
+        if (isCountry) {
+            this.dispatcher.call(this.dispatcherEvents.SELECT_COMPARISON_ITEM, event, inputValue);
+        } else {
+            //TODO: show warning
+        }
         this.clearInputValue();
     }
 
