@@ -52,4 +52,5 @@
 1. Filtered dataset `Indicators.csv` of all rows containing irrelevant `IndicatorName` values and created a temporary dataset `Dataset.csv` that held the results
 2. Joined two datasets (`Dataset.csv` and `continents2.csv`)
 3. From the result of the join, removed all rows that assigned anything other than a country to `CountryName` column (unless the value was "World")
-4. **Note:** _For a more detailed breakdown of how we pre-processed our data, please refer to [the `README.md` in ./data](./data/README.md)_
+4. Finally, we populate missing years for {country, indicator} pairs and set the values as `NULL`
+5. **Note:** _For a more detailed breakdown of how we pre-processed our data, please refer to [the `README.md` in ./data](./data/README.md)_
