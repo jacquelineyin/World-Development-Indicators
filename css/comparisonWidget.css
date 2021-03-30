@@ -80,7 +80,5 @@
   .tag-focusedArea {
     background: lightblue;
   }
-/* -------------------  Bigger Screens -----------------------*/
- @media only screen and (min-width: 1677px){
-     /**TODO*/
-  }
+
+  
