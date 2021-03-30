@@ -33,7 +33,7 @@
 /** Map */
 #map { 
   width: 100%;
-  height: 100%;
+  height: 50%;
 }
 
 /** Slider */
@@ -60,28 +60,35 @@
   transform: translate(10px, -65px);
 }
 
+/* Wedges */
+
 #wedges { 
   display: flex;
 }
 
-table { 
+table {
+display: inline-block;
+  text-align: center;
   border: 2px solid rgb(200, 200, 200);
   border-radius: 5px;
 }
 
+th { 
+  font-size: small;
+  text-align: left;
+}
+
 td { 
-  padding: 5px;
-  font-size: x-small;
-  text-align: center;
+  font-size: xx-small;
+}
+
+td[selected='true'] { 
+  font-weight: bold;
 }
 
 td svg { 
   display: block;
   margin: auto;
-}
-
-td svg g path { 
-  fill: none;
 }
 
 .c-arc[num="0"] { 
@@ -93,4 +100,8 @@ td svg g path {
 .w-arc[num="0"] { 
   fill: black;
   opacity: 0.3;
+}
+
+td svg path { 
+  fill: none;
 }
