@@ -51,36 +51,43 @@ class ComparisonWidget {
         div.className = 'container';
 
         // Create autocomplete div
-        let autocomplete = document.createElement('div');
-        autocomplete.className = 'autocomplete';
+        let autocompleteContainer = document.createElement('div');
+        autocompleteContainer.className = 'autocomplete';
         
-        // Create input field
-        let input = document.createElement('input');
-        input.placeholder = 'Add country to compare...';
-        input.autocomplete = 'off';
-        input.id = 'comparison-input';
+        // Create input field & submit button
+        let input = this.createInputElem();
+        let submitButton = this.createSubmitButton();
 
-        // Create submit button
+        autocompleteContainer.appendChild(input);
+
+        // Autocomplete dropdown functionality
+        const autocompleteCreator = new AutocompleteCreator(input, submitButton);
+        autocompleteCreator.autocomplete(this.regionMapper.getCountriesOfRegion(this.regions.WORLD))
+
+
+        div.appendChild(autocompleteContainer);
+        div.appendChild(submitButton);
+
+        parent.appendChild(div);
+    }
+
+    createSubmitButton() {
         let submitButton = document.createElement('button');
         submitButton.innerHTML = 'Submit';
         submitButton.type = 'button';
         submitButton.className = 'button';
         submitButton.name = 'comparison-submit-button';
         submitButton.id = submitButton.name;
-        submitButton.addEventListener('click', e => this.handleSubmitInput(e))
+        submitButton.addEventListener('click', e => this.handleSubmitInput(e));
+        return submitButton;
+    }
 
-        const autocompleteCreator = new AutocompleteCreator(input, submitButton);
-
-        // Autocomplete dropdown functionality
-        autocompleteCreator.autocomplete(this.regionMapper.getCountriesOfRegion(this.regions.WORLD))
-
-        autocomplete.appendChild(input);
-
-        div.appendChild(autocomplete);
-        div.appendChild(submitButton);
-
-        parent.appendChild(div);
-
+    createInputElem() {
+        let input = document.createElement('input');
+        input.placeholder = 'Add country to compare...';
+        input.autocomplete = 'off';
+        input.id = 'comparison-input';
+        return input;
     }
 
     handleSubmitInput(event) {
