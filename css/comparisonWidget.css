@@ -24,7 +24,7 @@
     font-size: 0.8em;
     width: max-content;
     border-radius: 25px;
-    background-color: lightgray;
+    background-color: rgb(175, 246, 175);
     cursor: default;
 }
 
@@ -36,6 +36,8 @@
     cursor: pointer;
 }
 
+
+/**Credit: */
 .autocomplete {
     position: relative;
     display: inline-block;
@@ -73,6 +75,10 @@
 
   #override {
       display: none;
+  }
+
+  .tag-focusedArea {
+    background: lightblue;
   }
 /* -------------------  Bigger Screens -----------------------*/
  @media only screen and (min-width: 1677px){
