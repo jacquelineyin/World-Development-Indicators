@@ -15,7 +15,7 @@
         
         this.availableIndicators = new Indicators();
         this.regionMapper = new RegionMapper();
-        this.area = selectedArea ? selectedArea : {region: "World", country: ""};
+        this.area = selectedArea ? selectedArea : {region: 'World', country: ''};
         this.comparisonAreas = selectedComparisonAreas ? selectedComparisonAreas : [];
         this.indicator = selectedIndicator ? selectedIndicator : this.availableIndicators.POPULATION_TOTAL;
         this.timeInterval = selectedTimeInterval ? selectedTimeInterval : {};
@@ -161,7 +161,7 @@
         region = this.capitalizeFirstLetterOnly(region);
         country = this.capitalizeFirstLetterOnly(country);
  
-        this.allSelectedAreas = country !== "" ? [country, ...comparisonAreas] : [region, ...comparisonAreas];
+        this.allSelectedAreas = country !== '' ? [country, ...comparisonAreas] : [region, ...comparisonAreas];
     }
 
     /**
