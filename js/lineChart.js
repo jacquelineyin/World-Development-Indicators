@@ -75,6 +75,9 @@ class LineChart {
     vis.countries = vis.lines.append('g')
       .attr('class', 'countries');
 
+    vis.circles = vis.lines.append('g')
+      .attr('class', 'circles')
+
     vis.legend = vis.chart.append('g')
       .attr('class', 'legend');
 
@@ -97,7 +100,7 @@ class LineChart {
       .attr('dy', '.71em')
       .text('Total ' + vis.selected.indicator);
 
-      vis.updateVis();
+    vis.updateVis();
   }
 
   /**
@@ -113,7 +116,7 @@ class LineChart {
 
     // group data by country
     const countryGroups = d3.groups(filteredSelectedData, d => d.CountryName);
-
+    console.log(d3.groups(vis.data, d => d.CountryName === 'American Samoa' && d.IndicatorName === 'Mobile cellular subscriptions'));
     // re-arrange data
     vis.formattedData = [];
 
@@ -128,7 +131,7 @@ class LineChart {
         vis.formattedData.push(obj);
       }
     });
-
+    // console.log(vis.formattedData);
     // Specificy x- and y-accessor functions
     vis.xValue = d => d.year;
     vis.yValue = d => d.value;
@@ -149,7 +152,7 @@ class LineChart {
 
   renderVis() {
     let vis = this;
-    
+
     vis.legend.selectAll('.legend-box')
       .data(vis.formattedData, d => d.values)
       .join('rect')
@@ -161,11 +164,12 @@ class LineChart {
       .attr('width', 10)
       .attr('height', 10)
       .style('fill', (d, i) => {
-        if(d.countryName === vis.selected.area.country) {
+        if (d.countryName === vis.selected.area.country) {
           return 'gold'
-      } else {
-        return vis.colorScale(i);
-      }});
+        } else {
+          return vis.colorScale(i);
+        }
+      });
 
     vis.legend.selectAll('.box-label')
       .data(vis.formattedData, d => d.values)
@@ -175,16 +179,10 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 75)
       .text(d => d.countryName);
 
-    const compareValues = vis.values.selectAll('g')
+    vis.values.selectAll('text')
       .data(vis.formattedData, d => d.values)
-      .join('g')
+      .join('text')
       .attr('class', 'value');
-
-    compareValues.append('text')
-      .attr('x', vis.width + 130)
-      .attr('y', (d, i) => {
-        return (i * 20) + 5
-      });
 
     // Add line path
     vis.countries.selectAll('.line')
@@ -194,11 +192,27 @@ class LineChart {
       .attr('class', 'line')
       .attr('d', d => vis.line(d.values))
       .style('stroke', (d, i) => {
-        if(d.countryName === vis.selected.area.country) {
+        if (d.countryName === vis.selected.area.country) {
           return 'gold'
-      } else {
-        return vis.colorScale(i);
-      }});
+        } else {
+          return vis.colorScale(i);
+        }
+      });
+
+    vis.circles.selectAll('circles')
+      .data(vis.formattedData, d => d.values)
+      .join('circle')
+      .style('fill', (d, i) => vis.colorScale(i))
+      .selectAll('circle')
+      .data(d => d.values)
+      .join(
+        update => update.selectAll('circle')
+          .attr('class', 'circle')
+          .append('circle')
+          .attr('r', 3)
+          .attr('cx', d => vis.xScale(d.year))
+          .attr('cy', d => vis.yScale(d.value))
+      );
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
@@ -219,11 +233,12 @@ class LineChart {
     mousePerLine.append('circle')
       .attr('r', 7)
       .style('stroke', (d, i) => {
-        if(d.countryName === vis.selected.area.country) {
+        if (d.countryName === vis.selected.area.country) {
           return 'gold'
-      } else {
-        return vis.colorScale(i);
-      }})
+        } else {
+          return vis.colorScale(i);
+        }
+      })
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('opacity', '0');
@@ -275,24 +290,29 @@ class LineChart {
               const currentYear = item.Year;
               d3.select(this).select('text')
                 .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
-  
-              d3.selectAll('.value').select('text')
-                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
-              
+
+              d3.select('.values').selectAll('.value')
+                .attr('x', vis.width + 130)
+                .attr('y', (d, i) => {
+                  return (i * 20) + 5
+                })
+                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
+
               if (currentYear) {
                 d3.select('.yearValue')
                   .text(currentYear);
               }
-  
+
               vis.svg.select('.mouse-line')
                 .attr('d', function () {
                   var data = 'M' + vis.xScale(item.year) + ',' + vis.height;
                   data += ' ' + vis.xScale(item.year) + ',' + 0;
                   return data;
                 });
-  
+
               return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
-            } return null;
+            }
+            return null;
           });
       });
 
