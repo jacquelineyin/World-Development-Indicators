@@ -17,7 +17,7 @@ class ComparisonWidget {
         this.dispatcher = _dispatcher;
     }
 
-    createComparisonSection() {
+    updateComparisonSection() {
         this.createTitleSection();
         this.createInputSection();
 
@@ -29,9 +29,14 @@ class ComparisonWidget {
      */
     createTitleSection() {
         let parent = document.getElementById('select-comparison');
+
+        // Remove any previous titles
+        let titleElem = document.getElementById('comparison-title');
+        if (titleElem) parent.removeChild(titleElem);
+
         let title = 'Compare ' + this.selected.indicator;
 
-        let titleElem = document.createElement('h6');
+        titleElem = document.createElement('h6');
         titleElem.id = 'comparison-title';
         titleElem.className = 'sub-title';
         titleElem.innerText = title;
@@ -46,6 +51,9 @@ class ComparisonWidget {
     createInputSection() {
         let parent = document.getElementById('comparison-selector-container');
 
+        // Clear previously created inputs
+        this.clearChildNodes(parent);
+
         // Create container div
         let div = document.createElement('div');
         div.className = 'container';
@@ -59,7 +67,7 @@ class ComparisonWidget {
         let submitButton = this.createSubmitButton();
 
         autocompleteContainer.appendChild(input);
-
+        
         // Autocomplete dropdown functionality
         const autocompleteCreator = new AutocompleteCreator(input, submitButton);
         autocompleteCreator.autocomplete(this.regionMapper.getCountriesOfRegion(this.regions.WORLD))
@@ -92,6 +100,8 @@ class ComparisonWidget {
 
     handleSubmitInput(event) {
         let inputValue = this.getInputValue();
+        inputValue = this.capitalizeFirstLetterOnly(inputValue);
+
         let isCountry = this.regionMapper.getCountriesOfRegion(this.countries.WORLD).includes(inputValue);
         
         if (isCountry) {
@@ -172,6 +182,24 @@ class ComparisonWidget {
         while (parentNode.firstChild) {
           parentNode.firstChild.remove();
         }
+    }
+
+    // Capitalize first letter
+    capitalizeFirstLetterOnly(str) {
+      let words = str.split(' ');
+      let capitalizedWords = [];
+      let res = '';
+
+      for (let word of words) {
+          word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+          capitalizedWords.push(word);
+      }
+
+      for (let word of capitalizedWords) {
+        res = res + ' ' + word;
+      }
+
+      return res.trim();
     }
 
 }

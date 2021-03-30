@@ -58,7 +58,7 @@ d3.csv('data/Dataset.csv').then(_data => {
 
   // Initialize select country/region for focused area
   focusedAreaWidget.createSelectFocusArea();
-  comparisonWidget.createComparisonSection();
+  comparisonWidget.updateComparisonSection();
 
   //Initialize views
   // Load in GeoJSON data and initialize map view
@@ -109,6 +109,8 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
 
 dispatcher.on(dispatcherEvents.CHANGE_INDICATOR, newlySelectedIndicator => {
   selected.indicator = indicators[newlySelectedIndicator];
+  comparisonWidget.updateComparisonSection();
+  
   map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
@@ -171,11 +173,6 @@ let setTestSelectedItems = () => {
   const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,6);
   selected.selectedYears = defaultYears;
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
-
-  // test value comparison countries
-  selected.addComparisonArea(countries.CHINA);
-  selected.addComparisonArea(countries.BRAZIL);
-  selected.addComparisonArea(countries.JAPAN);
 
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
