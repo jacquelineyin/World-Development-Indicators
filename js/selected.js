@@ -164,7 +164,11 @@
         this.allSelectedAreas = country !== "" ? [country, ...comparisonAreas] : [region, ...comparisonAreas];
     }
 
-    // Capitalize first letter
+    /**
+     * Purpose: Capitalizes the first letter of each word in given string
+     * @param {string} str 
+     * @returns {string} formatted string
+     */
     capitalizeFirstLetterOnly(str) {
       let words = str.split(' ');
       let capitalizedWords = [];
