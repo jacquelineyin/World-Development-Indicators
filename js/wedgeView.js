@@ -1,13 +1,18 @@
 class WedgeView {
 
-    constructor(_data, _selected) {
+    constructor(_data, _selected, _dispatcher, _dispatcherEvents) {
+      this.dispatcher = _dispatcher;
+      this.dispatcherEvents = _dispatcherEvents;
       this.data = _data;
       this.selected = _selected;
       this.initVis();
     }
   
     // Initialize drawing space for each wedge, plus pie and arc generators
+    // Bind event listeners to each table cell
     initVis() {
+      let vis = this; 
+
       this.wedgeWidth = 50;
       this.wedgeHeight = 50;
       this.margin = 5;
@@ -18,8 +23,16 @@ class WedgeView {
         td.append('svg')
           .attr('width', this.wedgeWidth)
           .attr('height', this.wedgeHeight)
+          .attr('id', d)
           .append('g')
           .attr('transform', `translate(${this.wedgeWidth/2}, ${this.wedgeHeight/2})`);
+        td.on('click', function(event) {
+          d3.select("td[selected='true']")
+            .attr('selected', 'false'); 
+          d3.select('#' + event.target.id)
+            .attr('selected', 'true');
+          vis.dispatcher.call(vis.dispatcherEvents.CHANGE_INDICATOR, this, event.target.id);
+        }); 
       });
 
       // Initialize pie generator
@@ -45,7 +58,6 @@ class WedgeView {
       // 3. average value for the world (worldDataMap)
       const filteredToYearsDataNoWLD = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.CountryCode != "WLD");
       const filteredCountryData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.CountryName == selected.area.country);
-      console.log(selected.area.country);
       // https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
       this.maxDataMap = d3.rollup(filteredToYearsDataNoWLD, v => Math.max.apply(Math, v.map((o) => o.Value)), d => d.IndicatorName);
       this.countryDataMap = d3.rollup(filteredCountryData, v => d3.mean(v, i => i.Value), d => d.IndicatorName);
