@@ -14,6 +14,7 @@ class AutocompleteCreator {
         let indexOfFocus;
         let autoCreator = this;
         autoCreator.inputElem = inputElem;
+        autoCreator.submitButton = submitButton;
 
         /*execute a function when someone writes in the text field:*/
         inputElem.addEventListener("input", function(e) {
@@ -41,15 +42,13 @@ class AutocompleteCreator {
             let items;
 
             if (itemContainer) items = itemContainer.getElementsByTagName("div");
-         
-            // Handle key events & update index as appropriate to event
-            indexOfFocus = autoCreator.handleKeyEvent(e, indexOfFocus, items)
 
+            indexOfFocus = autoCreator.handleKeyEvent(e, indexOfFocus, items)
         });
 
-        /*execute a function when someone clicks in the document:*/
-        document.addEventListener("click", function (e) {
-            autoCreator.closeAllLists(e.target);
+      /*execute a function when someone clicks in the document:*/
+      document.addEventListener("click", function (e) {
+          autoCreator.closeAllLists(e.target);
         });
       }
 
@@ -86,12 +85,15 @@ class AutocompleteCreator {
         if (index > -1 && items) {
             /*and simulate a click on the "active" item:*/
             items[index].click();
+        } else {
+            this.submitButton.click();
+            index = -1;
         }
         return index;
     }
 
     handleEscKey() {
-        this.closeAllLists(null, true);
+        this.closeAllLists();
     }
 
     closeAllLists(clickedElem, isEsc) {
@@ -106,7 +108,7 @@ class AutocompleteCreator {
     }
 
     isClickOutside(clickedElem, autocompleteItems, index, inputElem) {
-        return clickedElem != autocompleteItems[index] && clickedElem != inputElem;
+        return clickedElem !== autocompleteItems[index] && clickedElem !== inputElem;
     }
 
     /*a function to classify an item as "active":*/
@@ -147,8 +149,7 @@ class AutocompleteCreator {
     createItem(arr, index, val, inputElem, itemContainer) {
         let item = document.createElement('div');
         let autoCreator = this;
-        console.log(val);
-        console.log(index);
+
         
         /*make the matching letters bold:*/
         this.makeMatchingLettersBold(item, arr, index, val);
