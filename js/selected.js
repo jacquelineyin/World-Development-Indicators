@@ -91,10 +91,7 @@
      * @param {Object} area = {region: "", country: ""} 
      */
     setArea({region, country}) {
-        region = this.capitalizeFirstLetterOnly(region);
-        country = this.capitalizeFirstLetterOnly(country);
-
-        this.area.region = !region ? this.area.region : region;
+        this.area.region = !region ? this.area.region : this.capitalizeFirstLetterOnly(region);
         this.setCountry(country);
 
         // If area was previously in Comparison list, remove
@@ -109,10 +106,13 @@
      * @param {String} country : Name of country to add as selected (First letter capitalized)
      */
     setCountry(country) {
-        let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
-
-        if (country && countriesInSelectedRegion.includes(country)) {
-            this.area.country = country;
+        if (country) {
+            country = this.capitalizeFirstLetterOnly(country);
+            let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
+            
+            if (countriesInSelectedRegion.includes(country)) {
+                this.area.country = country;
+            }
         }
     }
 
