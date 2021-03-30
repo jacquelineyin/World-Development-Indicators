@@ -31,6 +31,8 @@
      * @param {string} countryOrRegion = country or region that user has added as comparison countries/regions
      */
     addComparisonArea(countryOrRegion) {
+        countryOrRegion = this.capitalizeFirstLetterOnly(countryOrRegion);
+
         let isFocusArea = this.area.region === countryOrRegion || this.area.country === countryOrRegion;
         let isComparisonListFull = this.comparisonAreas.length >= 4;
         let isAlreadyInList = this.comparisonAreas.includes(countryOrRegion);
@@ -89,6 +91,9 @@
      * @param {Object} area = {region: "", country: ""} 
      */
     setArea({region, country}) {
+        region = this.capitalizeFirstLetterOnly(region);
+        country = this.capitalizeFirstLetterOnly(country);
+
         this.area.region = !region ? this.area.region : region;
         this.setCountry(country);
 
@@ -152,9 +157,28 @@
      */
     updateAllSelectedAreas(area, comparisonAreas) {
         let {region, country} = area;
+
+        region = this.capitalizeFirstLetterOnly(region);
+        country = this.capitalizeFirstLetterOnly(country);
  
         this.allSelectedAreas = country !== "" ? [country, ...comparisonAreas] : [region, ...comparisonAreas];
- 
     }
-    
+
+    // Capitalize first letter
+    capitalizeFirstLetterOnly(str) {
+      let words = str.split(' ');
+      let capitalizedWords = [];
+      let res = '';
+
+      for (let word of words) {
+          word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+          capitalizedWords.push(word);
+      }
+
+      for (let word of capitalizedWords) {
+        res = res + ' ' + word;
+      }
+
+      return res.trim();
+    }
 }
