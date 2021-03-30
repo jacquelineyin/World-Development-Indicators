@@ -15,7 +15,7 @@
         
         this.availableIndicators = new Indicators();
         this.regionMapper = new RegionMapper();
-        this.area = selectedArea ? selectedArea : {region: "World", country: ""};
+        this.area = selectedArea ? selectedArea : {region: 'World', country: ''};
         this.comparisonAreas = selectedComparisonAreas ? selectedComparisonAreas : [];
         this.indicator = selectedIndicator ? selectedIndicator : this.availableIndicators.POPULATION_TOTAL;
         this.timeInterval = selectedTimeInterval ? selectedTimeInterval : {};
@@ -31,8 +31,10 @@
      * @param {string} countryOrRegion = country or region that user has added as comparison countries/regions
      */
     addComparisonArea(countryOrRegion) {
+        countryOrRegion = this.capitalizeFirstLetterOnly(countryOrRegion);
+
         let isFocusArea = this.area.region === countryOrRegion || this.area.country === countryOrRegion;
-        let isComparisonListFull = this.comparisonAreas.length >= 5;
+        let isComparisonListFull = this.comparisonAreas.length >= 4;
         let isAlreadyInList = this.comparisonAreas.includes(countryOrRegion);
 
         if (!isFocusArea && !isComparisonListFull && !isAlreadyInList) {
@@ -52,9 +54,10 @@
      */
     removeComparisonArea(countryOrRegion) {
         let index = this.comparisonAreas.indexOf(countryOrRegion);
+    
         if (index > -1) {
             // Remove from list
-            this.comparisonAreas.splice(index);
+            this.comparisonAreas.splice(index, 1);
             
             //update allSelectedAreas
             this.updateAllSelectedAreas(this.area, this.comparisonAreas);
@@ -88,7 +91,7 @@
      * @param {Object} area = {region: "", country: ""} 
      */
     setArea({region, country}) {
-        this.area.region = !region ? this.area.region : region;
+        this.area.region = !region ? this.area.region : this.capitalizeFirstLetterOnly(region);
         this.setCountry(country);
 
         // If area was previously in Comparison list, remove
@@ -103,10 +106,13 @@
      * @param {String} country : Name of country to add as selected (First letter capitalized)
      */
     setCountry(country) {
-        let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
-
-        if (country && countriesInSelectedRegion.includes(country)) {
-            this.area.country = country;
+        if (country) {
+            country = this.capitalizeFirstLetterOnly(country);
+            let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
+            
+            if (countriesInSelectedRegion.includes(country)) {
+                this.area.country = country;
+            }
         }
     }
 
@@ -151,9 +157,32 @@
      */
     updateAllSelectedAreas(area, comparisonAreas) {
         let {region, country} = area;
+
+        region = this.capitalizeFirstLetterOnly(region);
+        country = this.capitalizeFirstLetterOnly(country);
  
-        this.allSelectedAreas = country !== "" ? [country, ...comparisonAreas] : [region, ...comparisonAreas];
- 
+        this.allSelectedAreas = country !== '' ? [country, ...comparisonAreas] : [region, ...comparisonAreas];
     }
-    
+
+    /**
+     * Purpose: Capitalizes the first letter of each word in given string
+     * @param {string} str 
+     * @returns {string} formatted string
+     */
+    capitalizeFirstLetterOnly(str) {
+      let words = str.split(' ');
+      let capitalizedWords = [];
+      let res = '';
+
+      for (let word of words) {
+          word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+          capitalizedWords.push(word);
+      }
+
+      for (let word of capitalizedWords) {
+        res = res + ' ' + word;
+      }
+
+      return res.trim();
+    }
 }

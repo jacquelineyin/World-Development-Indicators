@@ -15,7 +15,8 @@ const dispatcher = d3.dispatch(
   dispatcherEvents.FILTER_YEAR,
   dispatcherEvents.CHANGE_INDICATOR, 
   dispatcherEvents.SELECT_FOCUS_AREA,
-  dispatcherEvents.SELECT_COMPARISON_ITEM
+  dispatcherEvents.SELECT_COMPARISON_ITEM,
+  dispatcherEvents.DELETE_COMPARISON_ITEM
   );
 
 const focusedAreaWidget = new FocusAreaWidget(
@@ -27,6 +28,17 @@ const focusedAreaWidget = new FocusAreaWidget(
     dispatcherEvents
   },
   dispatcher,
+  );
+
+  const comparisonWidget = new ComparisonWidget(
+    selected,
+    { 
+      regionMapper, 
+      countries, 
+      regions, 
+      dispatcherEvents 
+    },
+    dispatcher,
   );
 
 /**
@@ -46,6 +58,7 @@ d3.csv('data/Dataset.csv').then(_data => {
 
   // Initialize select country/region for focused area
   focusedAreaWidget.createSelectFocusArea();
+  comparisonWidget.updateComparisonSection();
 
   //Initialize views
   // Load in GeoJSON data and initialize map view
@@ -87,6 +100,7 @@ dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
 
 dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   updateSelectedArea(type, value);
+  comparisonWidget.updateTags();
 
   wedgeView.updateVis();
   barChart.updateVis();
@@ -95,10 +109,30 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
 
 dispatcher.on(dispatcherEvents.CHANGE_INDICATOR, newlySelectedIndicator => {
   selected.indicator = indicators[newlySelectedIndicator];
+  comparisonWidget.updateComparisonSection();
+  
   map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
 });
+
+dispatcher.on(dispatcherEvents.SELECT_COMPARISON_ITEM, comparisonItem => {
+  selected.addComparisonArea(comparisonItem);
+  comparisonWidget.updateTags();
+
+  map.updateVis();
+  barChart.updateVis();
+  lineChart.updateVis();
+})
+
+dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
+  selected.removeComparisonArea(comparisonItem);
+  comparisonWidget.updateTags();
+
+  map.updateVis();
+  barChart.updateVis();
+  lineChart.updateVis();
+})
 
 // ----------------- Helpers -------------------- //
 
@@ -139,11 +173,6 @@ let setTestSelectedItems = () => {
   const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,6);
   selected.selectedYears = defaultYears;
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
-
-  // test value comparison countries
-  selected.addComparisonArea(countries.CHINA);
-  selected.addComparisonArea(countries.BRAZIL);
-  selected.addComparisonArea(countries.JAPAN);
 
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
