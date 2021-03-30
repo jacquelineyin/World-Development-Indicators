@@ -12,7 +12,8 @@ const parseTime = d3.timeParse("%Y");
 
 // Initialize dispatcher that is used to orchestrate events
 const dispatcher = d3.dispatch(
-  dispatcherEvents.FILTER_YEAR, 
+  dispatcherEvents.FILTER_YEAR,
+  dispatcherEvents.CHANGE_INDICATOR, 
   dispatcherEvents.SELECT_FOCUS_AREA,
   dispatcherEvents.SELECT_COMPARISON_ITEM,
   dispatcherEvents.DELETE_COMPARISON_ITEM
@@ -55,7 +56,6 @@ d3.csv('data/Dataset.csv').then(_data => {
   //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
   setTestSelectedItems();
 
-  
   // Initialize select country/region for focused area
   focusedAreaWidget.createSelectFocusArea();
   comparisonWidget.createComparisonSection();
@@ -68,7 +68,7 @@ d3.csv('data/Dataset.csv').then(_data => {
   });
 
   // Initialize the wedge view
-  wedgeView = new WedgeView(data, selected);
+  wedgeView = new WedgeView(data, selected, dispatcher, dispatcherEvents);
   wedgeView.updateVis();
 
   // Initialize bar chart
@@ -105,7 +105,14 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   wedgeView.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
-}) 
+}); 
+
+dispatcher.on(dispatcherEvents.CHANGE_INDICATOR, newlySelectedIndicator => {
+  selected.indicator = indicators[newlySelectedIndicator];
+  map.updateVis();
+  barChart.updateVis();
+  lineChart.updateVis();
+});
 
 dispatcher.on(dispatcherEvents.SELECT_COMPARISON_ITEM, comparisonItem => {
   selected.addComparisonArea(comparisonItem);
