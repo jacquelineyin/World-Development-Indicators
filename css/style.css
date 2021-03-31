@@ -62,12 +62,8 @@
 
 /* Wedges */
 
-#wedges { 
-  display: flex;
-}
-
 table {
-display: inline-block;
+  display: flex;
   text-align: center;
   border: 2px solid rgb(200, 200, 200);
   border-radius: 5px;
@@ -80,10 +76,14 @@ th {
 
 td { 
   font-size: xx-small;
+  padding: 5px;
+  vertical-align: bottom;
 }
 
-td[selected='true'] { 
+td[selected='true'] {
   font-weight: bold;
+  font-style: italic;
+  text-shadow: black;
 }
 
 td svg { 
@@ -99,9 +99,13 @@ td svg {
 
 .w-arc[num="0"] { 
   fill: black;
-  opacity: 0.3;
+  opacity: 0.5;
 }
 
 td svg path { 
   fill: none;
+}
+
+#tooltip { 
+  position: absolute;
 }
