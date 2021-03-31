@@ -43,6 +43,11 @@ class GeoMap {
         this.map.removeLayer(this.geoJsonLayer);
       }
 
+      // If a legend exits, remove to re-render on update
+      if (this.legend) { 
+        d3.select('.info.legend.leaflet-control').remove();
+      }
+
       // Filter data by selected years and selected indicator
       const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
       const filteredPopulationData = this.populationData.filter(d => this.selected.selectedYears.includes(d.Year));
@@ -85,10 +90,32 @@ class GeoMap {
       let vis = this;
 
       // Add GeoJSON
-      this.geoJsonLayer = L.geoJson(vis.geoJson, {style: vis.styleFeature}).addTo(vis.map);
+      this.geoJsonLayer = L.geoJson(this.geoJson, 
+        {
+          style: this.styleFeature,
+          onEachFeature: this.onEachFeature
+        }).addTo(this.map);
 
-      // Tooltips
-      
+      // Legend
+      // https://leafletjs.com/examples/choropleth/
+      this.legend = L.control({position: 'bottomright'});
+
+      this.legend.onAdd = function (map) {
+
+      var div = L.DomUtil.create('div', 'info legend'),
+        bins = [1, 0.8, 0.6, 0.4, 0.2, NaN],
+        labels = [];
+
+      // loop through our density intervals and generate a label with a colored square for each interval
+      for (var i = 0; i < bins.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i> ' + (vis.indicatorScale.invert(bins[i])).toFixed(2) + '<br>';
+      }
+
+      return div;
+    };
+
+    this.legend.addTo(this.map);
     }
 
     styleFeature(feature) {
