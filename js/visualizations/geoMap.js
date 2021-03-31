@@ -105,6 +105,7 @@ class GeoMap {
       var div = L.DomUtil.create('div', 'info legend'),
         bins = [1, 0.8, 0.6, 0.4, 0.2, NaN],
         labels = [];
+        div.innerHTML += `${vis.selected.indicator}<br>`;
 
       // Loop through bins, adding a legend entry for each
       for (var i = 0; i < bins.length; i++) {
