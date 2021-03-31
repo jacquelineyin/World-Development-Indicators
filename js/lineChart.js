@@ -10,7 +10,7 @@ class LineChart {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 1000,
       containerHeight: _config.containerHeight || 400,
-      margin: _config.margin || { top: 50, right: 300, bottom: 70, left: 50 }
+      margin: _config.margin || { top: 50, right: 300, bottom: 110, left: 50 }
     }
     this.selected = _selectedItems;
     this.data = _data;
@@ -67,10 +67,10 @@ class LineChart {
 
       // Need to fix rotation
       // .call(vis.xAxis)
-      //   .selectAll('text')
-      //   .attr('transform', 'translate(-10,10)rotate(-45)')
-      //   .style('text-anchor', 'end')
-      //   .style('fill', 'black');
+      // .selectAll('text')
+      // .attr('transform', 'translate(-10,10)rotate(-45)')
+      // .style('text-anchor', 'end')
+      // .style('fill', 'black');
 
     // Append y-axis group
     vis.yAxisG = vis.chart.append('g')
@@ -162,8 +162,8 @@ class LineChart {
       .data(vis.formattedData, d => d.values)
       .join('text')
       .attr('class', 'y-axis-title')
-      .attr('y', 20)
-      .attr('x', 10)
+      .attr('y', -vis.config.margin.top + 10)
+      .attr('x', -vis.config.margin.left)
       .attr('dy', '.71em')
       .text('Total ' + vis.selected.indicator);
 
@@ -174,7 +174,7 @@ class LineChart {
       .attr('x', (d, i) => {
         return (i * 200) + 10;
       })
-      .attr('y', vis.config.containerHeight - 85)
+      .attr('y', vis.config.containerHeight - 75)
       .attr('width', 10)
       .attr('height', 10)
       .style('fill', (d, i) => {
@@ -190,7 +190,7 @@ class LineChart {
       .join('text')
       .attr('class', 'box-label')
       .attr('x', (d, i) => (i * 200) + 25)
-      .attr('y', vis.config.containerHeight - 75)
+      .attr('y', vis.config.containerHeight - 65)
       .text(d => d.countryName);
 
     vis.values.selectAll('text')
