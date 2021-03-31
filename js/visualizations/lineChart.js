@@ -81,6 +81,9 @@ class LineChart {
     vis.yAxisG = vis.chart.append('g')
       .attr('class', 'axis y-axis');
 
+    vis.title = vis.chart.append('g')
+    .attr('class', 'axis-title');
+
     // We need to make sure that the tracking area is on top of other chart elements
 
     vis.title = vis.chart.append('g')
@@ -109,8 +112,8 @@ class LineChart {
 
     vis.mouseG = vis.lines.append('g')
       .attr('class', 'mouse-over-effects');
-    
-    vis.updateVis();
+
+      vis.updateVis();
   }
 
   /**
@@ -171,7 +174,7 @@ class LineChart {
       .attr('x', -vis.config.margin.left)
       .attr('dy', '.71em')
       .text('Total ' + vis.selected.indicator);
-
+    
     vis.legend.selectAll('.legend-box')
       .data(vis.formattedData, d => d.values)
       .join('rect')
@@ -224,13 +227,7 @@ class LineChart {
 
     mousePerLine.append('circle')
       .attr('r', 7)
-      .style('stroke', (d, i) => {
-        if (d.countryName === vis.selected.area.country) {
-          return 'gold'
-        } else {
-          return vis.colorScale(i);
-        }
-      })
+      .style('stroke', (d, i) => vis.getColour(d, i))
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('opacity', '0');
@@ -289,7 +286,7 @@ class LineChart {
                   return (i * 20) + 5
                 })
                 .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
-
+              
               if (currentYear) {
                 d3.select('.yearValue')
                   .text(currentYear);
