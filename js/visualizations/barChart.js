@@ -192,7 +192,6 @@ class BarChart {
     vis.renderLegendColourBoxes();
     // Add legend labels
     vis.renderLegendElemLabels();
-
   }
 
   /**
