@@ -8,6 +8,11 @@ class LineChart {
   constructor(_config, _data, _selectedItems) {
     this.config = {
       parentElement: _config.parentElement,
+      colour: _config.colour || 
+              {
+                selectedArea: 'blue',
+                otherAreas: d3.schemeCategory10,
+              },
       containerWidth: _config.containerWidth || 1000,
       containerHeight: _config.containerHeight || 400,
       margin: _config.margin || { top: 50, right: 300, bottom: 70, left: 50 }
@@ -26,7 +31,7 @@ class LineChart {
     vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
     vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-    vis.colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    vis.colorScale = d3.scaleOrdinal(vis.config.colour.otherAreas);
 
     vis.xScale = d3.scaleTime()
       .range([0, vis.width]);
@@ -160,12 +165,7 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 85)
       .attr('width', 10)
       .attr('height', 10)
-      .style('fill', (d, i) => {
-        if(d.countryName === vis.selected.area.country) {
-          return 'gold'
-      } else {
-        return vis.colorScale(i);
-      }});
+      .style('fill', (d, i) => vis.getColour(d, i));
 
     vis.legend.selectAll('.box-label')
       .data(vis.formattedData, d => d.values)
@@ -192,13 +192,8 @@ class LineChart {
       .attr('class', d => d.countryName)
       .join('path')
       .attr('class', 'line')
-      .attr('d', (d) => vis.line(d.values))
-      .style('stroke', (d, i) => {
-        if(d.countryName === vis.selected.area.country) {
-          return 'gold'
-      } else {
-        return vis.colorScale(i);
-      }});
+      .attr('d', d => vis.line(d.values))
+      .style('stroke', (d, i) => vis.getColour(d, i));
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
@@ -270,30 +265,47 @@ class LineChart {
             const xDate = vis.xScale.invert(mouse);
             const bisect = d3.bisector(d => d.year).left;
             const idx = bisect(d.values, xDate);
-            const currentYear = d.values[idx].Year;
-            d3.select(this).select('text')
-              .text(formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
-
-            d3.selectAll('.value').select('text')
-              .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
-            
-            d3.select('.yearValue')
-              .text(currentYear);
-
-            vis.svg.select('.mouse-line')
-              .attr('d', function () {
-                var data = 'M' + vis.xScale(d.values[idx].year) + ',' + vis.height;
-                data += ' ' + vis.xScale(d.values[idx].year) + ',' + 0;
-                return data;
-              });
-
-            return `translate(${vis.xScale(d.values[idx].year)},${vis.yScale(d.values[idx].value)})`;
+            const item = d.values[idx];
+            if (item) {
+              const currentYear = item.Year;
+              d3.select(this).select('text')
+                .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
+  
+              d3.selectAll('.value').select('text')
+                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
+              
+              if (currentYear) {
+                d3.select('.yearValue')
+                  .text(currentYear);
+              }
+  
+              vis.svg.select('.mouse-line')
+                .attr('d', function () {
+                  var data = 'M' + vis.xScale(item.year) + ',' + vis.height;
+                  data += ' ' + vis.xScale(item.year) + ',' + 0;
+                  return data;
+                });
+  
+              return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
+            } return null;
           });
       });
 
     // Update the axes
     vis.xAxisG.call(vis.xAxis);
     vis.yAxisG.call(vis.yAxis);
+  }
+
+  // ------------------ Helpers ------------------ //
+
+  getColour(d, i) {
+    let vis = this;
+    
+    if(d.countryName === vis.selected.area.country) {
+        return vis.config.colour.selectedArea;
+    } else {
+      return vis.colorScale(i);
+    }
   }
 }
 
