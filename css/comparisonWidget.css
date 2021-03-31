@@ -19,17 +19,17 @@
 
 .tag {
     display: inline-block;
-    font-size: 0.8;
+    font-size: 0.8em;
     margin-right: 5px;
     padding: 0 5px;
     width: max-content;
     border-radius: 25px;
-    background-color: #FBB1BF;
+    background-color: #9EE6D6;
     cursor: default;
 }
 
 .tag-focusedArea {
-  background-color: #9EE6D6;
+  background-color: #FBB1BF;
   color: black;
 }
 
