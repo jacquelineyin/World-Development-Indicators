@@ -4,7 +4,7 @@ div[selected="true"] {
   text-shadow: black;
 }
 
-div[selected="true"] .c-arc[num="0"]{
+div[selected="true"] .c-arc[num="0"] {
   fill: green;
 }
 
@@ -17,10 +17,6 @@ div[selected="true"] .c-arc[num="0"]{
 .w-arc[num="0"] {
   fill: black;
   opacity: 0.5;
-}
-
-div svg path {
-  fill: none;
 }
 
 #wedges {
@@ -60,6 +56,10 @@ div svg path {
 .indicator-container svg {
   align-items: baseline;
   cursor: pointer;
+}
+
+.indicator-container svg path {
+  fill: none;
 }
 
 /**--------------- Bigger Screens -----------------**/
