@@ -24,3 +24,7 @@
     font-weight: bold;
 }
 
+/** Tooltip */
+#tooltip { 
+  position: absolute;
+}
