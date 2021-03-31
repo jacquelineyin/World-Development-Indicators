@@ -28,12 +28,13 @@
                 </div>
                 <div id="map"></div>
                 <div id="wedges">
-                    <table id="demographics">
-                        <tr><th>Demographics</th></tr>
+                    <table style="border: none">
+                    <td id="demographics">
+                        <table>Demographics
                         <tr>
-                            <td id="POPULATION_TOTAL">Population, total</td>
-                            <td id="RURAL_POPULATION">Rural population</td>
-                            <td id="URBAN_POPULATION">Urban population</td>
+                            <td id="POPULATION_TOTAL">Population, total (number of people)</td>
+                            <td id="RURAL_POPULATION">Rural population (% of total)</td>
+                            <td id="URBAN_POPULATION">Urban population (% of total)</td>
                             <td id="POPULATION_DENSITY">Population density (people per sq. km of land area)</td>
                             <td id="POPULATION_AGES_0_TO_14">Population, ages 0-14 (% of total)</td>
                         </tr>
@@ -44,9 +45,10 @@
                             <td id="AGE_DEPENDENCY_RATIO_OLD">Age dependency ratio, old (% of working-age population)</td>
                             <td id="AGE_DEPENDENCY_RATIO_YOUNG">Age dependency ratio, young (% of working-age population)</td>
                         </tr>
-                    </table>
-                    <table id="economic">
-                        <tr><th>Economics</th></tr>
+                        </table>
+                    </td>
+                    <td id="economic">
+                        <table>Economics
                         <tr>
                             <td id="MERCHANDISE_EXPORTS">Merchandise exports (current US$)</td>
                             <td id="MERCHANDISE_IMPORTS">Merchandise imports (current US$)</td>
@@ -63,8 +65,9 @@
                             <td id="INFLATION_GDP_DEFLATOR_ANNUAL_PERCENTAGE">Inflation, GDP deflator (annual %)</td>
                         </tr>
                     </table>
-                    <table id="expectancy">
-                        <tr><th>Life/Death Expectancy Statistics</th></tr>
+                    </td>
+                    <td id="expectancy">
+                        <table>Life/Death Expectancy Statistics
                         <tr>
                             <td id="DEATH_RATE">Death rate, crude (per 1,000 people)</td>
                             <td id="BIRTH_RATE">Birth rate, crude (per 1,000 people)</td>
@@ -75,30 +78,35 @@
                             <td id="LIFE_EXPECTANCY_FEMALE">Life expectancy at birth, female (years)</td>
                         </tr>
                     </table>
-                    <table id="education">
-                        <tr><th>Education</th></tr>
+                    </td>
+                    <td id="education">
+                        <table>Education
                         <tr>
-                            <td id="ENROLMENT_IN_PRIMARY_EDUCATION">Enrolment in primary education, both sexes (number)</td>
+                            <td id="ENROLMENT_IN_PRIMARY_EDUCATION">Enrolment in primary education, both sexes (% of total)</td>
                         </tr>
                         <tr>
-                            <td id="ENROLMENT_IN_SECONDARY_GENERAL">Enrolment in secondary general, both sexes (number)</td>
+                            <td id="ENROLMENT_IN_SECONDARY_GENERAL">Enrolment in secondary general, both sexes (% of total)</td>
                         </tr>
                     </table>
-                    <table id="expectancy">
-                        <tr><th>Environmental</th></tr>
+                    </td>
+                    <td id="expectancy">
+                        <table>Environmental
                         <tr>
                             <td id="AGRICULTURAL_LAND_PERCENT_OF_LAND_AREA">Agricultural land (% of land area)</td>
                         </tr>
                         <tr>
                             <td id="CO2_EMISSIONS_METRIC_TON_PER_CAPITA">CO2 emissions (metric tons per capita)</td>
                         </tr>
-                    </table>
-                    <table id="other">
-                        <tr><th>Other</th></tr>
+                        </table>
+                    </td>
+                    <td id="other">
+                        <table>Other
                         <tr>
                             <td id="MOBILE_CELLULAR_SUBSCRIPTIONS">Mobile cellular subscriptions</td>
                         </tr>
                     </table>
+                    </td>
+                </table>
                 </div>
             </div>
             <div class="col" id="right-col">
