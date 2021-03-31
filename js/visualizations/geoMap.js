@@ -2,11 +2,21 @@ class GeoMap {
 
     constructor(_data, _geoJsonData, _selected) {
       this.data = _data;
-      this.populationData = this.data.filter(d => d.IndicatorName == new Indicators().POPULATION_TOTAL);
+      this.indicators = new Indicators();
+      this.populationData = _data.filter(d => d.IndicatorName == this.indicators.POPULATION_TOTAL);
       this.geoJson = _geoJsonData;
       this.countries = this.geoJson.features.map(d => d.properties.ISO_A3);
       this.selected = _selected;
       this.initVis();
+    }
+
+    static getTileColor(d) { 
+      return  d > 0.8 ? '#08519c' : 
+              d > 0.6 ? '#3182bd' : 
+              d > 0.4 ? '#6baed6' : 
+              d > 0.2 ? '#bdd7e7' : 
+              isNaN(d) ? '#808080' : 
+                        '#eff3ff';
     }
   
     // Create SVG area, initialize scales and axes
@@ -34,19 +44,26 @@ class GeoMap {
       }
 
       // Filter data by selected years and selected indicator
-      var filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
-      var filteredPopulationData = this.populationData.filter(d => this.selected.selectedYears.includes(d.Year));
+      const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
+      const filteredPopulationData = this.populationData.filter(d => this.selected.selectedYears.includes(d.Year));
 
       // Aggregate data by country and calculate the mean
-      var groupedData = d3.rollup(filteredData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
-      var groupedPopulationData = d3.rollup(filteredPopulationData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
+      const groupedData = d3.rollup(filteredData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
+      const groupedPopulationData = d3.rollup(filteredPopulationData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
 
-      // Calculate the normalized value 
+      // Normalize some indicators
       // Remove countries for which we do not have a corresponding vector tile, e.g. "WLD"
+      const indicatorsToNormalize = [this.indicators.RURAL_POPULATION, 
+                                     this.indicators.URBAN_POPULATION,
+                                     this.indicators.ENROLMENT_IN_PRIMARY_EDUCATION,
+                                     this.indicators.ENROLMENT_IN_SECONDARY_GENERAL,
+                                     this.indicators.MOBILE_CELLULAR_SUBSCRIPTIONS];
       for (let country of groupedData.keys()) { 
-        if (this.countries.includes(country)) { 
+        if (this.countries.includes(country)) {
+          if (indicatorsToNormalize.includes(this.selected.indicator)) { 
           var normalizedByPopulationValue = groupedData.get(country) / groupedPopulationData.get(country); 
           groupedData.set(country, normalizedByPopulationValue);
+          }
         } else {
           groupedData.delete(country);
         }
@@ -65,16 +82,13 @@ class GeoMap {
   
     // Bind data to visual elements, update axes
     renderVis() {
-      this.geoJsonLayer = L.geoJson(this.geoJson, {style: this.styleFeature}).addTo(this.map);
-    }
+      let vis = this;
 
-    static getTileColor(d) { 
-      return  d > 0.8 ? '#08519c' : 
-              d > 0.6 ? '#3182bd' : 
-              d > 0.4 ? '#6baed6' : 
-              d > 0.2 ? '#bdd7e7' : 
-              isNaN(d) ? '#808080' : 
-                        '#eff3ff';
+      // Add GeoJSON
+      this.geoJsonLayer = L.geoJson(vis.geoJson, {style: vis.styleFeature}).addTo(vis.map);
+
+      // Tooltips
+      
     }
 
     styleFeature(feature) {

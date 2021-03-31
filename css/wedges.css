@@ -1,43 +1,76 @@
-#wedges { 
-    display: flex;
-  }
-  
-  table {
+div[selected="true"] {
+  font-weight: bold;
+  font-style: italic;
+  text-shadow: black;
+}
+
+div[selected="true"] .c-arc[num="0"] {
+  fill: green;
+}
+
+.c-arc[num="0"] {
+  fill: lightskyblue;
+  border: 2px solid rgb(200, 200, 200);
+  opacity: 0.7;
+}
+
+.w-arc[num="0"] {
+  fill: black;
+  opacity: 0.5;
+}
+
+#wedges {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.wedge-group-container {
+  margin-right: 50px;
+  margin-top: 20px;
+}
+
+.wedge-container {
+  display: flex;
+  flex-direction: column;
+  width: min-content;
+  justify-content: flex-end;
+  margin-right: 5px;
+}
+
+.wedge-label {
   display: inline-block;
-    text-align: center;
-    border: 2px solid rgb(200, 200, 200);
-    border-radius: 5px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: pre-line;
+  text-align: center;
+  vertical-align: center;
+  cursor: pointer;
+}
+
+.indicator-container {
+  font-size: 0.6em;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.indicator-container svg {
+  align-items: baseline;
+  cursor: pointer;
+}
+
+.indicator-container svg path {
+  fill: none;
+}
+
+/**--------------- Bigger Screens -----------------**/
+@media only screen and (min-width: 1440px) {
+  #demographics {
+    width: 45%;
+    margin-right: 25px;
   }
-  
-  th { 
-    font-size: small;
-    text-align: left;
+
+  #economic {
+    width: 45%;
+    margin-right: 0px;
   }
-  
-  td { 
-    font-size: xx-small;
-  }
-  
-  td[selected='true'] { 
-    font-weight: bold;
-  }
-  
-  td svg { 
-    display: block;
-    margin: auto;
-  }
-  
-  .c-arc[num="0"] { 
-    fill:lightskyblue;
-    border: 2px solid rgb(200, 200, 200);
-    opacity: 0.7;
-  }
-  
-  .w-arc[num="0"] { 
-    fill: black;
-    opacity: 0.3;
-  }
-  
-  td svg path { 
-    fill: none;
-  }
+}
