@@ -2,12 +2,15 @@
 
 
 ## Table of Contents
+  - **[Overview](#overview)**
   - **[External Resources](#external-resources)**
       - [Data Sources](#data-sources)   
       - [Referenced Material](#referenced-material)
   - **[Tools](#tools)**
   - **[Pre-processing](#pre-processing)**
   
+## Overview
+Our project repo separates all visual components where the bar chart, line chart, map and wedges have their own css file. General styling all belongs in the style.css file. In our js folder, we have a constants and widgets folder. The constants folder contains all constants used in our project. These constants include our colour palette colors, indicator names and country names. The widgets folder contains all the code for our selectors. The selectors include the selector for comparison areas and selecting the focus country. Aside from these two folders, all other files reside in the js file. We created a new class in selected.js which keeps track of what values are currently selected. The selector class holds the value of selected country of focus and its region, selected comparison countries, selected indicators and selected time interval.
 
 ## External Resources
 ### Data Sources
