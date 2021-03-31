@@ -18,6 +18,11 @@ class BarChart {
                   selectedCountryBar: 'blue',
                   comparisonCountryBars: 'green',
                 },
+        legend: _config.legend || 
+                {
+                  legendWidth: 180,
+                  legendHeight: 8,
+                },
         tooltip: _config.tooltip || {padding: 15},
       }
       this.data = _data,
