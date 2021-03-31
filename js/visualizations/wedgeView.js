@@ -18,22 +18,22 @@ class WedgeView {
       this.wedgeWidth = 50;
       this.wedgeHeight = 50;
       this.margin = 5;
-      // Add an svg drawing space to each td
-      // Bind the td to the CHANGE_INDICATOR event
+      // Add an svg drawing space to each div
+      // Bind the div to the CHANGE_INDICATOR event
       this.indicators = new Indicators(); 
       Object.keys(indicators).forEach(d => {
-        const td = d3.select('#' + d);
-        td.append('svg')
+        const div = d3.select('#' + d);
+        div.append('svg')
           .attr('width', this.wedgeWidth)
           .attr('height', this.wedgeHeight)
           .append('g')
           .attr('transform', `translate(${this.wedgeWidth/2}, ${this.wedgeHeight/2})`);
-        td.on('click', function(event) {
-          d3.select("td[selected='true']")
+        div.on('click', function(event) {
+          d3.select("div[selected='true']")
             .attr('selected', 'false');
           d3.select('#' + this.id)
-            .attr('selected', 'true');
-          vis.dispatcher.call(vis.dispatcherEvents.CHANGE_INDICATOR, this, event.target.id);
+            .attr('selected', 'true')
+          vis.dispatcher.call(vis.dispatcherEvents.CHANGE_INDICATOR, this, this.id);
         }); 
       });
 
