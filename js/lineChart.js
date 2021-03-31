@@ -8,6 +8,11 @@ class LineChart {
   constructor(_config, _data, _selectedItems) {
     this.config = {
       parentElement: _config.parentElement,
+      colour: _config.colour || 
+              {
+                selectedArea: 'blue',
+                otherAreas: d3.schemeCategory10,
+              },
       containerWidth: _config.containerWidth || 1000,
       containerHeight: _config.containerHeight || 400,
       margin: _config.margin || { top: 50, right: 300, bottom: 110, left: 50 }
@@ -26,7 +31,7 @@ class LineChart {
     vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
     vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-    vis.colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    vis.colorScale = d3.scaleOrdinal(vis.config.colour.otherAreas);
 
     vis.xScale = d3.scaleTime()
       .range([0, vis.width]);
@@ -177,13 +182,7 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 75)
       .attr('width', 10)
       .attr('height', 10)
-      .style('fill', (d, i) => {
-        if (d.countryName === vis.selected.area.country) {
-          return 'gold'
-        } else {
-          return vis.colorScale(i);
-        }
-      });
+      .style('fill', (d, i) => vis.getColour(d, i));
 
     vis.legend.selectAll('.box-label')
       .data(vis.formattedData, d => d.values)
@@ -205,28 +204,7 @@ class LineChart {
       .join('path')
       .attr('class', 'line')
       .attr('d', d => vis.line(d.values))
-      .style('stroke', (d, i) => {
-        if (d.countryName === vis.selected.area.country) {
-          return 'gold'
-        } else {
-          return vis.colorScale(i);
-        }
-      });
-
-    vis.circles.selectAll('circles')
-      .data(vis.formattedData, d => d.values)
-      .join('circle')
-      .style('fill', (d, i) => vis.colorScale(i))
-      .selectAll('circle')
-      .data(d => d.values)
-      .join(
-        update => update.selectAll('circle')
-          .attr('class', 'circle')
-          .append('circle')
-          .attr('r', 3)
-          .attr('cx', d => vis.xScale(d.year))
-          .attr('cy', d => vis.yScale(d.value))
-      );
+      .style('stroke', (d, i) => vis.getColour(d, i));
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
@@ -333,6 +311,18 @@ class LineChart {
     // Update the axes
     vis.xAxisG.call(vis.xAxis.ticks(d3.timeYear));
     vis.yAxisG.call(vis.yAxis);
+  }
+
+  // ------------------ Helpers ------------------ //
+
+  getColour(d, i) {
+    let vis = this;
+    
+    if(d.countryName === vis.selected.area.country) {
+        return vis.config.colour.selectedArea;
+    } else {
+      return vis.colorScale(i);
+    }
   }
 }
 

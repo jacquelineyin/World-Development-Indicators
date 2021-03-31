@@ -17,7 +17,6 @@ class BarChart {
                 {
                   selectedCountryBar: 'blue',
                   comparisonCountryBars: 'green',
-                  hoveredBar: 'grey',
                 },
         tooltip: _config.tooltip || {padding: 15},
       }

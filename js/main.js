@@ -8,6 +8,7 @@ const regionMapper = new RegionMapper();
 const regions = new Regions();
 const countries = new Countries();
 const dispatcherEvents = new DispatcherEvents();
+const colourPalette = new ColourPalette();
 const parseTime = d3.timeParse("%Y");
 
 // Initialize dispatcher that is used to orchestrate events
@@ -74,11 +75,21 @@ d3.csv('data/Dataset.csv').then(_data => {
 
   // Initialize bar chart
   barChart = new BarChart({
-    parentElement: '#barchart'
+    parentElement: '#barchart',
+    colour: {
+      selectedCountryBar: colourPalette.getFocusedAreaColour(),
+      comparisonCountryBars: colourPalette.AQUA,
+    }
   }, data, selected);
 
   // Initialize line chart
-  lineChart = new LineChart({ parentElement: '#linechart' }, data, selected);
+  lineChart = new LineChart({ 
+    parentElement: '#linechart' ,
+    colour: {
+      selectedArea: colourPalette.getFocusedAreaColour(),
+      otherAreas: colourPalette.getNonFocusedAreaColour()
+    }
+  }, data, selected);
 
   // Initialize and render time slider
   yearSlider = new YearSlider({ parentElement: '#slider' }, data, dispatcher, dispatcherEvents);
@@ -174,6 +185,12 @@ let setTestSelectedItems = () => {
   const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,6);
   selected.selectedYears = defaultYears;
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
+
+  // test add comparison
+  // selected.addComparisonArea(countries.JAPAN);
+  // selected.addComparisonArea(countries.CHINA);
+  // selected.addComparisonArea(countries.BRAZIL);
+  // selected.addComparisonArea(countries.UNITED_KINGDOM);
 
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
