@@ -77,8 +77,8 @@ d3.csv('data/Dataset.csv').then(_data => {
   barChart = new BarChart({
     parentElement: '#barchart',
     colour: {
-      selectedCountryBar: colourPalette.getFocusedAreaColour(),
-      comparisonCountryBars: colourPalette.AQUA,
+      selectedCountry: colourPalette.getFocusedAreaColour(),
+      comparisonCountry: colourPalette.AQUA,
     }
   }, data, selected);
 
