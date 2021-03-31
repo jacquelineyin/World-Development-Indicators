@@ -1,7 +1,3 @@
-#wedges { 
-    display: flex;
-  }
-  
   table {
   display: inline-block;
     text-align: center;
@@ -41,3 +37,57 @@
   td svg path { 
     fill: none;
   }
+
+  #wedges {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .wedge-group-container {
+    margin-right: 50px;
+    margin-top: 20px;
+  }
+
+  .wedge-container {
+    display: flex;
+    flex-direction: column;
+    width: min-content;
+    justify-content: space-between;
+    margin-right: 5px;
+  }
+
+  .indicator-container {
+    font-size: 0.6em;
+  }
+
+  .wedge-label {
+    display:inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: pre-line;
+    text-align: center;
+    vertical-align: center;
+  }
+
+  .indicator-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .indicator-container svg {
+    align-items: baseline;
+  }
+
+/**--------------- Bigger Screens -----------------**/
+@media only screen and (min-width: 1440px) {
+
+  #demographics {
+    width: 45%;
+    margin-right: 25px;
+  }
+
+  #economic {
+    width: 45%;
+    margin-right: 0px;
+  }
+}
