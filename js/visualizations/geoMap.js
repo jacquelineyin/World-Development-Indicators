@@ -102,7 +102,7 @@ class GeoMap {
 
       this.legend.onAdd = function (map) {
 
-      var div = L.DomUtil.create('div', 'info legend'),
+      const div = L.DomUtil.create('div', 'info legend'),
         bins = [1, 0.8, 0.6, 0.4, 0.2, NaN],
         labels = [];
         div.innerHTML += `${vis.selected.indicator}<br>`;
