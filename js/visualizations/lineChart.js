@@ -129,7 +129,7 @@ class LineChart {
 
     // group data by country
     const countryGroups = d3.groups(filteredSelectedData, d => d.CountryName);
-    console.log(d3.groups(vis.data, d => d.CountryName === 'American Samoa' && d.IndicatorName === 'Mobile cellular subscriptions'));
+
     // re-arrange data
     vis.formattedData = [];
 
@@ -208,6 +208,22 @@ class LineChart {
       .attr('class', 'line')
       .attr('d', d => vis.line(d.values))
       .style('stroke', (d, i) => vis.getColour(d, i));
+
+
+    vis.circles.selectAll('circles')
+      .data(vis.formattedData, d => d.values)
+      .join('circle')
+      .style('fill',  (d, i) => vis.getColour(d, i))
+      .selectAll('circle')
+      .data(d => d.values)
+      .join(
+        update => update.selectAll('circle')
+          .attr('class', 'circle')
+          .append('circle')
+          .attr('r', 3)
+          .attr('cx', d => vis.xScale(d.year))
+          .attr('cy', d => vis.yScale(d.value))
+      );
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
