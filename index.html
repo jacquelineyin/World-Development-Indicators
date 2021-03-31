@@ -19,10 +19,10 @@
 </head>
 
 <body>
-    
+
     <div id="parent-container">
         <h4 class="title" id="project-title">World Development Indicators</h4>
-        
+
         <div id="chart-container">
             <div class="col" id="left-col">
                 <div class="select-container" id="select-focus">
@@ -31,7 +31,7 @@
                 </div>
                 <div id="map"></div>
                 <div id="wedges">
-                     <div id="demographics" class="wedge-group-container">
+                    <div id="demographics" class="wedge-group-container">
                         <strong>Demographics</strong>
                         <div class="indicator-container">
                             <div id="POPULATION_TOTAL" class="wedge-container">
@@ -62,7 +62,8 @@
                                 <text class="wedge-label">Age dependency ratio, old (% of working-age population)</text>
                             </div>
                             <div id="AGE_DEPENDENCY_RATIO_YOUNG" class="wedge-container">
-                                <text class="wedge-label">Age dependency ratio, young (% of working-age population)</text>
+                                <text class="wedge-label">Age dependency ratio, young (% of working-age
+                                    population)</text>
                             </div>
                         </div>
                     </div>
@@ -84,8 +85,10 @@
                             <div id="GDP_PER_CAPITA" class="wedge-container">
                                 <text class="wedge-label">GDP per capita (current US$)</text>
                             </div>
-                            <div id="NET_OFFICIAL_DEVELOPMENT_ASSISTANCE_AND_OFFICIAL_AID_RECEIVED" class="wedge-container">
-                                <text class="wedge-label">Net official development assistance and official aid received (current US$)</text>
+                            <div id="NET_OFFICIAL_DEVELOPMENT_ASSISTANCE_AND_OFFICIAL_AID_RECEIVED"
+                                class="wedge-container">
+                                <text class="wedge-label">Net official development assistance and official aid received
+                                    (current US$)</text>
                             </div>
                             <div id="PERCENTAGE_OF_GDP_MERCHANDISE_TRADE" class="wedge-container">
                                 <text class="wedge-label">Merchandise trade (% of GDP) (goods)</text>
@@ -153,93 +156,23 @@
                                 <text class="wedge-label">Mobile cellular subscriptions</text>
                             </div>
                         </div>
-                    </div> 
-                    <div id="demographics">
-                        <strong>Demographics</strong>
-                        <tr>
-                            <div id="POPULATION_TOTAL">Population, total</div>
-                            <div id="RURAL_POPULATION">Rural population</div>
-                            <div id="URBAN_POPULATION">Urban population</div>
-                            <div id="POPULATION_DENSITY">Population density (people per sq. km of land area)</div>
-                            <div id="POPULATION_AGES_0_TO_14">Population, ages 0-14 (% of total)</div>
-                        </tr>
-                        <tr>
-                            <div id="POPULATION_AGES_15_TO_64">Population, ages 15-64 (% of total)</div>
-                            <div id="POPULATION_AGES_65_AND_ABOVE">Population ages 65 and above (% of total)</div>
-                            <div id="AGE_DEPENDENCY_RATIO">Age dependency ratio (% of working-age population)</div>
-                            <div id="AGE_DEPENDENCY_RATIO_OLD">Age dependency ratio, old (% of working-age population)</div>
-                            <div id="AGE_DEPENDENCY_RATIO_YOUNG">Age dependency ratio, young (% of working-age population)</div>
-                        </tr>
                     </div>
-                    <div id="economic">
-                        <strong>Economics</strong>
-                        <tr>
-                            <div id="MERCHANDISE_EXPORTS">Merchandise exports (current US$)</div>
-                            <div id="MERCHANDISE_IMPORTS">Merchandise imports (current US$)</div>
-                            <div id="EXPORTS_OF_GOODS_AND_SERVICES">Exports of goods and services (current US$)</div>
-                            <div id="IMPORTS_OF_GOODS_AND_SERVICES">Imports of goods and services (current US$)</div>
-                            <div id="GDP_PER_CAPITA">GDP per capita (current US$)</div>
-                            <div id="NET_OFFICIAL_DEVELOPMENT_ASSISTANCE_AND_OFFICIAL_AID_RECEIVED">Net official development assistance and official aid received (current US$)</div>
-                        </tr>
-                        <tr>
-                            <div id="PERCENTAGE_OF_GDP_MERCHANDISE_TRADE">Merchandise trade (% of GDP) (goods)</div>
-                            <div id="PERCENTAGE_OF_GDP_TRADE">Trade (% of GDP)</div>
-                            <div id="GNI">GNI (current US$)</div>
-                            <div id="GROSS_NATIONAL_EXPENDITURE">Gross national expenditure (current US$)</div>
-                            <div id="INFLATION_GDP_DEFLATOR_ANNUAL_PERCENTAGE">Inflation, GDP deflator (annual %)</div>
-                        </tr>
-                    </div>
-                    <div id="expectancy">
-                        <strong>Life/Death Expectancy Statistics</strong>
-                        <tr>
-                            <div id="DEATH_RATE">Death rate, crude (per 1,000 people)</div>
-                            <div id="BIRTH_RATE">Birth rate, crude (per 1,000 people)</div>
-                            <div id="LIFE_EXPECTANCY_TOTAL">Life expectancy at birth, total (years)</div>
-                        </tr>
-                        <tr>
-                            <div id="LIFE_EXPECTANCY_MALE">Life expectancy at birth, male (years)</div>
-                            <div id="LIFE_EXPECTANCY_FEMALE">Life expectancy at birth, female (years)</div>
-                        </tr>
-                    </div>
-                    <div id="education">
-                        <strong>Education</strong>
-                        <tr>
-                            <div id="ENROLMENT_IN_PRIMARY_EDUCATION">Enrolment in primary education, both sexes (number)</div>
-                        </tr>
-                        <tr>
-                            <div id="ENROLMENT_IN_SECONDARY_GENERAL">Enrolment in secondary general, both sexes (number)</div>
-                        </tr>
-                    </div>
-                    <div id="expectancy">
-                        <strong>Environmental</strong>
-                        <tr>
-                            <div id="AGRICULTURAL_LAND_PERCENT_OF_LAND_AREA">Agricultural land (% of land area)</div>
-                        </tr>
-                        <tr>
-                            <div id="CO2_EMISSIONS_METRIC_TON_PER_CAPITA">CO2 emissions (metric tons per capita)</div>
-                        </tr>
-                    </div>
-                    <div id="other">
-                        <strong>Other</strong>
-                        <tr>
-                            <div id="MOBILE_CELLULAR_SUBSCRIPTIONS">Mobile cellular subscriptions</div>
-                        </tr>
-                    </div>
-               </div>
+                </div>
             </div>
+
             <div class="col" id="right-col">
                 <div class="select-container" id="select-comparison">
                     <div class="container">
                         <div id="comparison-selector-container"></div>
                         <div id="warning-container"></div>
                     </div>
-                    <form id ="tag-container" autocomplete="off"></form>
+                    <form id="tag-container" autocomplete="off"></form>
                 </div>
                 <svg id="barchart"></svg>
                 <svg id="linechart"></svg>
             </div>
         </div>
-        
+
         <div id="slider">
             <div class="col-sm-2">
                 <p id="value-range"></p>
@@ -248,30 +181,29 @@
                 <div id="slider-range"></div>
             </div>
         </div>
-    </div> 
 
-    <div id="tooltip"></div>
+        <div id="tooltip"></div>
 
-    <script src="js/d3.v6.min.js"></script>
-    <script src="https://unpkg.com/d3-simple-slider"></script>
-    <script src="js/leaflet.js"></script>
-    <script src="js/constants/indicators.js"></script>
-    <script src="js/constants/regions.js"></script>
-    <script src="js/constants/countries.js"></script>
-    <script src="js/constants/dispatcherEvents.js"></script>
-    <script src="js/constants/keyEventMapper.js"></script>
-    <script src="js/constants/colourPalette.js"></script>
-    <script src="js/regionMapper.js"></script>
-    <script src="js/selected.js"></script>
-    <script src="js/visualizations/geoMap.js"></script>
-    <script src="js/visualizations/barChart.js"></script>
-    <script src="js/visualizations/lineChart.js"></script>
-    <script src="js/visualizations/wedgeView.js"></script>
-    <script src="js/visualizations/yearSlider.js"></script>
-    <script src="js/widgets/focusAreaWidget.js"></script>
-    <script src="js/widgets/comparisonWidget.js"></script>
-    <script src="js/widgets/autocomplete.js"></script>
-    <script src="js/main.js"></script>
+        <script src="js/d3.v6.min.js"></script>
+        <script src="https://unpkg.com/d3-simple-slider"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/constants/indicators.js"></script>
+        <script src="js/constants/regions.js"></script>
+        <script src="js/constants/countries.js"></script>
+        <script src="js/constants/dispatcherEvents.js"></script>
+        <script src="js/constants/keyEventMapper.js"></script>
+        <script src="js/constants/colourPalette.js"></script>
+        <script src="js/regionMapper.js"></script>
+        <script src="js/selected.js"></script>
+        <script src="js/visualizations/geoMap.js"></script>
+        <script src="js/visualizations/barChart.js"></script>
+        <script src="js/visualizations/lineChart.js"></script>
+        <script src="js/visualizations/wedgeView.js"></script>
+        <script src="js/visualizations/yearSlider.js"></script>
+        <script src="js/widgets/focusAreaWidget.js"></script>
+        <script src="js/widgets/comparisonWidget.js"></script>
+        <script src="js/widgets/autocomplete.js"></script>
+        <script src="js/main.js"></script>
 </body>
 
 </html>
