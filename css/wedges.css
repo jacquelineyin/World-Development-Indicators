@@ -1,0 +1,43 @@
+#wedges { 
+    display: flex;
+  }
+  
+  table {
+  display: inline-block;
+    text-align: center;
+    border: 2px solid rgb(200, 200, 200);
+    border-radius: 5px;
+  }
+  
+  th { 
+    font-size: small;
+    text-align: left;
+  }
+  
+  td { 
+    font-size: xx-small;
+  }
+  
+  td[selected='true'] { 
+    font-weight: bold;
+  }
+  
+  td svg { 
+    display: block;
+    margin: auto;
+  }
+  
+  .c-arc[num="0"] { 
+    fill:lightskyblue;
+    border: 2px solid rgb(200, 200, 200);
+    opacity: 0.7;
+  }
+  
+  .w-arc[num="0"] { 
+    fill: black;
+    opacity: 0.3;
+  }
+  
+  td svg path { 
+    fill: none;
+  }

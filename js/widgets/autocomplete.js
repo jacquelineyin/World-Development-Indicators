@@ -122,10 +122,11 @@ class AutocompleteCreator {
         if (index > -1 && items) {
             // Simulate click on item
             items[index].click();
-        } else {
-            this.submitButton.click();
-            index = -1;
         }
+         
+        this.submitButton.click();
+        index = -1;
+        
         return index;
     }
 
@@ -218,6 +219,9 @@ class AutocompleteCreator {
             // Insert value of autocomplete item into input field
             this.inputElem.value = item.getElementsByTagName('input')[0].value;
 
+            this.submitButton.click();
+            index = -1;
+            
             this.closeAllLists();
         });
 
