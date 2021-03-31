@@ -73,6 +73,9 @@ class LineChart {
     vis.yAxisG = vis.chart.append('g')
       .attr('class', 'axis y-axis');
 
+    vis.title = vis.chart.append('g')
+    .attr('class', 'axis-title');
+
     // We need to make sure that the tracking area is on top of other chart elements
     vis.lines = vis.chart.append('g')
       .attr('class', 'lines');
@@ -94,13 +97,6 @@ class LineChart {
 
     vis.mouseG = vis.lines.append('g')
       .attr('class', 'mouse-over-effects');
-
-    vis.svg.append('text')
-      .attr('class', 'axis-title')
-      .attr('y', 20)
-      .attr('x', 10)
-      .attr('dy', '.71em')
-      .text('Total ' + vis.selected.indicator);
 
       vis.updateVis();
   }
@@ -154,6 +150,15 @@ class LineChart {
 
   renderVis() {
     let vis = this;
+
+    vis.title.selectAll('.y-axis-title')
+      .data(vis.formattedData, d => d.values)
+      .join('text')
+      .attr('class', 'y-axis-title')
+      .attr('y', -vis.config.margin.top + 10)
+      .attr('x', -vis.config.margin.left)
+      .attr('dy', '.71em')
+      .text('Total ' + vis.selected.indicator);
     
     vis.legend.selectAll('.legend-box')
       .data(vis.formattedData, d => d.values)
@@ -175,16 +180,10 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 75)
       .text(d => d.countryName);
 
-    const compareValues = vis.values.selectAll('g')
+    vis.values.selectAll('text')
       .data(vis.formattedData, d => d.values)
-      .join('g')
+      .join('text')
       .attr('class', 'value');
-
-    compareValues.append('text')
-      .attr('x', vis.width + 130)
-      .attr('y', (d, i) => {
-        return (i * 20) + 5
-      });
 
     // Add line path
     vis.countries.selectAll('.line')
@@ -213,12 +212,7 @@ class LineChart {
 
     mousePerLine.append('circle')
       .attr('r', 7)
-      .style('stroke', (d, i) => {
-        if(d.countryName === vis.selected.area.country) {
-          return 'gold'
-      } else {
-        return vis.colorScale(i);
-      }})
+      .style('stroke', (d, i) => vis.getColour(d, i))
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('opacity', '0');
@@ -271,8 +265,12 @@ class LineChart {
               d3.select(this).select('text')
                 .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
   
-              d3.selectAll('.value').select('text')
-                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
+              d3.select('.values').selectAll('.value')
+                .attr('x', vis.width + 130)
+                .attr('y', (d, i) => {
+                  return (i * 20) + 5
+                })
+                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
               
               if (currentYear) {
                 d3.select('.yearValue')
