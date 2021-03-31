@@ -8,6 +8,7 @@ const regionMapper = new RegionMapper();
 const regions = new Regions();
 const countries = new Countries();
 const dispatcherEvents = new DispatcherEvents();
+const colourPalette = new ColourPalette();
 const parseTime = d3.timeParse("%Y");
 
 // Initialize dispatcher that is used to orchestrate events
@@ -74,7 +75,11 @@ d3.csv('data/Dataset.csv').then(_data => {
 
   // Initialize bar chart
   barChart = new BarChart({
-    parentElement: '#barchart'
+    parentElement: '#barchart',
+    colour: {
+      selectedCountryBar: colourPalette.AQUA,
+      comparisonCountryBars: colourPalette.PINK,
+    }
   }, data, selected);
 
   // Initialize line chart
