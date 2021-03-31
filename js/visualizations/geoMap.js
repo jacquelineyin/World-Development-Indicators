@@ -98,7 +98,7 @@ class GeoMap {
 
       // Legend
       // https://leafletjs.com/examples/choropleth/
-      this.legend = L.control({position: 'bottomright'});
+      this.legend = L.control({position: 'bottomleft'});
 
       this.legend.onAdd = function (map) {
 
@@ -106,11 +106,15 @@ class GeoMap {
         bins = [1, 0.8, 0.6, 0.4, 0.2, NaN],
         labels = [];
 
-      // loop through our density intervals and generate a label with a colored square for each interval
+      // Loop through bins, adding a legend entry for each
       for (var i = 0; i < bins.length; i++) {
+        if (bins[i]) {
         div.innerHTML +=
             '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i> ' + (vis.indicatorScale.invert(bins[i])).toFixed(2) + '<br>';
+      } else { 
+        div.innerHTML += '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i>No data<br>';
       }
+    }
 
       return div;
     };
