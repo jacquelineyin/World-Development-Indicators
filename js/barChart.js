@@ -57,11 +57,14 @@ class BarChart {
       // Append axis groups
       vis.appendAxisGroups();
 
+      // Append legend group
+      vis.appendLegendGroup();
+
       // Update Vis
       vis.updateVis();
 
     }
-  
+
     updateVis() {
       let vis = this;
       
@@ -159,6 +162,35 @@ class BarChart {
 
       vis.yAxisG = vis.chart.append('g')
       .attr('class', 'axis y-axis y-axis-barchart');
+    }
+
+    /**
+     * Purpose: Appends a 'g' element to svg to hold legend
+     */
+    appendLegendGroup() {
+      let vis = this;
+
+      vis.legend = vis.svg.append('g')
+        .attr('class', 'legend')
+        .attr('width', vis.config.legendWidth)
+        .attr('height', vis.config.legendHeight)
+        .attr('transform', `translate(${vis.width + vis.config.margin.left + 30}, ${vis.config.margin.top})`);
+    }
+
+    renderLegend() {
+      let vis = this;
+
+      let yPadding = 17;
+  
+      // Add legend boxes
+      vis.renderLegendColourBoxes(yPadding);
+      // Add legend labels
+      vis.renderLegendElemLabels(yPadding);
+  
+    }
+
+    renderLegendColourBoxes(yPadding) {
+
     }
 
     /**
