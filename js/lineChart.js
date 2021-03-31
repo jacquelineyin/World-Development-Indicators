@@ -43,7 +43,8 @@ class LineChart {
     vis.xAxis = d3.axisBottom(vis.xScale)
       .tickSize(-vis.height - 4)
       .tickSizeOuter(0)
-      .tickPadding(10);
+      .tickPadding(10)
+      .tickFormat(d3.timeFormat('%Y'));
 
     vis.yAxis = d3.axisLeft(vis.yScale)
       .tickSize(-vis.width - 20)
@@ -64,11 +65,22 @@ class LineChart {
       .attr('class', 'axis x-axis')
       .attr('transform', `translate(0,${vis.height})`);
 
+      // Need to fix rotation
+      // .call(vis.xAxis)
+      //   .selectAll('text')
+      //   .attr('transform', 'translate(-10,10)rotate(-45)')
+      //   .style('text-anchor', 'end')
+      //   .style('fill', 'black');
+
     // Append y-axis group
     vis.yAxisG = vis.chart.append('g')
       .attr('class', 'axis y-axis');
 
     // We need to make sure that the tracking area is on top of other chart elements
+
+    vis.title = vis.chart.append('g')
+    .attr('class', 'axis-title');
+
     vis.lines = vis.chart.append('g')
       .attr('class', 'lines');
 
@@ -92,14 +104,7 @@ class LineChart {
 
     vis.mouseG = vis.lines.append('g')
       .attr('class', 'mouse-over-effects');
-
-    vis.svg.append('text')
-      .attr('class', 'axis-title')
-      .attr('y', 20)
-      .attr('x', 10)
-      .attr('dy', '.71em')
-      .text('Total ' + vis.selected.indicator);
-
+    
     vis.updateVis();
   }
 
@@ -131,7 +136,7 @@ class LineChart {
         vis.formattedData.push(obj);
       }
     });
-    // console.log(vis.formattedData);
+
     // Specificy x- and y-accessor functions
     vis.xValue = d => d.year;
     vis.yValue = d => d.value;
@@ -152,6 +157,15 @@ class LineChart {
 
   renderVis() {
     let vis = this;
+
+    vis.title.selectAll('.y-axis-title')
+      .data(vis.formattedData, d => d.values)
+      .join('text')
+      .attr('class', 'y-axis-title')
+      .attr('y', 20)
+      .attr('x', 10)
+      .attr('dy', '.71em')
+      .text('Total ' + vis.selected.indicator);
 
     vis.legend.selectAll('.legend-box')
       .data(vis.formattedData, d => d.values)
@@ -317,7 +331,7 @@ class LineChart {
       });
 
     // Update the axes
-    vis.xAxisG.call(vis.xAxis);
+    vis.xAxisG.call(vis.xAxis.ticks(d3.timeYear));
     vis.yAxisG.call(vis.yAxis);
   }
 }
