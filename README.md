@@ -1,21 +1,42 @@
-# CPSC 436V Project
-
+# CPSC 436V Project : World Development Indicators
 
 ## Table of Contents
+  - **[The Team](#the-team)**
   - **[Overview](#overview)**
+  - **[Dataset](#dataset)**
   - **[External Resources](#external-resources)**
       - [Data Sources](#data-sources)   
       - [Referenced Material](#referenced-material)
-  - **[Tools](#tools)**
-  - **[Pre-processing](#pre-processing)**
   
+## The Team
+Group 24:
+| Team Member | Github Id (School's) |
+|-------------|----------------------|
+|Amy          | amy2400              |
+|Brett        | bpasula              |
+|Jacqueline   | yjackie              |
+
+
 ## Overview
 Our project repo separates all visual components where the bar chart, line chart, map and wedges have their own css file. General styling all belongs in the style.css file. In our js folder, we have a constants, widgets and visualizations folder. The constants folder contains all constants used in our project. These constants include our colour palette colors, indicator names and country names. The widgets folder contains all the code for our selectors. The selectors include the selector for comparison areas and selecting the focus country. The visualizations file contains all code for our visualizations which include: bar chart, line chart, map, wedges and year slider. Aside from these three folders, all other files such as libraries reside in the js file. We created a new class in selected.js which keeps track of what values are currently selected. The selector class holds the value of selected country of focus and its region, selected comparison countries, selected indicators and selected time interval.
 
-## External Resources
-### Data Sources
+
+## Dataset
+### Sources
 - [Kaggle: Indicators.csv](https://www.kaggle.com/worldbank/world-development-indicators?select=Indicators.csv)
 - [Kaggle: continents2.csv](https://www.kaggle.com/andradaolteanu/country-mapping-iso-continent-region)
+
+### Pre-processing
+1. Filtered dataset `Indicators.csv` of all rows containing irrelevant `IndicatorName` values and created a temporary dataset `Dataset.csv` that held the results
+2. Joined two datasets (`Dataset.csv` and `continents2.csv`)
+3. From the result of the join, removed all rows that assigned anything other than a country to `CountryName` column (unless the value was "World")
+4. Finally, we populate missing years for {country, indicator} pairs and set the values as `NULL`
+5. **Note:** _For a more detailed breakdown of how we pre-processed our data, please refer to [the `README.md` in ./data](./data/README.md)_
+
+
+## External Resources
+### Data Sources
+- See [Dataset: Sources](#data-sources)
 
 ### Referenced Material
 ##### Data Processing
@@ -27,33 +48,28 @@ Our project repo separates all visual components where the bar chart, line chart
 - [Countries GeoJSON](https://datahub.io/core/geo-countries)
 - [Loading GeoJSON files in Leaflet with leaflet-ajax](https://gis.stackexchange.com/questions/68489/loading-external-geojson-file-into-leaflet-map)
 
-#### Year slider
+##### Year slider
 - [D3 Simple Slider](https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518)
 
-#### Multi-line chart
+##### Multi-line chart
 - [D3 Mouseover Multi-line Chart](https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91)
 - [Multi-line Chart Example](https://codesandbox.io/s/5ylwv650lx)
 - [Tooltip tracking by data points](https://stackoverflow.com/questions/42080051/d3-single-and-multi-line-chart-tooltips)
 
-#### Comparison Section
+##### Comparison Section
 - [W3School: How To - Autocomplete](https://www.w3schools.com/howto/howto_js_autocomplete.asp)
 - [Slack Overflow: Chrome ignores autocomplete="off"](https://stackoverflow.com/questions/12374442/chrome-ignores-autocomplete-off/32578659#32578659)
 - [W3School: How To - Contact Chips](https://www.w3schools.com/howto/howto_css_contact_chips.asp)
 
-#### Styling
+##### Styling
 - [A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
 - [A Simple Way to Make D3.js Charts Responsive](https://medium.com/@louisemoxy/a-simple-way-to-make-d3-js-charts-svgs-responsive-7afb04bc2e4b)
 - [D3-format](https://github.com/d3/d3-format#format)
 - [D3: Formatting tick value. To show B (Billion) instead of G (Giga)](https://stackoverflow.com/a/40774969)
 - [Viewbox](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox)
 
-## Dataset
-### Sources
-- See [External Resources: Data Sources](#data-sources)
+##### Colour Palette
+- [Cooler.co](https://coolors.co/.) for choosing a colour palette
+- [Cooler: Link to choosen colour palette](https://coolors.co/540d6e-ee4266-ffd23f-3bceac-1982c4)
+- [ColBlinder](https://www.color-blindness.com/coblis-color-blindness-simulator/) as a Colour Blindness Simulator
 
-### Pre-processing
-1. Filtered dataset `Indicators.csv` of all rows containing irrelevant `IndicatorName` values and created a temporary dataset `Dataset.csv` that held the results
-2. Joined two datasets (`Dataset.csv` and `continents2.csv`)
-3. From the result of the join, removed all rows that assigned anything other than a country to `CountryName` column (unless the value was "World")
-4. Finally, we populate missing years for {country, indicator} pairs and set the values as `NULL`
-5. **Note:** _For a more detailed breakdown of how we pre-processed our data, please refer to [the `README.md` in ./data](./data/README.md)_
