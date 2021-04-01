@@ -59,9 +59,6 @@ The data visualization for this project leverages data consolidated from the Wor
 
 ## Implementation
 ### Project File Structure
-
-
-
 Our project repo separates all visual components where the bar chart, line chart, map and wedges have their own css file. General styling all belongs in the style.css file. All stylesheets are under the `css` folder.
 
 In our `js` folder, we have a `constants`, `widgets` and `visualizations` folder. The `constants` folder contains all constants used in our project. These constants include our colour palette colors, indicator names and country names. 
@@ -73,6 +70,51 @@ The `visualizations` folder contains all code for our visualizations which inclu
 Aside from these three folders, all other files such as libraries and util classes reside in the `js` file. 
 
 A util file of particular use is `selected.js`. We created a new class in `selected.js` which keeps track of which values are currently selected. The selector class holds the value of selected country of focus and its region, selected comparison countries, selected indicators and selected time interval. This class is instantiated once in `main.js`, and that instance of the `selected` object is then fed into and shared across all views. When the instance of `selected` is updated and the view's `updateVis()` method gets called, the view updates as appropriate to reflect the change (if related to that view).
+
+```
+📦436v-project_g8y9a_r6s1b_s4g1b
+ ┣ 📂css
+ ┃ ┣ 📜barChart.css
+ ┃ ┣ 📜comparisonWidget.css
+ ┃ ┣ 📜focusAreaWidget.css
+ ┃ ┣ 📜leaflet.css
+ ┃ ┣ 📜lineChart.css
+ ┃ ┣ 📜map.css
+ ┃ ┣ 📜style.css
+ ┃ ┣ 📜wedges.css
+ ┃ ┗ 📜yearSlider.css
+ ┣ 📂data
+ ┃ ┣ ...
+ ┣ 📂images
+ ┃ ┣ ...
+ ┣ 📂js
+ ┃ ┣ 📂constants
+ ┃ ┃ ┣ 📜colourPalette.js
+ ┃ ┃ ┣ 📜countries.js
+ ┃ ┃ ┣ 📜dispatcherEvents.js
+ ┃ ┃ ┣ 📜indicators.js
+ ┃ ┃ ┣ 📜keyEventMapper.js
+ ┃ ┃ ┗ 📜regions.js
+ ┃ ┣ 📂visualizations
+ ┃ ┃ ┣ 📜barChart.js
+ ┃ ┃ ┣ 📜geoMap.js
+ ┃ ┃ ┣ 📜lineChart.js
+ ┃ ┃ ┣ 📜wedgeView.js
+ ┃ ┃ ┗ 📜yearSlider.js
+ ┃ ┣ 📂widgets
+ ┃ ┃ ┣ 📜autocomplete.js
+ ┃ ┃ ┣ 📜comparisonWidget.js
+ ┃ ┃ ┗ 📜focusAreaWidget.js
+ ┃ ┣ 📜d3.v6.min.js
+ ┃ ┣ 📜leaflet.js
+ ┃ ┣ 📜leaflet.js.map
+ ┃ ┣ 📜main.js
+ ┃ ┣ 📜regionMapper.js
+ ┃ ┗ 📜selected.js
+ ┣ 📜.gitignore
+ ┣ 📜index.html
+ ┗ 📜README.md
+ ```
 
 ### Current Status (as of March 31, 2021)
 #### High-level Tasks (Not fully inclusive)
