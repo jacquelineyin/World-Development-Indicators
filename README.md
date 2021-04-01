@@ -1,12 +1,34 @@
 # CPSC 436V Project : World Development Indicators
 
+## Notes to the TA:
+- There are a lot of `TODO` markers left in the comments as placeholders for where we would need to adjust our code for certain stretch goals. Please disregard them for M2.
+- Visualization designed for larger screens (preferably 1920px x 1080px) but some responsiveness has been implemented for screen sizes of min-width 1024px.
+- [Project Structure & Implementation below](#project-file-structure)
+
 ## Table of Contents
   - **[The Team](#the-team)**
   - **[Overview](#overview)**
+    - [Goal and Purpose](#goal-and-purpose)
   - **[Dataset](#dataset)**
+    - [Sources](#sources)
+    - [Pre-processing](#pre-processing)
+  - **[Implementation](#implementation)**
+    - [Project File Structure](#project-file-structure)
+    - [Current Status (as of March 31, 2021)](#current-status-as-of-march-31-2021)
+      - [High-level Tasks (Not fully inclusive)](#high-level-tasks-not-fully-inclusive)
+        - [**Complete:**](#complete)
+        - [**Todo**](#todo)
+        - [**Stretch Goals**](#stretch-goals)
   - **[External Resources](#external-resources)**
-      - [Data Sources](#data-sources)   
-      - [Referenced Material](#referenced-material)
+    - [Data Sources](#data-sources)
+    - [Referenced Material](#referenced-material)
+        - [Data Processing](#data-processing)
+        - [Map](#map)
+        - [Year slider](#year-slider)
+        - [Multi-line chart](#multi-line-chart)
+        - [Comparison Section](#comparison-section)
+        - [Styling](#styling)
+        - [Colour Palette](#colour-palette)
   
 ## The Team
 Group 24:
@@ -16,10 +38,11 @@ Group 24:
 |Brett        | bpasula              |
 |Jacqueline   | yjackie              |
 
-
 ## Overview
-Our project repo separates all visual components where the bar chart, line chart, map and wedges have their own css file. General styling all belongs in the style.css file. In our js folder, we have a constants, widgets and visualizations folder. The constants folder contains all constants used in our project. These constants include our colour palette colors, indicator names and country names. The widgets folder contains all the code for our selectors. The selectors include the selector for comparison areas and selecting the focus country. The visualizations file contains all code for our visualizations which include: bar chart, line chart, map, wedges and year slider. Aside from these three folders, all other files such as libraries reside in the js file. We created a new class in selected.js which keeps track of what values are currently selected. The selector class holds the value of selected country of focus and its region, selected comparison countries, selected indicators and selected time interval.
+### Goal and Purpose
+Inequality is, sadly, pervasive throughout all domains of life - and countries are not exempt. Countries fall under the categories of “developed” vs “developing”, with “developed” countries seeking to expand their sphere of influence by donating and funding the development of those that are “developing”. But what does that mean, exactly? What are the factors that determine whether a country is “developed” or “developing”, and how do countries fare on each indicator of development?
 
+The data visualization for this project leverages data consolidated from the World Bank and seeks to allow users to explore the different regions of the world and see how well they do in different areas of development as compared to a global average. Furthermore, we hope to allow users to investigate similarities or discrepancies between different areas of the world by juxtapositioning countries of interest in terms of indicators of development. 
 
 ## Dataset
 ### Sources
@@ -32,6 +55,54 @@ Our project repo separates all visual components where the bar chart, line chart
 3. From the result of the join, removed all rows that assigned anything other than a country to `CountryName` column (unless the value was "World")
 4. Finally, we populate missing years for {country, indicator} pairs and set the values as `NULL`
 5. **Note:** _For a more detailed breakdown of how we pre-processed our data, please refer to [the `README.md` in ./data](./data/README.md)_
+
+
+## Implementation
+### Project File Structure
+
+
+
+Our project repo separates all visual components where the bar chart, line chart, map and wedges have their own css file. General styling all belongs in the style.css file. All stylesheets are under the `css` folder.
+
+In our `js` folder, we have a `constants`, `widgets` and `visualizations` folder. The `constants` folder contains all constants used in our project. These constants include our colour palette colors, indicator names and country names. 
+
+The `widgets` folder contains all the code for our selectors. The selectors include the selector for comparison areas and selecting the focus country. 
+
+The `visualizations` folder contains all code for our visualizations which include: bar chart, line chart, map, wedges and year slider. 
+
+Aside from these three folders, all other files such as libraries and util classes reside in the `js` file. 
+
+A util file of particular use is `selected.js`. We created a new class in `selected.js` which keeps track of which values are currently selected. The selector class holds the value of selected country of focus and its region, selected comparison countries, selected indicators and selected time interval. This class is instantiated once in `main.js`, and that instance of the `selected` object is then fed into and shared across all views. When the instance of `selected` is updated and the view's `updateVis()` method gets called, the view updates as appropriate to reflect the change (if related to that view).
+
+### Current Status (as of March 31, 2021)
+#### High-level Tasks (Not fully inclusive)
+##### **Complete:**
+- [x] View: Choropleth Map (Basic)
+- [x] View: Pie Wedges (Basic)
+- [x] View: Bar-chart (Basic)
+- [x] View: Line-chart (Basic)
+- [x] View/UI widget: Year slider
+- [x] UI widget: Select Country Dropdown + Radio Buttons
+- [x] UI widget: Select Comparison Countries + Tags
+- [x] Link: Select Country --> Bar-chart, Line-chart, Wedges
+- [x] Link: Select Comparison --> Bar-chart, Line-chart
+- [x] Link: Wedges (Select Indicator) --> Bar-chart, Line-chart, Map
+- [x] Link: Year slider (Select Time Interval) --> Bar-chart, Line-chart, Wedges, Map
+##### **Todo**
+- [ ] Link: Select Country --> Map
+- [ ] Link: Bar-chart --> Line-chart
+- [ ] Widget: Bar-chart tooltip
+- [ ] Widget: Wedge tooltip
+- [ ] UI: Warning message when adding over 4 comparison countries
+- [ ] UI: Warning when trying to add invalid country as comparison country
+- [ ] UI: Move year slider to left and change to vertical slider
+- [ ] Others
+
+##### **Stretch Goals**
+- [ ] Link: Bar-chart --> Map 
+- [ ] Link: Wedge (ability to select more than one indicator?)
+- [ ] UI: Styling
+- [ ] Others
 
 
 ## External Resources
