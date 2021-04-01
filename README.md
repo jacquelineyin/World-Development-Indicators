@@ -1,8 +1,9 @@
 # CPSC 436V Project : World Development Indicators
 
-## Notes to the TA:
+## Notes to/for the TA:
 - There are a lot of `TODO` markers left in the comments as placeholders for where we would need to adjust our code for certain stretch goals. Please disregard them for M2.
 - Visualization designed for larger screens (preferably 1920px x 1080px) but some responsiveness has been implemented for screen sizes of min-width 1024px.
+- You have to scroll to the bottom to see and access the year slider (We will reposition the slider in M3) - sorry :(
 - [Project Structure & Implementation below](#project-file-structure)
 
 ## Table of Contents
@@ -43,6 +44,11 @@ Group 24:
 Inequality is, sadly, pervasive throughout all domains of life - and countries are not exempt. Countries fall under the categories of “developed” vs “developing”, with “developed” countries seeking to expand their sphere of influence by donating and funding the development of those that are “developing”. But what does that mean, exactly? What are the factors that determine whether a country is “developed” or “developing”, and how do countries fare on each indicator of development?
 
 The data visualization for this project leverages data consolidated from the World Bank and seeks to allow users to explore the different regions of the world and see how well they do in different areas of development as compared to a global average. Furthermore, we hope to allow users to investigate similarities or discrepancies between different areas of the world by juxtapositioning countries of interest in terms of indicators of development. 
+
+Screenshot 1:
+  - <img src="https://media.github.students.cs.ubc.ca/user/3011/files/58863d00-9255-11eb-9832-ceba52621c9b" width="700px"/>
+Screenshot 2:
+  - <img src="https://media.github.students.cs.ubc.ca/user/3011/files/591ed380-9255-11eb-8a40-2390d8a2361d" width="700px"/>
 
 ## Dataset
 ### Sources
@@ -135,6 +141,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [ ] Link: Bar-chart --> Line-chart
 - [ ] Widget: Bar-chart tooltip
 - [ ] Widget: Wedge tooltip
+- [ ] BugFix: Stacked rendering of Line-chart's y-axis title
 - [ ] UI: Warning message when adding over 4 comparison countries
 - [ ] UI: Warning when trying to add invalid country as comparison country
 - [ ] UI: Move year slider to left and change to vertical slider
