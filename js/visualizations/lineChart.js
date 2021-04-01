@@ -209,21 +209,33 @@ class LineChart {
       .attr('d', d => vis.line(d.values))
       .style('stroke', (d, i) => vis.getColour(d, i));
 
-
-    vis.circles.selectAll('circles')
-      .data(vis.formattedData, d => d.values)
-      .join('circle')
-      .style('fill',  (d, i) => vis.getColour(d, i))
+    vis.circles.selectAll('.circles')
+      .data(vis.formattedData)
+      .join('g')
+      .style('fill', (d, i) => vis.getColour(d, i))
       .selectAll('circle')
       .data(d => d.values)
-      .join(
-        update => update.selectAll('circle')
-          .attr('class', 'circle')
-          .append('circle')
-          .attr('r', 3)
-          .attr('cx', d => vis.xScale(d.year))
-          .attr('cy', d => vis.yScale(d.value))
-      );
+      .join('circle')
+      .attr('class', 'circle')
+      .attr('r', 3)
+      .attr('cx', d => vis.xScale(d.year))
+      .attr('cy', d => vis.yScale(d.value));
+
+
+    // vis.circles.selectAll('.circles')
+    //   .data(vis.formattedData, d => d.values)
+    //   .join('circle')
+    //   .style('fill',  (d, i) => vis.getColour(d, i))
+    //   .selectAll('circle')
+    //   .data(d => d.values)
+    //   .join(
+    //     update => update.selectAll('circle')
+    //       .attr('class', 'circle')
+    //       .append('circle')
+    //       .attr('r', 3)
+    //       .attr('cx', d => vis.xScale(d.year))
+    //       .attr('cy', d => vis.yScale(d.value))
+    //   );
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
