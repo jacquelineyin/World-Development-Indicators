@@ -117,7 +117,7 @@ class ComparisonWidget {
      */
     handleSubmitInput(event) {
         let inputValue = this.getInputValue();
-        inputValue = this.inputSanitizer.formatCountryNames(inputValue);
+        inputValue = this.inputSanitizer.formatCountryOrRegionNames(inputValue);
 
         let isCountry = this.regionMapper.getCountriesOfRegion(this.countries.WORLD).includes(inputValue);
         
