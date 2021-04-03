@@ -1,12 +1,18 @@
 class GeoMap {
 
-    constructor(_data, _geoJsonData, _selected) {
-      this.data = _data;
+    constructor(_data, _geoJsonData, _selected, _constants) {
       this.indicators = new Indicators();
+      this.data = _data;
       this.populationData = _data.filter(d => d.IndicatorName == this.indicators.POPULATION_TOTAL);
       this.geoJson = _geoJsonData;
+      this.defaultCoords = [36.1408, 5.3536],
       this.countries = this.geoJson.features.map(d => d.properties.ISO_A3);
       this.selected = _selected;
+      this.constants = _constants ||
+        {
+          countryCodeMapper : new CountryCodeMapper(),
+          countries : new Countries()
+        }
       this.initVis();
     }
 
@@ -22,7 +28,7 @@ class GeoMap {
     // Create SVG area, initialize scales and axes
     initVis() {
       // Initialize map and retrieve raster layer
-      this.map = L.map('map').setView([36.1408, 5.3536], 2);
+      this.map = L.map('map').setView(this.defaultCoords, 2);
       L.Icon.Default.imagePath = "images/";
       L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         zoomOffset: -1,
@@ -66,7 +72,7 @@ class GeoMap {
       for (let country of groupedData.keys()) { 
         if (this.countries.includes(country)) {
           if (indicatorsToNormalize.includes(this.selected.indicator)) { 
-          var normalizedByPopulationValue = groupedData.get(country) / groupedPopulationData.get(country); 
+          let normalizedByPopulationValue = groupedData.get(country) / groupedPopulationData.get(country); 
           groupedData.set(country, normalizedByPopulationValue);
           }
         } else {
@@ -96,6 +102,18 @@ class GeoMap {
           onEachFeature: this.onEachFeature
         }).addTo(this.map);
 
+
+
+      //TODO: zoom
+      let code = this.constants.countryCodeMapper.getCountryCode(this.selected.area.country)
+      this.geoJsonLayer.eachLayer(layer => {
+        if (layer.feature.properties.ISO_A3 === code) {;
+          this.map.fitBounds(layer.getBounds())
+        }
+      })
+
+
+
       // Legend
       // https://leafletjs.com/examples/choropleth/
       this.legend = L.control({position: 'bottomleft'});
@@ -108,7 +126,7 @@ class GeoMap {
         div.innerHTML += `${vis.selected.indicator}<br>`;
 
       // Loop through bins, adding a legend entry for each
-      for (var i = 0; i < bins.length; i++) {
+      for (let i = 0; i < bins.length; i++) {
         if (bins[i]) {
         div.innerHTML +=
             '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i> ' + (vis.indicatorScale.invert(bins[i])).toFixed(2) + '<br>';
@@ -123,6 +141,8 @@ class GeoMap {
     this.legend.addTo(this.map);
     }
 
+    // ---------------------------------------- Helper functions -------------------------------------- //
+
     styleFeature(feature) {
       return { 
         fillColor: GeoMap.getTileColor(feature.properties.indicatorValue),
@@ -131,5 +151,13 @@ class GeoMap {
         color: 'white',
         dashArray: '3'
       };
+    }
+
+    getGeoJsonObjOfCountry(country) {
+      let {countryCodeMapper} = this.constants;
+      let code = countryCodeMapper.getCountryCode(country);
+
+      let res = this.geoJson.features.filter(d => d.properties.ISO_A3 === code);
+      return res[0];
     }
   }
