@@ -15,6 +15,7 @@ class ComparisonWidget {
         this.regions = _constants.regions;
         this.dispatcherEvents = _constants.dispatcherEvents;
         this.dispatcher = _dispatcher;
+        this.inputSanitizer = new InputSanitizer();
     }
 
     /**
@@ -116,7 +117,7 @@ class ComparisonWidget {
      */
     handleSubmitInput(event) {
         let inputValue = this.getInputValue();
-        inputValue = this.capitalizeFirstLetterOnly(inputValue);
+        inputValue = this.inputSanitizer.formatCountryNames(inputValue);
 
         let isCountry = this.regionMapper.getCountriesOfRegion(this.countries.WORLD).includes(inputValue);
         
@@ -218,28 +219,6 @@ class ComparisonWidget {
         while (parentNode.firstChild) {
           parentNode.firstChild.remove();
         }
-    }
-
-    /**
-     * Purpose: Capitalizes the first letter of each word in given string
-     * @param {string} str 
-     * @returns {string} formatted string
-     */
-    capitalizeFirstLetterOnly(str) {
-      let words = str.split(' ');
-      let capitalizedWords = [];
-      let res = '';
-
-      for (let word of words) {
-          word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-          capitalizedWords.push(word);
-      }
-
-      for (let word of capitalizedWords) {
-        res = res + ' ' + word;
-      }
-
-      return res.trim();
     }
 
 }
