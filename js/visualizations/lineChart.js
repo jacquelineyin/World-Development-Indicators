@@ -81,22 +81,16 @@ class LineChart {
     vis.yAxisG = vis.chart.append('g')
       .attr('class', 'axis y-axis');
 
-    vis.title = vis.chart.append('g')
-    .attr('class', 'axis-title');
-
     // We need to make sure that the tracking area is on top of other chart elements
-
-    vis.title = vis.chart.append('g')
-    .attr('class', 'axis-title');
-
     vis.lines = vis.chart.append('g')
       .attr('class', 'lines');
 
     vis.countries = vis.lines.append('g')
       .attr('class', 'countries');
 
-    vis.circles = vis.lines.append('g')
-      .attr('class', 'circles')
+    // Need to fix redrawing
+    // vis.circles = vis.lines.append('g')
+    //   .attr('class', 'circles')
 
     vis.legend = vis.chart.append('g')
       .attr('class', 'legend');
@@ -166,13 +160,14 @@ class LineChart {
   renderVis() {
     let vis = this;
 
-    vis.title.selectAll('.y-axis-title')
-      .data(vis.formattedData, d => d.values)
+    vis.chart.selectAll('.y-axis-title')
+      .data([vis.selected.indicator])
       .join('text')
       .attr('class', 'y-axis-title')
       .attr('y', -vis.config.margin.top + 10)
       .attr('x', -vis.config.margin.left)
       .attr('dy', '.71em')
+      .style('font-weight', 'bold')
       .text('Total ' + vis.selected.indicator);
     
     vis.legend.selectAll('.legend-box')
@@ -209,17 +204,19 @@ class LineChart {
       .attr('d', d => vis.line(d.values))
       .style('stroke', (d, i) => vis.getColour(d, i));
 
-    vis.circles.selectAll('.circles')
-      .data(vis.formattedData)
-      .join('g')
-      .style('fill', (d, i) => vis.getColour(d, i))
-      .selectAll('circle')
-      .data(d => d.values)
-      .join('circle')
-      .attr('class', 'circle')
-      .attr('r', 3)
-      .attr('cx', d => vis.xScale(d.year))
-      .attr('cy', d => vis.yScale(d.value));
+
+    // Need to fix redrawing
+    // vis.circles.selectAll('.circles')
+    //   .data(vis.formattedData)
+    //   .join('g')
+    //   .style('fill', (d, i) => vis.getColour(d, i))
+    //   .selectAll('circle')
+    //   .data(d => d.values)
+    //   .join('circle')
+    //   .attr('class', 'circle')
+    //   .attr('r', 3)
+    //   .attr('cx', d => vis.xScale(d.year))
+    //   .attr('cy', d => vis.yScale(d.value));
 
 
     // vis.circles.selectAll('.circles')
