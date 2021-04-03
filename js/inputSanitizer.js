@@ -4,7 +4,7 @@ class InputSanitizer {
      * @param {string} input 
      * @returns {string} formatted string
      */
-    formatCountryNames(input) {
+    formatCountryOrRegionNames(input) {
     let words = input.split(' ');
     let capitalizedWords = [];
     let res = '';

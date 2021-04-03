@@ -34,7 +34,7 @@
      */
     addComparisonArea(countryOrRegion) {
         // countryOrRegion = this.capitalizeFirstLetterOnly(countryOrRegion);
-        countryOrRegion = this.inputSanitizer.formatCountryNames(countryOrRegion);
+        countryOrRegion = this.inputSanitizer.formatCountryOrRegionNames(countryOrRegion);
 
         let isFocusArea = this.area.region === countryOrRegion || this.area.country === countryOrRegion;
         let isComparisonListFull = this.comparisonAreas.length >= 4;
@@ -94,7 +94,7 @@
      * @param {Object} area = {region: "", country: ""} 
      */
     setArea({region, country}) {
-        this.area.region = !region ? this.area.region : this.inputSanitizer.formatCountryNames(region);
+        this.area.region = !region ? this.area.region : this.inputSanitizer.formatCountryOrRegionNames(region);
         this.setCountry(country);
 
         // If area was previously in Comparison list, remove
@@ -110,7 +110,7 @@
      */
     setCountry(country) {
         if (country) {
-            country = this.inputSanitizer.formatCountryNames(country);
+            country = this.inputSanitizer.formatCountryOrRegionNames(country);
             let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
             
             if (countriesInSelectedRegion.includes(country)) {
@@ -160,10 +160,10 @@
      */
     updateAllSelectedAreas(area, comparisonAreas) {
         let {region, country} = area;
-        let {formatCountryNames} = this.inputSanitizer;
+        let {formatCountryOrRegionNames} = this.inputSanitizer;
 
-        region = formatCountryNames(region);
-        country = formatCountryNames(country);
+        region = formatCountryOrRegionNames(region);
+        country = formatCountryOrRegionNames(country);
  
         this.allSelectedAreas = country !== '' ? [country, ...comparisonAreas] : [region, ...comparisonAreas];
     }
