@@ -68,14 +68,12 @@ class LineChart {
     // Append empty x-axis group and move it to the bottom of the chart
     vis.xAxisG = vis.chart.append('g')
       .attr('class', 'axis x-axis')
-      .attr('transform', `translate(0,${vis.height})`);
-
-      // Need to fix rotation
-      // .call(vis.xAxis)
-      // .selectAll('text')
-      // .attr('transform', 'translate(-10,10)rotate(-45)')
-      // .style('text-anchor', 'end')
-      // .style('fill', 'black');
+      .attr('transform', `translate(0,${vis.height})`)
+            .call(vis.xAxis)
+      .selectAll('text')
+      .attr('transform', 'translate(-10,10)rotate(-45)')
+      .style('text-anchor', 'end')
+      .style('fill', 'black');
 
     // Append y-axis group
     vis.yAxisG = vis.chart.append('g')
@@ -120,7 +118,7 @@ class LineChart {
     const selectedYears = vis.selected.selectedYears;
     const filteredSelectedData = vis.data.filter(d => d.IndicatorName === selectedIndicator
       && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
-
+    const negativeDomains = ["Net official development assistance and official aid received (current US$)", "Inflation, GDP deflator (annual %)"];
     // group data by country
     const countryGroups = d3.groups(filteredSelectedData, d => d.CountryName);
 
@@ -151,8 +149,8 @@ class LineChart {
 
     // Set the scale input domains
     vis.colorScale.domain(vis.selected.allSelectedAreas);
-    vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
     vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
+    vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
 
     vis.renderVis();
   }
@@ -243,7 +241,7 @@ class LineChart {
       .attr('class', 'mouse-line')
       .style('stroke', 'black')
       .style('stroke-width', '1px')
-      .style('opacity', '0');
+      .style('display', 'none');
 
     const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
       .data(vis.formattedData, d => d.values)
@@ -255,7 +253,7 @@ class LineChart {
       .style('stroke', (d, i) => vis.getColour(d, i))
       .style('fill', 'none')
       .style('stroke-width', '1px')
-      .style('opacity', '0');
+      .style('display', 'none');
 
     mousePerLine.append('text')
       .attr('class', 'mouse-text')
@@ -266,29 +264,29 @@ class LineChart {
       .attr('height', vis.height)
       .attr('fill', 'none')
       .attr('pointer-events', 'all')
-      .on('mouseout', () => { // on mouse out hide line, circles and text
+      .on('mouseleave', () => { // on mouse out hide line, circles and text
         d3.select('.mouse-line')
-          .style('opacity', '0');
+          .style('display', 'none');
         d3.selectAll('.mouse-per-line circle')
-          .style('opacity', '0');
+        .style('display', 'none');
         d3.selectAll('.mouse-per-line text')
-          .style('opacity', '0');
+        .style('display', 'none');
         d3.selectAll('.value')
-          .style('opacity', '0');
+        .style('display', 'none');
         d3.select('.yearValue')
-          .style('opacity', '0');
+        .style('display', 'none');
       })
-      .on('mouseover', () => { // on mouse in show line, circles and text
+      .on('mouseenter', () => { // on mouse in show line, circles and text
         d3.select('.mouse-line')
-          .style('opacity', '1');
+          .style('display', 'block');
         d3.selectAll('.mouse-per-line circle')
-          .style('opacity', '1');
+        .style('display', 'block');
         d3.selectAll('.mouse-per-line text')
-          .style('opacity', '1');
+        .style('display', 'block');
         d3.selectAll('.value')
-          .style('opacity', '1');
+        .style('display', 'block');
         d3.select('.yearValue')
-          .style('opacity', '1');
+        .style('display', 'block');
       })
       .on('mousemove', function (event) { // mouse moving over canvas
         const mouse = d3.pointer(event, this)[0];
