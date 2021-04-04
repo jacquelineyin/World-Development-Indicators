@@ -13,8 +13,8 @@ class LineChart {
                 selectedArea: 'blue',
                 otherAreas: d3.schemeCategory10,
               },
-      containerWidth: _config.containerWidth || 1000,
-      containerHeight: _config.containerHeight || 400,
+      containerWidth: _config.containerWidth || 1500,
+      containerHeight: _config.containerHeight || 600,
       margin: _config.margin || { top: 50, right: 300, bottom: 110, left: 50 }
     }
     this.selected = _selectedItems;
@@ -67,13 +67,13 @@ class LineChart {
 
     // Append empty x-axis group and move it to the bottom of the chart
     vis.xAxisG = vis.chart.append('g')
-      .attr('class', 'axis x-axis')
-      .attr('transform', `translate(0,${vis.height})`)
-            .call(vis.xAxis)
-      .selectAll('text')
-      .attr('transform', 'translate(-10,10)rotate(-45)')
-      .style('text-anchor', 'end')
-      .style('fill', 'black');
+      .attr('class', 'axis x-axis linechart')
+      .attr('transform', `translate(0,${vis.height})`);
+      //       .call(vis.xAxis)
+      // .selectAll('text')
+      // .attr('transform', 'translate(-10,10)rotate(-45)')
+      // .style('text-anchor', 'end')
+      // .style('fill', 'black');
 
     // Append y-axis group
     vis.yAxisG = vis.chart.append('g')
