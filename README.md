@@ -169,6 +169,9 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [Loading GeoJSON files in Leaflet with leaflet-ajax](https://gis.stackexchange.com/questions/68489/loading-external-geojson-file-into-leaflet-map)
 <!-- - Edit to have better names -->
 - [Zooming to a country](https://stackoverflow.com/questions/42839380/how-to-auto-zoom-to-a-polygon-in-leaflet)
+- [Leaflet: GeoJSON layer documentation](https://leafletjs.com/reference-1.7.1.html#geojson)
+- [Stack Exchange: Create FeatureCollection from GeoJSON...](https://gis.stackexchange.com/questions/300331/create-featurecollection-from-geojson-containing-list-of-features)
+- [Stack Exchange: Getting bounds of layer group in leaflet](https://gis.stackexchange.com/questions/180678/how-do-i-get-the-bounds-of-a-layergroup-in-leaflet/180680)
 
 ##### Year slider
 - [D3 Simple Slider](https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518)
