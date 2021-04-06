@@ -87,8 +87,8 @@ class LineChart {
       .attr('class', 'countries');
 
     // Need to fix redrawing
-    // vis.circles = vis.lines.append('g')
-    //   .attr('class', 'circles')
+    vis.circles = vis.lines.append('g')
+      .attr('class', 'circles')
 
     vis.legend = vis.chart.append('g')
       .attr('class', 'legend');
@@ -204,17 +204,17 @@ class LineChart {
 
 
     // Need to fix redrawing
-    // vis.circles.selectAll('.circles')
-    //   .data(vis.formattedData)
-    //   .join('g')
-    //   .style('fill', (d, i) => vis.getColour(d, i))
-    //   .selectAll('circle')
-    //   .data(d => d.values)
-    //   .join('circle')
-    //   .attr('class', 'circle')
-    //   .attr('r', 3)
-    //   .attr('cx', d => vis.xScale(d.year))
-    //   .attr('cy', d => vis.yScale(d.value));
+    vis.circles.selectAll('.circles')
+      .data(vis.formattedData)
+      .join('g')
+      .style('fill', (d, i) => vis.getColour(d, i))
+      .selectAll('circle')
+      .data(d => d.values)
+      .join('circle')
+      .attr('class', 'circle')
+      .attr('r', 3)
+      .attr('cx', d => vis.xScale(d.year))
+      .attr('cy', d => vis.yScale(d.value));
 
 
     // vis.circles.selectAll('.circles')
