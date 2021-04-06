@@ -104,21 +104,8 @@ class GeoMap {
           onEachFeature: this.onEachFeature
         }).addTo(this.map);
 
-      let codes = this.constants.countryCodeMapper.getCountryCodes(this.selected.allSelectedAreas);
-      
-
-      //TODO: zoom
-      console.log(this.geoJson);
-
-      let code = this.constants.countryCodeMapper.getCountryCode(this.selected.area.country)
-      this.geoJsonLayer.eachLayer(layer => {
-        if (layer.feature.properties.ISO_A3 === code) {
-          console.log(layer.getBounds())
-          this.map.fitBounds(layer.getBounds())
-        }
-      })
-
-
+      // Map focus on selected areas
+      this.fitMapBoundsToSelectedAreas();
 
       // Legend
       // https://leafletjs.com/examples/choropleth/
@@ -159,17 +146,30 @@ class GeoMap {
       };
     }
 
-    getGeoJsonObjOfCountry(country) {
-      let {countryCodeMapper} = this.constants;
-      let code = countryCodeMapper.getCountryCode(country);
-
-      let res = this.geoJson.features.filter(d => d.properties.ISO_A3 === code);
-      return res[0];
+    /**
+     * Purpose: Fits bounds of map to selected countries (.: focusing on countries of interest)
+     */
+    fitMapBoundsToSelectedAreas() {
+      let geoJsonOfSelected = this.createGeoJsonFeature(this.selected.allSelectedAreas);
+      let selectedGeoJsonLayer = L.geoJson(geoJsonOfSelected);
+      this.map.fitBounds(selectedGeoJsonLayer.getBounds());
     }
 
+    /**
+     * Purpose: Returns a GeoJSON featureCollections object with 
+     *          a "features" array of geoJSONs of selected countries only
+     * @param {Array} countries : an array of country names/strings
+     * @returns {Object} : GeoJSON features object
+     */
     createGeoJsonFeature(countries) {
-      let codes = this.constants.countryCodeMapper.getCountryCodes(this.selected.allSelectedAreas);
+      let codes = this.constants.countryCodeMapper.getCountryCodes(countries);
+      let geoJsonArray = this.geoJson.features.filter(d => codes.includes(d.properties.ISO_A3));
 
-      
+      let geoJsonFeatures = {
+        "type": "FeatureCollection",
+        "features": geoJsonArray
+      }
+
+      return geoJsonFeatures;
     }
   }
