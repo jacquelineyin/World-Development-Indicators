@@ -167,6 +167,8 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [436V Leaflet example](https://codesandbox.io/s/vigilant-worker-9ohh6?file=/js/main.js )
 - [Countries GeoJSON](https://datahub.io/core/geo-countries)
 - [Loading GeoJSON files in Leaflet with leaflet-ajax](https://gis.stackexchange.com/questions/68489/loading-external-geojson-file-into-leaflet-map)
+<!-- - Edit to have better names -->
+- [Zooming to a country](https://stackoverflow.com/questions/42839380/how-to-auto-zoom-to-a-polygon-in-leaflet)
 
 ##### Year slider
 - [D3 Simple Slider](https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518)
