@@ -211,11 +211,28 @@ class CountryCodeMapper {
         this.ZIMBABWE = 'ZWE'
     }
 
+    /**
+     * Purpose: Returns ISO_A3 code of a country given its country name
+     * @param {string} country 
+     * @returns {string}
+     */
     getCountryCode(country) {
         const key = this.countries.getKey(country);
         return this[key];
     }
 
-
+    /**
+     * Purpose: Returns an array of ISO_A3 country codes in the order of the countries given
+     * @param {Array} countries = Array of strings representing country names
+     * @returns {Array} of strings
+     */
+    getCountryCodes(countries) {
+        let codes = [];
+        for (let country of countries) {
+            let code = this.getCountryCode(country);
+            codes.push(code);
+        }
+        return codes;
+    }
     
 }

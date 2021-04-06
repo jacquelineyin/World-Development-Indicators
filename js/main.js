@@ -115,6 +115,7 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   comparisonWidget.updateTags();
 
   wedgeView.updateVis();
+  map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
 }); 

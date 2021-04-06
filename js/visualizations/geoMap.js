@@ -40,10 +40,12 @@ class GeoMap {
       // Initialize indicator scale
       this.indicatorScale = d3.scaleLinear()
         .range([0,1]);
+
     }
   
     // Prepare data and scales
-    updateVis() {
+    updateVis() {     
+     
       // If a GeoJSON layer already exists, remove it
       if (this.geoJsonLayer) {
         this.map.removeLayer(this.geoJsonLayer);
@@ -102,12 +104,16 @@ class GeoMap {
           onEachFeature: this.onEachFeature
         }).addTo(this.map);
 
-
+      let codes = this.constants.countryCodeMapper.getCountryCodes(this.selected.allSelectedAreas);
+      
 
       //TODO: zoom
+      console.log(this.geoJson);
+
       let code = this.constants.countryCodeMapper.getCountryCode(this.selected.area.country)
       this.geoJsonLayer.eachLayer(layer => {
-        if (layer.feature.properties.ISO_A3 === code) {;
+        if (layer.feature.properties.ISO_A3 === code) {
+          console.log(layer.getBounds())
           this.map.fitBounds(layer.getBounds())
         }
       })
@@ -159,5 +165,11 @@ class GeoMap {
 
       let res = this.geoJson.features.filter(d => d.properties.ISO_A3 === code);
       return res[0];
+    }
+
+    createGeoJsonFeature(countries) {
+      let codes = this.constants.countryCodeMapper.getCountryCodes(this.selected.allSelectedAreas);
+
+      
     }
   }
