@@ -4,6 +4,7 @@
   min-height: 30%;
   flex-basis: auto;
   flex-shrink: 0;
+  background: #CAD2D3;
 }
 
 .info {
