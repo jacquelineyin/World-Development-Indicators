@@ -69,11 +69,6 @@ class LineChart {
     vis.xAxisG = vis.chart.append('g')
       .attr('class', 'axis x-axis linechart')
       .attr('transform', `translate(0,${vis.height})`);
-      //       .call(vis.xAxis)
-      // .selectAll('text')
-      // .attr('transform', 'translate(-10,10)rotate(-45)')
-      // .style('text-anchor', 'end')
-      // .style('fill', 'black');
 
     // Append y-axis group
     vis.yAxisG = vis.chart.append('g')
@@ -118,7 +113,7 @@ class LineChart {
     const selectedYears = vis.selected.selectedYears;
     const filteredSelectedData = vis.data.filter(d => d.IndicatorName === selectedIndicator
       && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
-    const negativeDomains = ["Net official development assistance and official aid received (current US$)", "Inflation, GDP deflator (annual %)"];
+
     // group data by country
     const countryGroups = d3.groups(filteredSelectedData, d => d.CountryName);
 
@@ -149,8 +144,8 @@ class LineChart {
 
     // Set the scale input domains
     vis.colorScale.domain(vis.selected.allSelectedAreas);
-    vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
     vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
+    vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
 
     vis.renderVis();
   }
@@ -201,12 +196,12 @@ class LineChart {
       .attr('class', 'line')
       .attr('d', d => vis.line(d.values))
       .style('stroke', (d, i) => vis.getColour(d, i));
-
-
-    // Need to fix redrawing
-    vis.circles.selectAll('.circles')
+    
+    // Add data points(dots) on line
+    vis.circles.selectAll('.circle-group')
       .data(vis.formattedData)
       .join('g')
+      .attr('class', 'circle-group')
       .style('fill', (d, i) => vis.getColour(d, i))
       .selectAll('circle')
       .data(d => d.values)
@@ -215,22 +210,6 @@ class LineChart {
       .attr('r', 3)
       .attr('cx', d => vis.xScale(d.year))
       .attr('cy', d => vis.yScale(d.value));
-
-
-    // vis.circles.selectAll('.circles')
-    //   .data(vis.formattedData, d => d.values)
-    //   .join('circle')
-    //   .style('fill',  (d, i) => vis.getColour(d, i))
-    //   .selectAll('circle')
-    //   .data(d => d.values)
-    //   .join(
-    //     update => update.selectAll('circle')
-    //       .attr('class', 'circle')
-    //       .append('circle')
-    //       .attr('r', 3)
-    //       .attr('cx', d => vis.xScale(d.year))
-    //       .attr('cy', d => vis.yScale(d.value))
-    //   );
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
@@ -301,14 +280,14 @@ class LineChart {
             if (item) {
               const currentYear = item.Year;
               d3.select(this).select('text')
-                .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
+                .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(2)));
 
               d3.select('.values').selectAll('.value')
                 .attr('x', vis.width + 130)
                 .attr('y', (d, i) => {
                   return (i * 20) + 5
                 })
-                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
+                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(2)));
               
               if (currentYear) {
                 d3.select('.yearValue')
