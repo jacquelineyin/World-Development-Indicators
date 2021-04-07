@@ -35,7 +35,7 @@ class YearSlider {
     // Initialize axes
     vis.xAxisContext = d3.axisBottom(vis.xScaleContext)
       .tickSizeOuter(0)
-      .ticks(25);
+      .ticks(52);
 
     // Define size of SVG drawing area
     vis.svg = d3.select(vis.config.parentElement)
@@ -44,10 +44,12 @@ class YearSlider {
 
     // Append context group with x- and y-axes
     vis.context = vis.svg.append('g')
-        .attr('transform', `translate(200,100)rotate(90)`);
+    .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+
+        //.attr('transform', `translate(200,100)rotate(90)`);
 
     vis.xAxisContextG = vis.context.append('g')
-        .attr('class', 'axis x-axis')
+        .attr('class', 'axis x-axis slider')
         .attr('transform', `translate(0,20)`);
 
     vis.brushG = vis.context.append('g')
@@ -55,6 +57,7 @@ class YearSlider {
 
 
     // Initialize brush component
+
     vis.brush = d3.brushX()
         .extent([[0, 0], [vis.config.width, vis.config.contextHeight]])
         .on('brush', function({selection}) {
@@ -98,6 +101,7 @@ class YearSlider {
   /**
    * React to brush events
    */
+
   brushed(selection) {
     let vis = this;
 
@@ -111,11 +115,23 @@ class YearSlider {
       for (let year = minYear; year <= maxYear; year++) {
         selectedYears.push(year.toString());
       }
+      console.log(selectedYears);
 
       vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, this, selectedYears);
 
+      const d0 = selection.map(vis.xScaleContext.invert)
+      const d1 = d0.map(d3.timeMonth.round);
+
+    // If empty when rounded, use floor & ceil instead.
+    if (d1[0] >= d1[1]) {
+      d1[0] = d3.timeMonth.floor(d0[0]);
+      d1[1] = d3.timeMonth.offset(d1[0]);
+    }
+
+    d3.select(this).call(vis.brush.move, d1.map(vis.xScaleContext.invert));
+
     } else {
-      // Reset x-scale of the focus view (full time period)
+            // Reset x-scale of the focus view (full time period)
       //vis.xScaleFocus.domain(vis.xScaleContext.domain());
     }
   }

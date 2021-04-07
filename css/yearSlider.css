@@ -1,3 +1,9 @@
+g.axis.x-axis.slider g.tick > text {
+  transform: rotate(-45deg);
+  text-anchor: end;
+  fill: black;
+} 
+
 /* Axes */
 .axis line {
   fill: none;
