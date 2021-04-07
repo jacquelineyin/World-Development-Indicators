@@ -13,9 +13,9 @@ class LineChart {
                 selectedArea: 'blue',
                 otherAreas: d3.schemeCategory10,
               },
-      containerWidth: _config.containerWidth || 1000,
-      containerHeight: _config.containerHeight || 400,
-      margin: _config.margin || { top: 50, right: 300, bottom: 70, left: 50 }
+      containerWidth: _config.containerWidth || 1500,
+      containerHeight: _config.containerHeight || 600,
+      margin: _config.margin || { top: 50, right: 300, bottom: 110, left: 50 }
     }
     this.selected = _selectedItems;
     this.data = _data;
@@ -48,7 +48,8 @@ class LineChart {
     vis.xAxis = d3.axisBottom(vis.xScale)
       .tickSize(-vis.height - 4)
       .tickSizeOuter(0)
-      .tickPadding(10);
+      .tickPadding(10)
+      .tickFormat(d3.timeFormat('%Y'));
 
     vis.yAxis = d3.axisLeft(vis.yScale)
       .tickSize(-vis.width - 20)
@@ -66,15 +67,12 @@ class LineChart {
 
     // Append empty x-axis group and move it to the bottom of the chart
     vis.xAxisG = vis.chart.append('g')
-      .attr('class', 'axis x-axis')
+      .attr('class', 'axis x-axis linechart')
       .attr('transform', `translate(0,${vis.height})`);
 
     // Append y-axis group
     vis.yAxisG = vis.chart.append('g')
       .attr('class', 'axis y-axis');
-
-    vis.title = vis.chart.append('g')
-    .attr('class', 'axis-title');
 
     // We need to make sure that the tracking area is on top of other chart elements
     vis.lines = vis.chart.append('g')
@@ -82,6 +80,10 @@ class LineChart {
 
     vis.countries = vis.lines.append('g')
       .attr('class', 'countries');
+
+    // Need to fix redrawing
+    vis.circles = vis.lines.append('g')
+      .attr('class', 'circles')
 
     vis.legend = vis.chart.append('g')
       .attr('class', 'legend');
@@ -151,13 +153,14 @@ class LineChart {
   renderVis() {
     let vis = this;
 
-    vis.title.selectAll('.y-axis-title')
-      .data(vis.formattedData, d => d.values)
+    vis.chart.selectAll('.y-axis-title')
+      .data([vis.selected.indicator])
       .join('text')
       .attr('class', 'y-axis-title')
       .attr('y', -vis.config.margin.top + 10)
       .attr('x', -vis.config.margin.left)
       .attr('dy', '.71em')
+      .style('font-weight', 'bold')
       .text('Total ' + vis.selected.indicator);
     
     vis.legend.selectAll('.legend-box')
@@ -167,7 +170,7 @@ class LineChart {
       .attr('x', (d, i) => {
         return (i * 200) + 10;
       })
-      .attr('y', vis.config.containerHeight - 85)
+      .attr('y', vis.config.containerHeight - 75)
       .attr('width', 10)
       .attr('height', 10)
       .style('fill', (d, i) => vis.getColour(d, i));
@@ -177,7 +180,7 @@ class LineChart {
       .join('text')
       .attr('class', 'box-label')
       .attr('x', (d, i) => (i * 200) + 25)
-      .attr('y', vis.config.containerHeight - 75)
+      .attr('y', vis.config.containerHeight - 65)
       .text(d => d.countryName);
 
     vis.values.selectAll('text')
@@ -193,6 +196,20 @@ class LineChart {
       .attr('class', 'line')
       .attr('d', d => vis.line(d.values))
       .style('stroke', (d, i) => vis.getColour(d, i));
+    
+    // Add data points(dots) on line
+    vis.circles.selectAll('.circle-group')
+      .data(vis.formattedData)
+      .join('g')
+      .attr('class', 'circle-group')
+      .style('fill', (d, i) => vis.getColour(d, i))
+      .selectAll('circle')
+      .data(d => d.values)
+      .join('circle')
+      .attr('class', 'circle')
+      .attr('r', 3)
+      .attr('cx', d => vis.xScale(d.year))
+      .attr('cy', d => vis.yScale(d.value));
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
@@ -203,7 +220,7 @@ class LineChart {
       .attr('class', 'mouse-line')
       .style('stroke', 'black')
       .style('stroke-width', '1px')
-      .style('opacity', '0');
+      .style('display', 'none');
 
     const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
       .data(vis.formattedData, d => d.values)
@@ -215,7 +232,7 @@ class LineChart {
       .style('stroke', (d, i) => vis.getColour(d, i))
       .style('fill', 'none')
       .style('stroke-width', '1px')
-      .style('opacity', '0');
+      .style('display', 'none');
 
     mousePerLine.append('text')
       .attr('class', 'mouse-text')
@@ -226,29 +243,29 @@ class LineChart {
       .attr('height', vis.height)
       .attr('fill', 'none')
       .attr('pointer-events', 'all')
-      .on('mouseout', () => { // on mouse out hide line, circles and text
+      .on('mouseleave', () => { // on mouse out hide line, circles and text
         d3.select('.mouse-line')
-          .style('opacity', '0');
+          .style('display', 'none');
         d3.selectAll('.mouse-per-line circle')
-          .style('opacity', '0');
+        .style('display', 'none');
         d3.selectAll('.mouse-per-line text')
-          .style('opacity', '0');
+        .style('display', 'none');
         d3.selectAll('.value')
-          .style('opacity', '0');
+        .style('display', 'none');
         d3.select('.yearValue')
-          .style('opacity', '0');
+        .style('display', 'none');
       })
-      .on('mouseover', () => { // on mouse in show line, circles and text
+      .on('mouseenter', () => { // on mouse in show line, circles and text
         d3.select('.mouse-line')
-          .style('opacity', '1');
+          .style('display', 'block');
         d3.selectAll('.mouse-per-line circle')
-          .style('opacity', '1');
+        .style('display', 'block');
         d3.selectAll('.mouse-per-line text')
-          .style('opacity', '1');
+        .style('display', 'block');
         d3.selectAll('.value')
-          .style('opacity', '1');
+        .style('display', 'block');
         d3.select('.yearValue')
-          .style('opacity', '1');
+        .style('display', 'block');
       })
       .on('mousemove', function (event) { // mouse moving over canvas
         const mouse = d3.pointer(event, this)[0];
@@ -263,34 +280,35 @@ class LineChart {
             if (item) {
               const currentYear = item.Year;
               d3.select(this).select('text')
-                .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(0)));
-  
+                .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(2)));
+
               d3.select('.values').selectAll('.value')
                 .attr('x', vis.width + 130)
                 .attr('y', (d, i) => {
                   return (i * 20) + 5
                 })
-                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(0)));
+                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(2)));
               
               if (currentYear) {
                 d3.select('.yearValue')
                   .text(currentYear);
               }
-  
+
               vis.svg.select('.mouse-line')
                 .attr('d', function () {
                   var data = 'M' + vis.xScale(item.year) + ',' + vis.height;
                   data += ' ' + vis.xScale(item.year) + ',' + 0;
                   return data;
                 });
-  
+
               return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
-            } return null;
+            }
+            return null;
           });
       });
 
     // Update the axes
-    vis.xAxisG.call(vis.xAxis);
+    vis.xAxisG.call(vis.xAxis.ticks(d3.timeYear));
     vis.yAxisG.call(vis.yAxis);
   }
 
