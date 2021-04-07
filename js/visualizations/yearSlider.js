@@ -8,58 +8,115 @@ class YearSlider {
   constructor(_config, _data, _dispatcher, _dispatcherEvents) {
     this.config = {
       parentElement: _config.parentElement,
-      width: 1500,
-      height: 150,
-      margin: { top: 10, right: 10, bottom: 100, left: 45 },
+      width:  1500,
+      height: 50,
+      contextHeight: 50,
+      margin: {top: 10, right: 10, bottom: 100, left: 45},
+      contextMargin: {top: 280, right: 10, bottom: 20, left: 25},
     }
     this.data = _data;
     this.dispatcher = _dispatcher;
     this.dispatcherEvents = _dispatcherEvents;
     this.initVis();
   }
-
+  
   /**
    * Initialize scales/axes and append static chart elements
    */
   initVis() {
     let vis = this;
 
-    var sliderRange = d3
-      .sliderBottom()
-      .width(vis.config.width)
-      .domain(d3.extent(vis.data, d => d.Year))
-      .tickFormat(d3.format('d'))
-      .ticks(25)
-      .default([1960, 1965])
-      .fill('#2196f3')
-      .on('onchange', val => {
-        d3.select('p#value-range').text(val.map(d3.format('d')).join('-'));
-        
-        const minYear = val.map(d3.format('d'))[0];
-        const maxYear = val.map(d3.format('d'))[1];
-        const selectedYears = [];
+    const containerWidth = vis.config.width + vis.config.margin.left + vis.config.margin.right;
+    const containerHeight = vis.config.height + vis.config.margin.top + vis.config.margin.bottom;
+  
+    vis.xScaleContext = d3.scaleTime()
+        .rangeRound([0, vis.config.width]);
+  
+    // Initialize axes
+    vis.xAxisContext = d3.axisBottom(vis.xScaleContext)
+      .tickSizeOuter(0)
+      .ticks(25);
 
-        for (let year = minYear; year <= maxYear; year++) {
-         selectedYears.push(year.toString());
-       }
+    // Define size of SVG drawing area
+    vis.svg = d3.select(vis.config.parentElement)
+        .attr('width', containerWidth)
+        .attr('height', containerHeight);
 
-       vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, this, selectedYears);
-      });
+    // Append context group with x- and y-axes
+    vis.context = vis.svg.append('g')
+        .attr('transform', `translate(${vis.config.contextMargin.left}, 0)`);
 
-    var gRange = d3
-      .select('div#slider-range')
-      .append('svg')
-      .attr("viewBox", `0 0 ${vis.config.width + 100} ${vis.config.height}`)
-      .append('g')
-      .attr('transform', 'translate(30,50)');
+    vis.xAxisContextG = vis.context.append('g')
+        .attr('class', 'axis x-axis')
+        .attr('transform', `translate(0,20)`);
 
-    gRange.call(sliderRange);
+    vis.brushG = vis.context.append('g')
+        .attr('class', 'brush x-brush');
 
-    d3.select('p#value-range').text(
-      sliderRange
-        .value()
-        .map(d3.format('d'))
-        .join('-')
-    );
+
+    // Initialize brush component
+    vis.brush = d3.brushX()
+        .extent([[0, 0], [vis.config.width, vis.config.contextHeight]])
+        .on('brush', function({selection}) {
+          if (selection) vis.brushed(selection);
+        })
+        .on('end', function({selection}) {
+          if (!selection) vis.brushed(null);
+        });
+  }
+
+  /**
+   * Prepare the data and scales before we render it.
+   */
+  updateVis() {
+    let vis = this;
+    
+    vis.xValue = d => d.year;
+
+    // Set the scale input domains
+    vis.xScaleContext.domain(d3.extent(vis.data, vis.xValue));
+  
+    vis.renderVis();
+  }
+
+  /**
+   * This function contains the D3 code for binding data to visual elements
+   */
+  renderVis() {
+    let vis = this;
+
+    
+    // Update the axes
+    vis.xAxisContextG.call(vis.xAxisContext);
+
+    // Update the brush and define a default position
+    vis.brushG
+        .call(vis.brush)
+        .call(vis.brush.move, [0,94]);
+  }
+
+  /**
+   * React to brush events
+   */
+  brushed(selection) {
+    let vis = this;
+
+    // Check if the brush is still active or if it has been removed
+    if (selection) {
+      // Convert given pixel coordinates (range: [x0,x1]) into a time period (domain: [Date, Date])
+      const selectedDomain = selection.map(vis.xScaleContext.invert, vis.xScaleContext);
+      const selectedYears = [];
+      const minYear = selectedDomain[0].getFullYear();
+      const maxYear = selectedDomain[1].getFullYear();
+      for (let year = minYear; year <= maxYear; year++) {
+        selectedYears.push(year.toString());
+      }
+
+      vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, this, selectedYears);
+
+    } else {
+      // Reset x-scale of the focus view (full time period)
+      //vis.xScaleFocus.domain(vis.xScaleContext.domain());
+    }
   }
 }

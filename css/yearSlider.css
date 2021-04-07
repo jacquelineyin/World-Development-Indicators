@@ -1,39 +1,18 @@
-/** Slider */
-#slider {
-  display: block;
-  align-items: center;
-  flex-wrap: wrap;
-  flex-grow: 1.5;
-  margin-top: 320px;
-  margin-left: -15px;
-  margin-right: -15px;
-  padding-left: 30px;
-  flex-shrink: 0;
+
+/* Axes */
+.axis line {
+  fill: none;
+  stroke: #8693a0;
+  shape-rendering: crispEdges;
 }
-
-#value-range {
-  margin-left: 20px;
+.axis text {
+  font-size: 13px;
+  fill: #6b6b6b;
 }
-
-.axis text,
-.slider text {
-  font-size: 16px;
+.axis-title {
+  font-size: 13px;
+  fill: #888;
 }
-
-.slider text {
-  transform: translate(10px, -65px);
-}
-
-/**--------------- Bigger Screens -----------------**/
-
-@media only screen and (min-width: 1440px) and (max-width: 1619px) {
-  #slider {
-    margin-top: 500px;
-  }
-}
-
-@media only screen and (min-width: 1619px) {
-  #slider {
-    margin-top: 250px;
-  }
+.x-axis .domain {
+  stroke: #8693a0;
 }

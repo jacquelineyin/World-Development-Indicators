@@ -93,6 +93,7 @@ d3.csv('data/Dataset.csv').then(_data => {
 
   // Initialize and render time slider
   yearSlider = new YearSlider({ parentElement: '#slider' }, data, dispatcher, dispatcherEvents);
+  yearSlider.updateVis();
 
   // Show linechart
   lineChart.updateVis();
