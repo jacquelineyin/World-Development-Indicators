@@ -204,7 +204,7 @@ class LineChart {
       .attr('class', 'circle-group')
       .style('fill', (d, i) => vis.getColour(d, i))
       .selectAll('circle')
-      .data(d => d.values)
+      .data(d => d.values.filter(d => d.value !== null))
       .join('circle')
       .attr('class', 'circle')
       .attr('r', 3)
@@ -237,7 +237,7 @@ class LineChart {
     mousePerLine.append('text')
       .attr('class', 'mouse-text')
       .attr('transform', `translate(10,3)`);
-
+    
     mouseG.append('rect') // append a rect to catch mouse movements on canvas
       .attr('width', vis.width) // can't catch mouse events on a g element
       .attr('height', vis.height)
