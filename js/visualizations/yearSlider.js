@@ -9,7 +9,7 @@ class YearSlider {
     this.config = {
       parentElement: _config.parentElement,
       width:  1500,
-      height: 50,
+      height: 1500,
       contextHeight: 50,
       margin: {top: 10, right: 10, bottom: 100, left: 45},
       contextMargin: {top: 280, right: 10, bottom: 20, left: 25},
@@ -44,7 +44,7 @@ class YearSlider {
 
     // Append context group with x- and y-axes
     vis.context = vis.svg.append('g')
-        .attr('transform', `translate(${vis.config.contextMargin.left}, 0)`);
+        .attr('transform', `translate(200,100)rotate(90)`);
 
     vis.xAxisContextG = vis.context.append('g')
         .attr('class', 'axis x-axis')
