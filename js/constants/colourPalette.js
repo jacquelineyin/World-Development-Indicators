@@ -25,6 +25,8 @@ class ColourPalette {
      * @returns {Array} of strings representing hex colours
      */
     getNonFocusedAreaColour() {
-        return [this.PURPLE, this.AQUA, this.YELLOW, this.BLUE];
+        let focusColour = this.getFocusedAreaColour();
+        let allColours = Object.values(this);
+        return allColours.filter(colour => colour !== focusColour);
     }
 }
