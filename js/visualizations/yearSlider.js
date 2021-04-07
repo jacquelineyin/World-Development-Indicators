@@ -29,11 +29,11 @@ class YearSlider {
     const containerWidth = vis.config.width + vis.config.margin.left + vis.config.margin.right;
     const containerHeight = vis.config.height + vis.config.margin.top + vis.config.margin.bottom;
   
-    vis.xScaleContext = d3.scaleTime()
+    vis.xScale = d3.scaleTime()
         .rangeRound([0, vis.config.width]);
   
     // Initialize axes
-    vis.xAxisContext = d3.axisBottom(vis.xScaleContext)
+    vis.xAxis = d3.axisBottom(vis.xScale)
       .tickSizeOuter(0)
       .ticks(52);
 
@@ -42,17 +42,17 @@ class YearSlider {
         .attr('width', containerWidth)
         .attr('height', containerHeight);
 
-    // Append context group with x- and y-axes
-    vis.context = vis.svg.append('g')
+    // Append chart group with x- and y-axes
+    vis.chart = vis.svg.append('g')
     .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
         //.attr('transform', `translate(200,100)rotate(90)`);
 
-    vis.xAxisContextG = vis.context.append('g')
+    vis.xAxisG = vis.chart.append('g')
         .attr('class', 'axis x-axis slider')
         .attr('transform', `translate(0,20)`);
 
-    vis.brushG = vis.context.append('g')
+    vis.brushG = vis.chart.append('g')
         .attr('class', 'brush x-brush');
 
 
@@ -77,7 +77,7 @@ class YearSlider {
     vis.xValue = d => d.year;
 
     // Set the scale input domains
-    vis.xScaleContext.domain(d3.extent(vis.data, vis.xValue));
+    vis.xScale.domain(d3.extent(vis.data, vis.xValue));
   
     vis.renderVis();
   }
@@ -90,7 +90,7 @@ class YearSlider {
 
     
     // Update the axes
-    vis.xAxisContextG.call(vis.xAxisContext);
+    vis.xAxisG.call(vis.xAxis);
 
     // Update the brush and define a default position
     vis.brushG
@@ -108,18 +108,17 @@ class YearSlider {
     // Check if the brush is still active or if it has been removed
     if (selection) {
       // Convert given pixel coordinates (range: [x0,x1]) into a time period (domain: [Date, Date])
-      const selectedDomain = selection.map(vis.xScaleContext.invert, vis.xScaleContext);
+      const selectedDomain = selection.map(vis.xScale.invert, vis.xScale);
       const selectedYears = [];
       const minYear = selectedDomain[0].getFullYear();
       const maxYear = selectedDomain[1].getFullYear();
       for (let year = minYear; year <= maxYear; year++) {
         selectedYears.push(year.toString());
       }
-      console.log(selectedYears);
 
       vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, this, selectedYears);
 
-      const d0 = selection.map(vis.xScaleContext.invert)
+      const d0 = selection.map(vis.xScale.invert)
       const d1 = d0.map(d3.timeMonth.round);
 
     // If empty when rounded, use floor & ceil instead.
@@ -128,7 +127,7 @@ class YearSlider {
       d1[1] = d3.timeMonth.offset(d1[0]);
     }
 
-    d3.select(this).call(vis.brush.move, d1.map(vis.xScaleContext.invert));
+    d3.select(this).call(vis.brush.move, d1.map(vis.xScale.invert));
 
     } else {
             // Reset x-scale of the focus view (full time period)
