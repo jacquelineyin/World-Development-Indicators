@@ -230,7 +230,11 @@ class LineChart {
 
     mousePerLine.append('circle')
       .attr('r', 7)
-      .style('stroke', (d, i) => vis.getColour(d, i))
+      .style('stroke', (d, i) => {
+        if (d.values.value !== null || d.values.value === 0) {
+          vis.getColour(d, i)
+        }
+      })
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('display', 'none');
