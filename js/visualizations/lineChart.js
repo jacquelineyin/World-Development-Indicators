@@ -146,7 +146,7 @@ class LineChart {
     // Set the scale input domains
     vis.colorScale.domain(vis.selected.allSelectedAreas);
     vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
-    vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
+    vis.yScale.domain(d3.extent(filteredSelectedData, d => d.value));
 
     vis.renderVis();
   }
@@ -229,12 +229,9 @@ class LineChart {
       .attr('class', 'mouse-per-line');
 
     mousePerLine.append('circle')
+      .attr('class', 'mouseCircle')
       .attr('r', 7)
-      .style('stroke', (d, i) => {
-        if (d.values.value !== null || d.values.value === 0) {
-          vis.getColour(d, i)
-        }
-      })
+      .style('stroke', (d, i) => vis.getColour(d, i))
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('display', 'none');
@@ -311,6 +308,7 @@ class LineChart {
               if (item.value !== null || item.value === 0) {
                 return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
               }
+              return `translate(${vis.xScale(item.year)},${vis.width/2})`;
             }
             return null;
           });
