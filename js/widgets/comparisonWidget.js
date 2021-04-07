@@ -189,7 +189,7 @@ class ComparisonWidget {
 
         if (!isFocusedArea) {
             // Create delete button for tag
-            this.createDeleteForTag(tag);
+            this.createCloseButton(tag);
         }
 
         parent.appendChild(tag);
@@ -199,7 +199,7 @@ class ComparisonWidget {
      * Purpose: Creates the "x" (i.e. close) button for each tag item
      * @param {Node} tag : div element representing a tag
      */
-    createDeleteForTag(tag) {
+    createCloseButton(tag) {
         let xButton = document.createElement('span');
         xButton.className = 'close-button';
         xButton.innerHTML = '&times;';
