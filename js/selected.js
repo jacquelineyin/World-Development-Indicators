@@ -23,7 +23,6 @@
 
         this.allSelectedAreas = [];
         this.updateAllSelectedAreas(this.area, this.comparisonAreas);
-
     }
 
     /**
@@ -83,7 +82,6 @@
             index = this.comparisonAreas.indexOf(focusedArea.region);
             this.comparisonAreas.splice(index, 1);
         } 
-
     }
 
     /**
