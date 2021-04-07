@@ -55,7 +55,7 @@ class RegionMapper {
             "Dominica",
             "Dominican Republic",
             "Ecuador",
-            "Egypt", 
+            "Egypt, Arab Rep.", 
             "Arab Rep.",
             "El Salvador",
             "Equatorial Guinea",

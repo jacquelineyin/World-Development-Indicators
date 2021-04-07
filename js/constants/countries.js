@@ -1,5 +1,7 @@
 class Countries {
     constructor() {
+        this.inputSanitizer = new InputSanitizer();
+
         this.AFGHANISTAN = "Afghanistan",
         this.ALBANIA = "Albania",
         this.ALGERIA = "Algeria",
@@ -54,8 +56,7 @@ class Countries {
         this.DOMINICA = "Dominica",
         this.DOMINICAN_REPUBLIC = "Dominican Republic",
         this.ECUADOR = "Ecuador",
-        this.EGYPT = "Egypt",
-        this.ARAB_REP = "Arab Rep.",
+        this.EGYPT = "Egypt, Arab Rep.",
         this.EL_SALVADOR = "El Salvador",
         this.EQUATORIAL_GUINEA = "Equatorial Guinea",
         this.ERITREA = "Eritrea",
@@ -208,5 +209,26 @@ class Countries {
         this.YEMEN_REPUBLIC_OF = "Yemen, Rep.",
         this.ZAMBIA = "Zambia",
         this.ZIMBABWE = "Zimbabwe"
+    }
+
+    /**
+     * Purpose: Returns the key of the given country if valid and in dataset. Returns null otherwise.
+     * @param {string} country 
+     * @returns {string} key of country or null if country is not in this object
+     */
+    getKey(country) {
+        country = this.inputSanitizer.formatCountryOrRegionNames(country);
+        let entries = Object.entries(this);
+
+        for (let entry of entries) {
+            let key = entry[0];
+            let value = entry[1];
+
+            if (value === country) {
+                return key;
+            }
+        }
+
+        return null;
     }
 }
