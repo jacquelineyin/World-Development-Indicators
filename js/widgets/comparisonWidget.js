@@ -16,6 +16,7 @@ class ComparisonWidget {
         this.dispatcherEvents = _constants.dispatcherEvents;
         this.dispatcher = _dispatcher;
         this.inputSanitizer = new InputSanitizer();
+        this.warningType = new WarningType();
     }
 
     /**
@@ -122,9 +123,10 @@ class ComparisonWidget {
         let isCountry = this.regionMapper.getCountriesOfRegion(this.countries.WORLD).includes(inputValue);
         
         if (isCountry) {
+            this.clearWarning();
             this.dispatcher.call(this.dispatcherEvents.SELECT_COMPARISON_ITEM, event, inputValue);
-        } else {
-            //TODO: show warning
+        } else if (inputValue) {
+            this.displayWarning(this.warningType.INVALID_INPUT);
         }
         this.clearInputValue();
     }
@@ -146,9 +148,43 @@ class ComparisonWidget {
         input.value = '';
     }
 
-    
-    updateWarningSection() {
-        //TODO
+    /**
+     * 
+     * @param {WarningType} warningType 
+     */
+    displayWarning(warningType) {
+        let parent = document.getElementById('warning-container');
+
+        this.clearWarning(parent);
+
+        let warningMsg = this.getWarningMessage(warningType);
+        this.createCloseButton(parent);
+        parent.innerHTML += warningMsg;
+    }
+
+    clearWarning(parent) {
+        if (!parent) {
+            parent = document.getElementById('warning-container');
+        }
+        this.clearChildNodes(parent);
+    }
+
+    /**
+     * Purpose: Returns appropriate warning message to the user
+     * @param {WarningType} warningType 
+     * @returns {String} : warning message
+     */
+    getWarningMessage(warningType) {
+        const {TOO_MANY_SELECTED, INVALID_INPUT} = this.warningType;
+
+        switch (warningType) {
+            case TOO_MANY_SELECTED: 
+                return 'Only 4 comparison countries can be selected at a time.';
+            case INVALID_INPUT: 
+                return 'Invalid country name. Please check your spelling and try again.'
+            default: 
+                return 'An Error has occurred';
+        }
     }
 
     /**
@@ -196,19 +232,19 @@ class ComparisonWidget {
     }
 
     /**
-     * Purpose: Creates the "x" (i.e. close) button for each tag item
-     * @param {Node} tag : div element representing a tag
+     * Purpose: Creates the "x" (i.e. close) button for each tag item or warning box
+     * @param {Node} container : div element representing a tag or warning box
      */
-    createCloseButton(tag) {
+    createCloseButton(container) {
         let xButton = document.createElement('span');
         xButton.className = 'close-button';
         xButton.innerHTML = '&times;';
-        xButton.value = tag.value;
+        xButton.value = container.value;
         xButton.addEventListener('click', e => {
             this.dispatcher.call(this.dispatcherEvents.DELETE_COMPARISON_ITEM, e, e.target.value);
         });
 
-        tag.appendChild(xButton);
+        container.appendChild(xButton);
     }
 
     /**
@@ -217,6 +253,9 @@ class ComparisonWidget {
      */
     clearChildNodes(parentNode) {
         while (parentNode.firstChild) {
+            console.log(parentNode);
+            console.log(parentNode.firstChild);
+            console.log("yay")
           parentNode.firstChild.remove();
         }
     }
