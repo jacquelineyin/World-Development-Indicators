@@ -33,7 +33,6 @@
      * @param {string} countryOrRegion = country or region that user has added as comparison countries/regions
      */
     addComparisonArea(countryOrRegion) {
-        // countryOrRegion = this.capitalizeFirstLetterOnly(countryOrRegion);
         countryOrRegion = this.inputSanitizer.formatCountryOrRegionNames(countryOrRegion);
 
         let isFocusArea = this.area.region === countryOrRegion || this.area.country === countryOrRegion;
@@ -47,7 +46,7 @@
             //TODO: Error handling - show warning label
         }
 
-        //update allSelectedAreas
+        // Update allSelectedAreas
         this.updateAllSelectedAreas(this.area, this.comparisonAreas);
     }
 
@@ -62,7 +61,7 @@
             // Remove from list
             this.comparisonAreas.splice(index, 1);
             
-            //update allSelectedAreas
+            // Update allSelectedAreas
             this.updateAllSelectedAreas(this.area, this.comparisonAreas);
         }
     }
@@ -100,7 +99,7 @@
         // If area was previously in Comparison list, remove
         this.updateComparisonArea({region, country})
 
-        //update allSelectedAreas
+        // Update allSelectedAreas
         this.updateAllSelectedAreas(this.area, this.comparisonAreas);
     }
 
