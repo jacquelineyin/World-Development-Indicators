@@ -21,6 +21,14 @@ class ColourPalette {
     }
 
     /**
+     * Purpose: Returns the colour for the selected comparison areas
+     * @returns {string} representing a hex colour
+     */
+    getComparisonAreaColour() {
+        return this.AQUA;
+    }
+
+    /**
      * Purpose: Returns an array of colours of palette excluding colour for focusedArea
      * @returns {Array} of strings representing hex colours
      */
