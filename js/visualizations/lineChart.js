@@ -140,7 +140,8 @@ class LineChart {
     // Initialize line generator
     vis.line = d3.line()
       .x(d => vis.xScale(d.year))
-      .y(d => vis.yScale(d.value));
+      .y(d => vis.yScale(d.value))
+      .defined(d => { return d.value });
 
     // Set the scale input domains
     vis.colorScale.domain(vis.selected.allSelectedAreas);
@@ -280,14 +281,16 @@ class LineChart {
             if (item) {
               const currentYear = item.Year;
               d3.select(this).select('text')
-                .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(2)));
+                .text(d => item.value !== null || item.value === 0 ?
+                  formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(2)) : null);
 
               d3.select('.values').selectAll('.value')
                 .attr('x', vis.width + 130)
                 .attr('y', (d, i) => {
                   return (i * 20) + 5
                 })
-                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(2)));
+                .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
+                  d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(2)) : null);
               
               if (currentYear) {
                 d3.select('.yearValue')
@@ -300,8 +303,10 @@ class LineChart {
                   data += ' ' + vis.xScale(item.year) + ',' + 0;
                   return data;
                 });
-
-              return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
+              
+              if (item.value !== null || item.value === 0) {
+                return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
+              }
             }
             return null;
           });
