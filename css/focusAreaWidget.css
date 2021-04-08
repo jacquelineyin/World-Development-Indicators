@@ -29,8 +29,8 @@
     vertical-align: middle;
   }
 
-  /* -------------------  Bigger Screens -----------------------*/
-  @media only screen and (min-width: 1677px){
+   /* -------------------  Bigger Screens -----------------------*/
+   @media only screen and (min-width: 1677px){
     #select-focus {
       display: flex;
       flex-direction: row;
