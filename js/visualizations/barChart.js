@@ -362,7 +362,7 @@ class BarChart {
         .attr('x', d => vis.xScale(vis.xValue(d)))
         .attr('y', d => vis.yScale(vis.yValue(d)))
         .attr('width', vis.xScale.bandwidth())
-        .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
+        .attr('height', d => vis.getBarHeight(d))
         .attr('fill', d => vis.getBarColour(d))
         .on('mouseover', e => vis.handleMouseOver(e))
         .on('mouseleave', e => vis.handleMouseLeave(e))
@@ -371,7 +371,7 @@ class BarChart {
 
   /**
    * Purpose: Returns colour depending on state/status of bar/bar data
-   * @param {Object} data = {key: "World", avg: 4019} 
+   * @param {Object} data = ex. {key: "World", avg: 4019} 
    */
   getBarColour(data) {
     let vis = this;
@@ -388,7 +388,18 @@ class BarChart {
     } else {
       return vis.config.colour.comparisonCountry;
     }
-    
+  }
+
+  /**
+   * Purpose: Returns a calculated height for country's bar
+   * @param {Object} data = ex. {key: "Canada", avg: 0}
+   * @returns {Number} : height of bar
+   */
+  getBarHeight(data) {
+    let vis = this;
+
+    let height = vis.height - vis.yScale(vis.yValue(data));
+    return height ? height : 0;
   }
 
   /**
