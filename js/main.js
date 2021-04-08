@@ -41,7 +41,8 @@ const focusedAreaWidget = new FocusAreaWidget(
       regionMapper, 
       countries, 
       regions, 
-      dispatcherEvents 
+      dispatcherEvents,
+      warningType 
     },
     dispatcher,
   );

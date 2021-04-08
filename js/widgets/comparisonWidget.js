@@ -16,7 +16,7 @@ class ComparisonWidget {
         this.dispatcherEvents = _constants.dispatcherEvents;
         this.dispatcher = _dispatcher;
         this.inputSanitizer = new InputSanitizer();
-        this.warningType = new WarningType();
+        this.warningType = _constants.warningType ? _constants.warningType : new WarningType();
         this.autocompleteCreator = new AutocompleteCreator();
     }
 
