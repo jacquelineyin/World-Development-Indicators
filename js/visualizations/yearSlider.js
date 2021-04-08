@@ -60,7 +60,7 @@ class YearSlider {
 
     vis.brush = d3.brushX()
         .extent([[0, 0], [vis.config.width, vis.config.contextHeight]])
-        .on("end", vis.brushended();
+        .on("end", vis.brushended);
   }
 
   /**
