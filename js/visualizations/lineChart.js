@@ -99,8 +99,6 @@ class LineChart {
 
     vis.mouseG = vis.lines.append('g')
       .attr('class', 'mouse-over-effects');
-
-      vis.updateVis();
   }
 
   /**
@@ -140,12 +138,13 @@ class LineChart {
     // Initialize line generator
     vis.line = d3.line()
       .x(d => vis.xScale(d.year))
-      .y(d => vis.yScale(d.value));
+      .y(d => vis.yScale(d.value))
+      .defined(d => { return d.value !== null });
 
     // Set the scale input domains
     vis.colorScale.domain(vis.selected.allSelectedAreas);
     vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
-    vis.yScale.domain([0, d3.max(filteredSelectedData, d => d.value)]);
+    vis.yScale.domain(d3.extent(filteredSelectedData, d => d.value));
 
     vis.renderVis();
   }
@@ -204,7 +203,7 @@ class LineChart {
       .attr('class', 'circle-group')
       .style('fill', (d, i) => vis.getColour(d, i))
       .selectAll('circle')
-      .data(d => d.values)
+      .data(d => d.values.filter(d => d.value !== null))
       .join('circle')
       .attr('class', 'circle')
       .attr('r', 3)
@@ -228,6 +227,7 @@ class LineChart {
       .attr('class', 'mouse-per-line');
 
     mousePerLine.append('circle')
+      .attr('class', 'mouseCircle')
       .attr('r', 7)
       .style('stroke', (d, i) => vis.getColour(d, i))
       .style('fill', 'none')
@@ -237,7 +237,7 @@ class LineChart {
     mousePerLine.append('text')
       .attr('class', 'mouse-text')
       .attr('transform', `translate(10,3)`);
-
+    
     mouseG.append('rect') // append a rect to catch mouse movements on canvas
       .attr('width', vis.width) // can't catch mouse events on a g element
       .attr('height', vis.height)
@@ -280,14 +280,17 @@ class LineChart {
             if (item) {
               const currentYear = item.Year;
               d3.select(this).select('text')
-                .text(formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(2)));
+                .text(d => item.value !== null || item.value === 0 ?
+                  formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(2)) : null);
 
               d3.select('.values').selectAll('.value')
                 .attr('x', vis.width + 130)
                 .attr('y', (d, i) => {
                   return (i * 20) + 5
                 })
-                .text(d => d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(2)));
+                .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
+                  d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(2))
+                  :  d.countryName + ': N/A');
               
               if (currentYear) {
                 d3.select('.yearValue')
@@ -300,8 +303,11 @@ class LineChart {
                   data += ' ' + vis.xScale(item.year) + ',' + 0;
                   return data;
                 });
-
-              return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
+              
+              if (item.value !== null || item.value === 0) {
+                return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
+              }
+              return `translate(${vis.xScale(item.year)},${vis.width/2})`;
             }
             return null;
           });
