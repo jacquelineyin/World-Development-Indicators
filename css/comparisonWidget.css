@@ -42,7 +42,8 @@
 }
 
 
-/**Autocomplete Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp*/
+/** Autocomplete 
+Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp*/
 .autocomplete {
     position: relative;
     display: inline-block;
@@ -82,6 +83,29 @@
       display: none;
   }
 
+  /** Warning/ Alert Box 
+  Implementation Credit: https://www.w3schools.com/howto/howto_js_alert.asp*/
+  #comparison-container {
+    display: flex;
+    flex-direction: column;
+  }
 
-
+  #warning-container {
+    font-size: 0.8em;
+    visibility: hidden;
+    width: 100%;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    color: #8a6d3b;
+    padding: 15px;
+    margin-bottom: 20px;
+    border:1px solid transparent;
+    border-radius: 4px;
+  }
   
+  #warning-container .close-button {
+    padding-right: 25px;
+    font-weight: bold;
+    float: right;
+    cursor: pointer;
+}

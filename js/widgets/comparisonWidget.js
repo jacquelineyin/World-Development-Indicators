@@ -33,7 +33,7 @@ class ComparisonWidget {
      * Purpose: Creates a title for the comparison section
      */
     createTitleSection() {
-        let parent = document.getElementById('select-comparison');
+        let parent = document.getElementById('comparison-title-container');
 
         // Remove any previous titles
         let titleElem = document.getElementById('comparison-title');
@@ -118,10 +118,8 @@ class ComparisonWidget {
      */
     handleSubmitInput(event) {
         let inputValue = this.getInputValue();
-        inputValue = this.inputSanitizer.formatCountryOrRegionNames(inputValue);
-
-        let isCountry = this.regionMapper.getCountriesOfRegion(this.countries.WORLD).includes(inputValue);
-        
+        let isCountry = this.regionMapper.doesRegionContainCountry(this.regions.WORLD, inputValue);
+    
         if (isCountry) {
             this.clearWarning();
             this.dispatcher.call(this.dispatcherEvents.SELECT_COMPARISON_ITEM, event, inputValue);
@@ -157,9 +155,11 @@ class ComparisonWidget {
 
         this.clearWarning(parent);
 
-        let warningMsg = this.getWarningMessage(warningType);
+        let warningMsg = '<strong>Warning: </strong>' + this.getWarningMessage(warningType);
         this.createCloseButton(parent);
         parent.innerHTML += warningMsg;
+
+        parent.style.visibility = 'visible';
     }
 
     clearWarning(parent) {
@@ -167,6 +167,7 @@ class ComparisonWidget {
             parent = document.getElementById('warning-container');
         }
         this.clearChildNodes(parent);
+        parent.style.visibility = 'hidden';
     }
 
     /**
@@ -181,7 +182,7 @@ class ComparisonWidget {
             case TOO_MANY_SELECTED: 
                 return 'Only 4 comparison countries can be selected at a time.';
             case INVALID_INPUT: 
-                return 'Invalid country name. Please check your spelling and try again.'
+                return 'Invalid country name. Please try again.'
             default: 
                 return 'An Error has occurred';
         }

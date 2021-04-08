@@ -19,6 +19,11 @@
   flex-direction: column;
 }
 
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
 /** Axes */
 .axis-title {
     font-weight: bold;
