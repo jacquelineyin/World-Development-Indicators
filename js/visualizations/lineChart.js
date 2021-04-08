@@ -137,7 +137,7 @@ class LineChart {
         vis.formattedData.push(obj);
       }
     });
-    console.log(vis.formattedData);
+
     // Specificy x- and y-accessor functions
     vis.xValue = d => d.year;
     vis.yValue = d => d.value;
