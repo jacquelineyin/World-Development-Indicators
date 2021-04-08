@@ -10,6 +10,7 @@
      * @param {string} selectedIndicator : indicator that is selected. Default value: POPULATION_TOTAL 
      * @param {Object} selectedTimeInterval = {min, max} : min as lowerBound year and max as upperBound of timeInterval
      *                                                              Default = NULL;
+     * @param {Object} dispatcher : d3 dispatcher
      */
     constructor(selectedArea, selectedComparisonAreas, selectedIndicator, selectedTimeInterval, dispatcher) {
         
