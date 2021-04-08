@@ -99,8 +99,6 @@ class LineChart {
 
     vis.mouseG = vis.lines.append('g')
       .attr('class', 'mouse-over-effects');
-
-      vis.updateVis();
   }
 
   /**
