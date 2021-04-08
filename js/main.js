@@ -78,7 +78,7 @@ d3.csv('data/Dataset.csv').then(_data => {
     parentElement: '#barchart',
     colour: {
       selectedCountry: colourPalette.getFocusedAreaColour(),
-      comparisonCountry: colourPalette.AQUA,
+      comparisonCountry: colourPalette.getComparisonAreaColour(),
     }
   }, data, selected);
 
@@ -116,6 +116,7 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   comparisonWidget.updateTags();
 
   wedgeView.updateVis();
+  map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
 }); 
