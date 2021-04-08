@@ -289,7 +289,8 @@ class LineChart {
                   return (i * 20) + 5
                 })
                 .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
-                  d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(2)) : null);
+                  d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(2))
+                  :  d.countryName + ': N/A');
               
               if (currentYear) {
                 d3.select('.yearValue')
