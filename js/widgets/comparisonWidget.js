@@ -17,6 +17,7 @@ class ComparisonWidget {
         this.dispatcher = _dispatcher;
         this.inputSanitizer = new InputSanitizer();
         this.warningType = new WarningType();
+        this.autocompleteCreator = new AutocompleteCreator();
     }
 
     /**
@@ -28,6 +29,8 @@ class ComparisonWidget {
 
         this.updateTags();
     }
+
+    // --------------------------- Helper Functions ----------------------------------- //
 
     /**
      * Purpose: Creates a title for the comparison section
@@ -74,8 +77,8 @@ class ComparisonWidget {
         autocompleteContainer.appendChild(input);
         
         // Autocomplete dropdown functionality
-        const autocompleteCreator = new AutocompleteCreator(input, submitButton);
-        autocompleteCreator.autocomplete(this.regionMapper.getCountriesOfRegion(this.regions.WORLD))
+        this.autocompleteCreator.setInputOrSubmit({inputElem: input, submitButton});
+        this.autocompleteCreator.autocomplete(this.regionMapper.getCountriesOfRegion(this.regions.WORLD))
 
 
         div.appendChild(autocompleteContainer);
@@ -90,12 +93,15 @@ class ComparisonWidget {
      */
     createSubmitButton() {
         let submitButton = document.createElement('button');
+
         submitButton.innerHTML = 'Submit';
         submitButton.type = 'button';
         submitButton.className = 'button';
         submitButton.name = 'comparison-submit-button';
         submitButton.id = submitButton.name;
+        
         submitButton.addEventListener('click', e => this.handleSubmitInput(e));
+
         return submitButton;
     }
 
@@ -147,7 +153,7 @@ class ComparisonWidget {
     }
 
     /**
-     * 
+     * Purpose: Displays a warning message to user depending on type of error
      * @param {WarningType} warningType 
      */
     displayWarning(warningType) {
@@ -161,20 +167,30 @@ class ComparisonWidget {
         parent.style.visibility = 'visible';
     }
 
-    createWarningContents(warningType, parent) {
-        let warningIcon = `<i class="material-icons">&#xe001;</i> `; 
-        let warningMsg = `<text>${this.getWarningMessage(warningType)}</text>`;
-        
-        this.createCloseButton(parent);
-        parent.innerHTML += warningIcon + warningMsg;
+    /**
+     * Purpose: Appends the contents of the warning box to the box element
+     * @param {WarningType} warningType 
+     * @param {Node} warningBox : DOM node of warning box
+     */
+    createWarningContents(warningType, warningBox) {
+        const warningIcon = `<i class="material-icons">&#xe001;</i> `; 
+        const warningMsg = `<text>${this.getWarningMessage(warningType)}</text>`;
+        warningBox.innerHTML += warningIcon + warningMsg;
+
+        this.createCloseButton(warningBox, this.handleCloseWarning);
     }
 
+    /**
+     * Purpose: Clears contents of warning box and hides the box
+     * @param {Node} parent : DOM node of warning box
+     */
     clearWarning(parent) {
         if (!parent) {
             parent = document.getElementById('warning-container');
         }
+        
         this.clearChildNodes(parent);
-
+        
         // Hide warning box
         parent.style.visibility = 'hidden';
     }
@@ -220,11 +236,12 @@ class ComparisonWidget {
     /**
      * Purpose: Creates individual tag (div element) and appends it to parent
      * @param {string} countryOrRegion 
+     * @param {Boolean} : true if given country/region is the currently selected focusArea
      */
     createTag(countryOrRegion, isFocusedArea) {
         let parent = document.getElementById('tag-container');
 
-        // Create tag
+        // Add attributes
         let tag = document.createElement('div');
         tag.className = isFocusedArea ? 
                                 'tag chip tag-focusedArea' : 
@@ -235,7 +252,7 @@ class ComparisonWidget {
 
         if (!isFocusedArea) {
             // Create delete button for tag
-            this.createCloseButton(tag);
+            this.createCloseButton(tag, this.handleCloseTag);
         }
 
         parent.appendChild(tag);
@@ -244,18 +261,17 @@ class ComparisonWidget {
     /**
      * Purpose: Creates the "x" (i.e. close) button for each tag item or warning box
      * @param {Node} container : div element representing a tag or warning box
+     * @param {Function} fn : callback to attach to addEventListener, which takes 'event' as an argument
      */
-    createCloseButton(container) {
-        let xButton = document.createElement('span');
-        xButton.className = 'close-button';
-        xButton.innerHTML = '&times;';
-        xButton.value = container.value;
-        xButton.addEventListener('click', e => {
-            this.dispatcher.call(this.dispatcherEvents.DELETE_COMPARISON_ITEM, e, e.target.value);
-        });
-
-        container.appendChild(xButton);
-    }
+    createCloseButton(container, fn) {
+        let closeBtn = document.createElement('span');
+        closeBtn.className = 'close-button';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.value = container.value;
+        closeBtn.addEventListener('click', e => fn.call(this, e));
+        
+        container.appendChild(closeBtn);
+    };
 
     /**
      * Purpose: Removes all child nodes from given parentNode
@@ -267,4 +283,18 @@ class ComparisonWidget {
         }
     }
 
+    /**
+     * Purpose: Handles close tag
+     * @param {Event} e : Native JS event (e.g. "mouseover", "click", etc.)
+     */
+    handleCloseTag(e) {
+        this.dispatcher.call(this.dispatcherEvents.DELETE_COMPARISON_ITEM, e, e.target.value);
+    }
+
+    /**
+     * Purpose: Closes warning box
+     */
+    handleCloseWarning() {
+        this.clearWarning();
+    }
 }
