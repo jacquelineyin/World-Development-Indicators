@@ -8,11 +8,11 @@ class LineChart {
   constructor(_config, _data, _selectedItems) {
     this.config = {
       parentElement: _config.parentElement,
-      colour: _config.colour || 
-              {
-                selectedArea: 'blue',
-                otherAreas: d3.schemeCategory10,
-              },
+      colour: _config.colour ||
+      {
+        selectedArea: 'blue',
+        otherAreas: d3.schemeCategory10,
+      },
       containerWidth: _config.containerWidth || 1500,
       containerHeight: _config.containerHeight || 600,
       margin: _config.margin || { top: 50, right: 300, bottom: 110, left: 50 }
@@ -36,9 +36,11 @@ class LineChart {
     vis.xScale = d3.scaleTime()
       .range([0, vis.width]);
 
-    vis.yScale = d3.scaleLinear()
-      .range([vis.height, 0])
-      .nice();
+    vis.yScalePos = d3.scaleLinear()
+      .range([vis.height, 0]);
+
+    vis.yScaleNeg = d3.scaleLinear()
+      .range([vis.height, 0]);
 
     // Initialize axes
 
@@ -51,7 +53,13 @@ class LineChart {
       .tickPadding(10)
       .tickFormat(d3.timeFormat('%Y'));
 
-    vis.yAxis = d3.axisLeft(vis.yScale)
+    vis.yAxisPos = d3.axisLeft(vis.yScalePos)
+      .tickSize(-vis.width - 20)
+      .tickSizeOuter(0)
+      .tickPadding(10)
+      .tickFormat(format);
+
+    vis.yAxisNeg = d3.axisLeft(vis.yScaleNeg)
       .tickSize(-vis.width - 20)
       .tickSizeOuter(0)
       .tickPadding(10)
@@ -129,7 +137,7 @@ class LineChart {
         vis.formattedData.push(obj);
       }
     });
-
+    console.log(vis.formattedData);
     // Specificy x- and y-accessor functions
     vis.xValue = d => d.year;
     vis.yValue = d => d.value;
@@ -138,13 +146,21 @@ class LineChart {
     // Initialize line generator
     vis.line = d3.line()
       .x(d => vis.xScale(d.year))
-      .y(d => vis.yScale(d.value))
+      .y(d => {
+        if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+          return vis.yScaleNeg(d.value)
+        } else {
+          return vis.yScalePos(d.value)
+        }
+      })
       .defined(d => { return d.value !== null });
 
     // Set the scale input domains
     vis.colorScale.domain(vis.selected.allSelectedAreas);
     vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
-    vis.yScale.domain(d3.extent(filteredSelectedData, d => d.value));
+    vis.yScalePos.domain([0, d3.max(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value)]);
+    vis.yScaleNeg.domain(d3.extent(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value));
+
 
     vis.renderVis();
   }
@@ -161,7 +177,7 @@ class LineChart {
       .attr('dy', '.71em')
       .style('font-weight', 'bold')
       .text('Total ' + vis.selected.indicator);
-    
+
     vis.legend.selectAll('.legend-box')
       .data(vis.formattedData, d => d.values)
       .join('rect')
@@ -195,7 +211,7 @@ class LineChart {
       .attr('class', 'line')
       .attr('d', d => vis.line(d.values))
       .style('stroke', (d, i) => vis.getColour(d, i));
-    
+
     // Add data points(dots) on line
     vis.circles.selectAll('.circle-group')
       .data(vis.formattedData)
@@ -208,7 +224,13 @@ class LineChart {
       .attr('class', 'circle')
       .attr('r', 3)
       .attr('cx', d => vis.xScale(d.year))
-      .attr('cy', d => vis.yScale(d.value));
+      .attr('cy', d => {
+        if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+          return vis.yScaleNeg(d.value)
+        } else {
+          return vis.yScalePos(d.value)
+        }
+      });
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => d.values)
@@ -237,7 +259,7 @@ class LineChart {
     mousePerLine.append('text')
       .attr('class', 'mouse-text')
       .attr('transform', `translate(10,3)`);
-    
+
     mouseG.append('rect') // append a rect to catch mouse movements on canvas
       .attr('width', vis.width) // can't catch mouse events on a g element
       .attr('height', vis.height)
@@ -247,25 +269,25 @@ class LineChart {
         d3.select('.mouse-line')
           .style('display', 'none');
         d3.selectAll('.mouse-per-line circle')
-        .style('display', 'none');
+          .style('display', 'none');
         d3.selectAll('.mouse-per-line text')
-        .style('display', 'none');
+          .style('display', 'none');
         d3.selectAll('.value')
-        .style('display', 'none');
+          .style('display', 'none');
         d3.select('.yearValue')
-        .style('display', 'none');
+          .style('display', 'none');
       })
       .on('mouseenter', () => { // on mouse in show line, circles and text
         d3.select('.mouse-line')
           .style('display', 'block');
         d3.selectAll('.mouse-per-line circle')
-        .style('display', 'block');
+          .style('display', 'block');
         d3.selectAll('.mouse-per-line text')
-        .style('display', 'block');
+          .style('display', 'block');
         d3.selectAll('.value')
-        .style('display', 'block');
+          .style('display', 'block');
         d3.select('.yearValue')
-        .style('display', 'block');
+          .style('display', 'block');
       })
       .on('mousemove', function (event) { // mouse moving over canvas
         const mouse = d3.pointer(event, this)[0];
@@ -279,19 +301,36 @@ class LineChart {
             const item = d.values[idx];
             if (item) {
               const currentYear = item.Year;
-              d3.select(this).select('text')
-                .text(d => item.value !== null || item.value === 0 ?
-                  formatNumbers(vis.yScale.invert(vis.yScale(item.value)).toFixed(2)) : null);
 
-              d3.select('.values').selectAll('.value')
-                .attr('x', vis.width + 130)
-                .attr('y', (d, i) => {
-                  return (i * 20) + 5
-                })
-                .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
-                  d.countryName + ': ' + formatNumbers(vis.yScale.invert(vis.yScale(d.values[idx].value)).toFixed(2))
-                  :  d.countryName + ': N/A');
-              
+              if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+                d3.select(this).select('text')
+                  .text(d => item.value !== null || item.value === 0 ?
+                    formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
+
+                d3.select('.values').selectAll('.value')
+                  .attr('x', vis.width + 130)
+                  .attr('y', (d, i) => {
+                    return (i * 20) + 5
+                  })
+                  .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
+                    d.countryName + ': ' + formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(d.values[idx].value)).toFixed(2))
+                    : d.countryName + ': N/A');
+
+              } else {
+                d3.select(this).select('text')
+                  .text(d => item.value !== null || item.value === 0 ?
+                    formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
+
+                d3.select('.values').selectAll('.value')
+                  .attr('x', vis.width + 130)
+                  .attr('y', (d, i) => {
+                    return (i * 20) + 5
+                  })
+                  .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
+                    d.countryName + ': ' + formatNumbers(vis.yScalePos.invert(vis.yScalePos(d.values[idx].value)).toFixed(2))
+                    : d.countryName + ': N/A');
+              }
+
               if (currentYear) {
                 d3.select('.yearValue')
                   .text(currentYear);
@@ -303,11 +342,15 @@ class LineChart {
                   data += ' ' + vis.xScale(item.year) + ',' + 0;
                   return data;
                 });
-              
+
               if (item.value !== null || item.value === 0) {
-                return `translate(${vis.xScale(item.year)},${vis.yScale(item.value)})`;
+                if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+                  return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
+                } else {
+                  return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
+                }
               }
-              return `translate(${vis.xScale(item.year)},${vis.width/2})`;
+              return `translate(${vis.xScale(item.year)},${vis.width / 2})`;
             }
             return null;
           });
@@ -315,16 +358,20 @@ class LineChart {
 
     // Update the axes
     vis.xAxisG.call(vis.xAxis.ticks(d3.timeYear));
-    vis.yAxisG.call(vis.yAxis);
+    if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+      vis.yAxisG.call(vis.yAxisNeg)
+    } else {
+      vis.yAxisG.call(vis.yAxisPos);
+    }
   }
 
   // ------------------ Helpers ------------------ //
 
   getColour(d, i) {
     let vis = this;
-    
-    if(d.countryName === vis.selected.area.country) {
-        return vis.config.colour.selectedArea;
+
+    if (d.countryName === vis.selected.area.country) {
+      return vis.config.colour.selectedArea;
     } else {
       return vis.colorScale(i);
     }
