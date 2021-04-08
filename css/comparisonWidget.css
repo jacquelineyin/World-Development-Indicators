@@ -12,8 +12,6 @@
 }
 
 #tag-container {
-    margin-left: 30px;
-    margin-top: 5px;
     margin-bottom: 10px;
 }
 
@@ -87,7 +85,8 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
   Implementation Credit: https://www.w3schools.com/howto/howto_js_alert.asp*/
   #comparison-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
+    align-items: baseline;
   }
 
   #warning-container {
@@ -98,7 +97,7 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
     border-color: #faebcc;
     color: #8a6d3b;
     padding: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     border:1px solid transparent;
     border-radius: 4px;
   }
@@ -108,4 +107,21 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
     font-weight: bold;
     float: right;
     cursor: pointer;
+}
+
+ /* -------------------  Bigger Screens -----------------------*/
+ @media only screen and (min-width: 1300px){
+  #comparison-container {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  #warning-container {
+    width: 50%;
+    height: 4em;
+    margin-bottom: 0px;
+    padding: 15px;
+   }
+
 }

@@ -33,7 +33,7 @@ class ComparisonWidget {
      * Purpose: Creates a title for the comparison section
      */
     createTitleSection() {
-        let parent = document.getElementById('comparison-title-container');
+        let parent = document.getElementById('select-comparison');
 
         // Remove any previous titles
         let titleElem = document.getElementById('comparison-title');
@@ -155,11 +155,16 @@ class ComparisonWidget {
 
         this.clearWarning(parent);
 
+        this.createWarningContents(warningType, parent);
+
+        // Show warning box
+        parent.style.visibility = 'visible';
+    }
+
+    createWarningContents(warningType, parent) {
         let warningMsg = '<strong>Warning: </strong>' + this.getWarningMessage(warningType);
         this.createCloseButton(parent);
         parent.innerHTML += warningMsg;
-
-        parent.style.visibility = 'visible';
     }
 
     clearWarning(parent) {
@@ -167,6 +172,8 @@ class ComparisonWidget {
             parent = document.getElementById('warning-container');
         }
         this.clearChildNodes(parent);
+
+        // Hide warning box
         parent.style.visibility = 'hidden';
     }
 
@@ -254,9 +261,6 @@ class ComparisonWidget {
      */
     clearChildNodes(parentNode) {
         while (parentNode.firstChild) {
-            console.log(parentNode);
-            console.log(parentNode.firstChild);
-            console.log("yay")
           parentNode.firstChild.remove();
         }
     }
