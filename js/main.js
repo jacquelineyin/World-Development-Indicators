@@ -8,17 +8,21 @@ const regionMapper = new RegionMapper();
 const regions = new Regions();
 const countries = new Countries();
 const dispatcherEvents = new DispatcherEvents();
+const warningType = new WarningType();
 const colourPalette = new ColourPalette();
 const parseTime = d3.timeParse("%Y");
 
 // Initialize dispatcher that is used to orchestrate events
 const dispatcher = d3.dispatch(
-  dispatcherEvents.FILTER_YEAR,
-  dispatcherEvents.CHANGE_INDICATOR, 
-  dispatcherEvents.SELECT_FOCUS_AREA,
-  dispatcherEvents.SELECT_COMPARISON_ITEM,
-  dispatcherEvents.DELETE_COMPARISON_ITEM
+    dispatcherEvents.FILTER_YEAR,
+    dispatcherEvents.CHANGE_INDICATOR, 
+    dispatcherEvents.SELECT_FOCUS_AREA,
+    dispatcherEvents.SELECT_COMPARISON_ITEM,
+    dispatcherEvents.DELETE_COMPARISON_ITEM,
+    dispatcherEvents.ERROR_TOO_MANY_COMPARISONS
   );
+
+selected.setDispatcher(dispatcher, dispatcherEvents);
 
 const focusedAreaWidget = new FocusAreaWidget(
   selected, 
@@ -145,6 +149,10 @@ dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
   map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
+})
+
+dispatcher.on(dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, () => {
+  comparisonWidget.displayWarning(warningType.TOO_MANY_SELECTED);
 })
 
 // ----------------- Helpers -------------------- //
