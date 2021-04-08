@@ -141,7 +141,7 @@ class LineChart {
     vis.line = d3.line()
       .x(d => vis.xScale(d.year))
       .y(d => vis.yScale(d.value))
-      .defined(d => { return d.value });
+      .defined(d => { return d.value !== null });
 
     // Set the scale input domains
     vis.colorScale.domain(vis.selected.allSelectedAreas);
