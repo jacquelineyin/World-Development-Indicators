@@ -60,12 +60,7 @@ class YearSlider {
 
     vis.brush = d3.brushX()
         .extent([[0, 0], [vis.config.width, vis.config.contextHeight]])
-        .on('brush', function({selection}) {
-          if (selection) vis.brushed(selection);
-        })
-        .on('end', function({selection}) {
-          if (!selection) vis.brushed(null);
-        });
+        .on("end", vis.brushended();
   }
 
   /**
@@ -102,36 +97,28 @@ class YearSlider {
    * React to brush events
    */
 
-  brushed(selection) {
-    let vis = this;
+  brushended(event) {
+    const selection = event.selection;
+    if (!event.sourceEvent || !selection) return;
+    console.log(this);
+    const selectedDomain = selection.map(vis.xScale.invert, vis.xScale);
+    const selectedYears = [];
+    const minYear = selectedDomain[0].getFullYear();
+    const maxYear = selectedDomain[1].getFullYear();
+    for (let year = minYear; year <= maxYear; year++) {
+      selectedYears.push(year.toString());
+    }
 
-    // Check if the brush is still active or if it has been removed
-    if (selection) {
-      // Convert given pixel coordinates (range: [x0,x1]) into a time period (domain: [Date, Date])
-      const selectedDomain = selection.map(vis.xScale.invert, vis.xScale);
-      const selectedYears = [];
-      const minYear = selectedDomain[0].getFullYear();
-      const maxYear = selectedDomain[1].getFullYear();
-      for (let year = minYear; year <= maxYear; year++) {
-        selectedYears.push(year.toString());
-      }
+    vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, this, selectedYears);
 
-      vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, this, selectedYears);
-
-      const d0 = selection.map(vis.xScale.invert)
-      const d1 = d0.map(d3.timeMonth.round);
+    const d0 = selection.map(vis.xScale.invert)
+    const d1 = d0.map(d3.timeYear.round);
 
     // If empty when rounded, use floor & ceil instead.
     if (d1[0] >= d1[1]) {
-      d1[0] = d3.timeMonth.floor(d0[0]);
-      d1[1] = d3.timeMonth.offset(d1[0]);
+      d1[0] = d3.timeYear.floor(d0[0]);
+      d1[1] = d3.timeYear.offset(d1[0]);
     }
-
     d3.select(this).call(vis.brush.move, d1.map(vis.xScale.invert));
-
-    } else {
-            // Reset x-scale of the focus view (full time period)
-      //vis.xScaleFocus.domain(vis.xScaleContext.domain());
-    }
   }
 }
