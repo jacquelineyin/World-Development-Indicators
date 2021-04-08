@@ -11,6 +11,18 @@
     border: thin solid black;
 }
 
+#comparison-container {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: baseline;
+}
+
+#comparison-selector-container {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/** Tags */
 #tag-container {
     margin-bottom: 10px;
 }
@@ -83,12 +95,6 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
 
   /** Warning/ Alert Box 
   Implementation Credit: https://www.w3schools.com/howto/howto_js_alert.asp*/
-  #comparison-container {
-    display: flex;
-    flex-direction: column-reverse;
-    align-items: baseline;
-  }
-
   #warning-container {
     font-size: 0.8em;
     visibility: hidden;
@@ -96,10 +102,13 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
     background-color: #fcf8e3;
     border-color: #faebcc;
     color: #8a6d3b;
-    padding: 15px;
-    margin-bottom: 10px;
+    padding: 10px;
     border:1px solid transparent;
     border-radius: 4px;
+  }
+
+  #warning-container > * {
+    vertical-align: middle;
   }
   
   #warning-container .close-button {
@@ -115,12 +124,12 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: center;
+    margin-bottom: 5px;
   }
 
   #warning-container {
     width: 50%;
     margin-bottom: 0px;
-    padding: 15px;
    }
 
 }

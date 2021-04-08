@@ -162,10 +162,11 @@ class ComparisonWidget {
     }
 
     createWarningContents(warningType, parent) {
-        let warningMsg = `<span><i class="fas fa-exclamation-circle"></i></span> `+ this.getWarningMessage(warningType);
-        // let warningMsg = `<span>&#9888;</span> `+ this.getWarningMessage(warningType);
+        let warningIcon = `<i class="material-icons">&#xe001;</i> `; 
+        let warningMsg = `<text>${this.getWarningMessage(warningType)}</text>`;
+        
         this.createCloseButton(parent);
-        parent.innerHTML += warningMsg;
+        parent.innerHTML += warningIcon + warningMsg;
     }
 
     clearWarning(parent) {

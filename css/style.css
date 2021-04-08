@@ -33,3 +33,8 @@
 #tooltip { 
   position: absolute;
 }
+
+/** Other */
+.material-icons {
+  font-size: 15px;
+}
