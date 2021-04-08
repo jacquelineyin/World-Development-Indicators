@@ -448,4 +448,25 @@ class RegionMapper {
         return this[key];
     }
 
+    /**
+     * Purpose: Returns true if given region contains that country
+     * @param {string} region : name of region
+     * @param {string} country : name of country
+     * @returns {Boolean} : true if given region contains given country
+     */
+    doesRegionContainCountry(region, country) {
+        const countriesOfRegion = this.getCountriesOfRegion(region);
+        country = country.toLowerCase();
+
+        for (let countryOfRegion of countriesOfRegion) {
+            countryOfRegion = countryOfRegion.toLowerCase();
+            
+            if (countryOfRegion === country) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
