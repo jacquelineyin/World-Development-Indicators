@@ -53,14 +53,14 @@ class YearSlider {
         .attr('transform', `translate(0,20)`);
 
     vis.brushG = vis.chart.append('g')
-        .attr('class', 'brush x-brush');
+        .attr('class', 'brush x-brush')
+        .attr('id', 'x-brush');
 
 
     // Initialize brush component
-
     vis.brush = d3.brushX()
         .extent([[0, 0], [vis.config.width, vis.config.contextHeight]])
-        .on("end", vis.brushended);
+        .on("end", (e) => vis.brushended(e));
   }
 
   /**
@@ -98,9 +98,11 @@ class YearSlider {
    */
 
   brushended(event) {
+    let vis = this;
+    let brushGroup = document.getElementById('x-brush');
+
     const selection = event.selection;
     if (!event.sourceEvent || !selection) return;
-    console.log(this);
     const selectedDomain = selection.map(vis.xScale.invert, vis.xScale);
     const selectedYears = [];
     const minYear = selectedDomain[0].getFullYear();
@@ -109,7 +111,7 @@ class YearSlider {
       selectedYears.push(year.toString());
     }
 
-    vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, this, selectedYears);
+    vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, brushGroup, selectedYears);
 
     const d0 = selection.map(vis.xScale.invert)
     const d1 = d0.map(d3.timeYear.round);
@@ -119,6 +121,7 @@ class YearSlider {
       d1[0] = d3.timeYear.floor(d0[0]);
       d1[1] = d3.timeYear.offset(d1[0]);
     }
-    d3.select(this).call(vis.brush.move, d1.map(vis.xScale.invert));
+
+    d3.select(brushGroup).call(vis.brush.move, d1.map(vis.xScale));
   }
 }
