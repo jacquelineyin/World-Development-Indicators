@@ -11,7 +11,18 @@
 }
 
 #left-col {
+  float: left;
+  width: 9%;
+}
+
+#middle-col {
+  float: left;
   width: 50%;
+}
+
+#right-col {
+  float: left;
+  width: 40%;
 }
 
 .col {
@@ -22,6 +33,12 @@
 .row {
   display: flex;
   flex-direction: row;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 /** Axes */

@@ -1,5 +1,5 @@
 g.axis.x-axis.slider g.tick > text {
-  transform: translate(-1%, 1%) rotate(-90deg);
+  transform: translate(-1.5%, 1%) rotate(-90deg);
   text-anchor: end;
   fill: black;
 } 
@@ -20,4 +20,8 @@ g.axis.x-axis.slider g.tick > text {
 }
 .x-axis .domain {
   stroke: #8693a0;
+}
+
+#slider {
+  overflow: visible;
 }

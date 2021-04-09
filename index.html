@@ -24,6 +24,11 @@
 
         <div id="chart-container">
             <div class="col" id="left-col">
+                <div>
+                    <svg id="slider"></svg>
+                </div>
+            </div>
+            <div class="col" id="middle-col">
                 <div class="select-container" id="select-focus">
                     <div id="country-selector-container"></div>
                     <div id="region-selector-container"></div>
@@ -86,7 +91,8 @@
                             </div>
                             <div id="NET_OFFICIAL_DEVELOPMENT_ASSISTANCE_AND_OFFICIAL_AID_RECEIVED"
                                 class="wedge-container">
-                                <text class="wedge-label">Net official development assistance and official aid received</text>
+                                <text class="wedge-label">Net official development assistance and official aid
+                                    received</text>
                             </div>
                             <div id="PERCENTAGE_OF_GDP_MERCHANDISE_TRADE" class="wedge-container">
                                 <text class="wedge-label">Merchandise trade (% of GDP) (goods)</text>
@@ -157,7 +163,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col" id="right-col">
                 <div class="select-container" id="select-comparison">
                     <div class="row" id="comparison-container">
@@ -168,35 +173,35 @@
                 </div>
                 <svg id="barchart"></svg>
                 <svg id="linechart"></svg>
-            </div>
+            </div>    
         </div>
+    </div>
 
-        <svg id="slider"></svg>
 
-        <div id="tooltip"></div>
+    <div id="tooltip"></div>
 
-        <script src="js/d3.v6.min.js"></script>
-        <script src="js/leaflet.js"></script>
-        <script src="js/constants/indicators.js"></script>
-        <script src="js/constants/regions.js"></script>
-        <script src="js/constants/countries.js"></script>
-        <script src="js/constants/dispatcherEvents.js"></script>
-        <script src="js/constants/keyEventMapper.js"></script>
-        <script src="js/constants/colourPalette.js"></script>
-        <script src="js/constants/regionMapper.js"></script>
-        <script src="js/constants/countryCodeMapper.js"></script>
-        <script src="js/constants/warningType.js"></script>
-        <script src="js/selected.js"></script>
-        <script src="js/inputSanitizer.js"></script>
-        <script src="js/visualizations/geoMap.js"></script>
-        <script src="js/visualizations/barChart.js"></script>
-        <script src="js/visualizations/lineChart.js"></script>
-        <script src="js/visualizations/wedgeView.js"></script>
-        <script src="js/visualizations/yearSlider.js"></script>
-        <script src="js/widgets/focusAreaWidget.js"></script>
-        <script src="js/widgets/comparisonWidget.js"></script>
-        <script src="js/widgets/autocomplete.js"></script>
-        <script src="js/main.js"></script>
+    <script src="js/d3.v6.min.js"></script>
+    <script src="js/leaflet.js"></script>
+    <script src="js/constants/indicators.js"></script>
+    <script src="js/constants/regions.js"></script>
+    <script src="js/constants/countries.js"></script>
+    <script src="js/constants/dispatcherEvents.js"></script>
+    <script src="js/constants/keyEventMapper.js"></script>
+    <script src="js/constants/colourPalette.js"></script>
+    <script src="js/constants/regionMapper.js"></script>
+    <script src="js/constants/countryCodeMapper.js"></script>
+    <script src="js/constants/warningType.js"></script>
+    <script src="js/selected.js"></script>
+    <script src="js/inputSanitizer.js"></script>
+    <script src="js/visualizations/geoMap.js"></script>
+    <script src="js/visualizations/barChart.js"></script>
+    <script src="js/visualizations/lineChart.js"></script>
+    <script src="js/visualizations/wedgeView.js"></script>
+    <script src="js/visualizations/yearSlider.js"></script>
+    <script src="js/widgets/focusAreaWidget.js"></script>
+    <script src="js/widgets/comparisonWidget.js"></script>
+    <script src="js/widgets/autocomplete.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>
