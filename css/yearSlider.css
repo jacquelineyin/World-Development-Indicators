@@ -14,10 +14,7 @@ g.axis.x-axis.slider g.tick > text {
   font-size: 13px;
   fill: #6b6b6b;
 }
-.axis-title {
-  font-size: 13px;
-  fill: #888;
-}
+
 .x-axis .domain {
   stroke: #8693a0;
 }
