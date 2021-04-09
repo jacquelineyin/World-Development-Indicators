@@ -92,9 +92,11 @@
     }
 
     isFocusCountryInList(focusedCountry) {
-        for (let comparisonArea of this.comparisonAreas) {
-            if (this.constants.countries.isSameCountryName(comparisonArea, focusedCountry)) {
-                return true;
+        if (focusedCountry) {
+            for (let comparisonArea of this.comparisonAreas) {
+                if (this.constants.countries.isSameCountryName(comparisonArea, focusedCountry)) {
+                    return true;
+                }
             }
         }
         return false;
