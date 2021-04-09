@@ -182,7 +182,7 @@ class LineChart {
       .join('rect')
       .attr('class', 'legend-box')
       .attr('x', (d, i) => {
-        return (i * 200) + 10;
+        return (i * 250) + 10;
       })
       .attr('y', vis.config.containerHeight - 75)
       .attr('width', 10)
@@ -193,7 +193,7 @@ class LineChart {
       .data(vis.formattedData, d => d.values)
       .join('text')
       .attr('class', 'box-label')
-      .attr('x', (d, i) => (i * 200) + 25)
+      .attr('x', (d, i) => (i * 250) + 25)
       .attr('y', vis.config.containerHeight - 65)
       .text(d => d.countryName);
 
