@@ -1,25 +1,25 @@
 class InputSanitizer {
+    constructor() {
+        this.countries = new Countries();
+        this.regions = new Regions();
+    }
     /**
-     * Purpose: Capitalizes the first letter of each word in given string unless word is "and"
+     * Purpose: Returns country or region name as is standardized by values in constants
      * @param {string} input 
      * @returns {string} formatted string
      */
     formatCountryOrRegionNames(input) {
-    let words = input.split(' ');
-    let capitalizedWords = [];
-    let res = '';
-
-    for (let word of words) {
-        if (word !== 'and') {
-            word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        let key = this.countries.getKey(input);
+        if (key) {
+            return this.countries[key];
         }
-        capitalizedWords.push(word);
+
+        key = this.regions.getKey(input);
+        if (key) {
+            return this.regions[key];
+        }
+
+        return null;
     }
 
-    for (let word of capitalizedWords) {
-        res = res + ' ' + word;
-    }
-
-    return res.trim();
-    }
 }
