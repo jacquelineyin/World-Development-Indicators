@@ -1,6 +1,10 @@
   body {
     font: 10px sans-serif;
   }
+
+  #linechart {
+    overflow-y: visible;
+  }
   
   .axis path,
   .axis line {
@@ -29,4 +33,5 @@
     text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;    
     -webkit-font-smoothing: antialiased;
   }
+
   
