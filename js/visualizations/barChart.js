@@ -74,7 +74,6 @@ class BarChart {
     // Prepare data
     vis.aggregatedData = vis.getAverages(vis.selected);
 
-
     // Specificy accessor functions
     vis.xValue = d => d.key;
     vis.yValue = d => d.avg;
@@ -82,11 +81,21 @@ class BarChart {
     // Update axis titles
     vis.renderAxisTitles('Countries/Regions', vis.selected.indicator);
 
-    // Update Axes
-    vis.yScale.domain([0, d3.max(vis.getAllAverages())])
+    // Update Scale domains
+    vis.updateYScale();
     vis.xScale.domain(vis.selected.allSelectedAreas);
 
     vis.renderVis();
+  }
+
+  updateYScale() {
+    let vis = this;
+
+    if (vis.aggregatedData.length > 0) {
+      vis.yScale.domain([0, d3.max(vis.getAllAverages())]);
+    } else {
+      vis.yScale.domain([0, 0]);
+    }
   }
 
   renderVis() {
@@ -96,25 +105,6 @@ class BarChart {
 
     // Update axes
     vis.renderAxisGroups(); 
-  }
-
-  /**
-   * Purpose: updates barChart with new data or new selectedItems
-   * @param {Array} _data 
-   * @param {Selected} _selectedItems
-   */
-  update(_data, _selectedItems) {
-    let vis = this;
-    
-    if (_data) {
-      vis.data = _data;
-    }
-
-    if (_selectedItems) {
-      vis.selectedItems = _selectedItems;
-    }
-
-    vis.updateVis();
   }
 
   // ------------------------------------------ Helper functions ------------------------------------ //
@@ -417,6 +407,7 @@ class BarChart {
     let filtered = dataArr.filter(d => allSelectedAreas.includes(d.CountryName) 
                                         && d.IndicatorName === indicator 
                                         && isWithinTimeInterval(d));
+
     return filtered;
   }
 

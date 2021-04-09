@@ -12,4 +12,20 @@ class Regions {
     getAllRegions() {
         return Object.values(this);
     }
+
+    getKey(region) {
+        let entries = Object.entries(this);
+        region = region.toLowerCase().trim();
+
+        for (let entry of entries) {
+            let key = entry[0];
+            let val = entry[1].toLowerCase().trim();
+
+            if (val === region) {
+                return key;
+            }
+        }
+
+        return null;
+    }
 }
