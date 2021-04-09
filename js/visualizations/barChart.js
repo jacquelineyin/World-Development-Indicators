@@ -408,7 +408,6 @@ class BarChart {
                                         && d.IndicatorName === indicator 
                                         && isWithinTimeInterval(d));
 
-                                        console.log(filtered)
     return filtered;
   }
 
