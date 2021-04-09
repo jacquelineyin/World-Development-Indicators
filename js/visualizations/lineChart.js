@@ -190,12 +190,12 @@ class LineChart {
       .style('fill', (d, i) => vis.getColour(d, i));
 
     vis.legend.selectAll('.box-label')
-      .data(vis.formattedData, d => d.values)
+      .data(vis.selected.allSelectedAreas)
       .join('text')
       .attr('class', 'box-label')
       .attr('x', (d, i) => (i * 250) + 25)
       .attr('y', vis.config.containerHeight - 65)
-      .text(d => d.countryName);
+      .text(d => d);
 
 
     vis.values.selectAll('text')

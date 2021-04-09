@@ -3,7 +3,7 @@
   }
 
   #linechart {
-    overflow: visible;
+    overflow-y: visible;
   }
   
   .axis path,
