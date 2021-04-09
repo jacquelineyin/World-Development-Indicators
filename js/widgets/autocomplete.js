@@ -58,6 +58,16 @@ class AutocompleteCreator {
         });
       }
 
+      /**
+       * Purpose: Sets inputElem and submitButton to which we want to attach autocomplete
+       * @param {Object} = {inputElem: <Node>, submitButton: <Node>} 
+       */
+      setInputOrSubmit({inputElem, submitButton}) {
+        this.inputElem = inputElem ? inputElem : this.inputElem;
+        this.submitButton = submitButton ? submitButton : this.submitButton;
+      };
+      
+
     // --------------------------- Helpers ------------------------------- //
 
     /**

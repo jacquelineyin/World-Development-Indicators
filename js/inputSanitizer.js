@@ -1,6 +1,6 @@
 class InputSanitizer {
     /**
-     * Purpose: Capitalizes the first letter of each word in given string
+     * Purpose: Capitalizes the first letter of each word in given string unless word is "and"
      * @param {string} input 
      * @returns {string} formatted string
      */
@@ -10,7 +10,9 @@ class InputSanitizer {
     let res = '';
 
     for (let word of words) {
-        word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        if (word !== 'and') {
+            word = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }
         capitalizedWords.push(word);
     }
 
