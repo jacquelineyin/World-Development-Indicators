@@ -218,6 +218,7 @@ class CountryCodeMapper {
      */
     getCountryCode(country) {
         const key = this.countries.getKey(country);
+        console.log(key);
         return this[key];
     }
 

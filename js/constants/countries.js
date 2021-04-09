@@ -1,7 +1,5 @@
 class Countries {
     constructor() {
-        this.inputSanitizer = new InputSanitizer();
-
         this.AFGHANISTAN = "Afghanistan",
         this.ALBANIA = "Albania",
         this.ALGERIA = "Algeria",
@@ -217,18 +215,25 @@ class Countries {
      * @returns {string} key of country or null if country is not in this object
      */
     getKey(country) {
-        country = this.inputSanitizer.formatCountryOrRegionNames(country);
         let entries = Object.entries(this);
+        country = country.toLowerCase().trim();
 
         for (let entry of entries) {
             let key = entry[0];
-            let value = entry[1];
+            let val = entry[1].toLowerCase().trim();
 
-            if (value === country) {
+            if (val === country) {
                 return key;
             }
         }
 
         return null;
     }
+
+    isSameCountryName(country1, country2) {
+        country1 = country1.toLowerCase().trim();
+        country2 = country2.toLowerCase().trim();
+        return country1 === country2;
+    }
+
 }

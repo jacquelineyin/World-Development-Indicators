@@ -107,7 +107,6 @@
      */
     setCountry(country) {
         if (country) {
-            country = this.inputSanitizer.formatCountryOrRegionNames(country);
             let countriesInSelectedRegion = this.regionMapper.getCountriesOfRegion(this.area.region);
             
             if (countriesInSelectedRegion.includes(country)) {

@@ -19,6 +19,7 @@ class LineChart {
     }
     this.selected = _selectedItems;
     this.data = _data;
+    this.constants = { countries: new Countries() }
     this.initVis();
   }
 
@@ -156,13 +157,37 @@ class LineChart {
       .defined(d => { return d.value !== null });
 
     // Set the scale input domains
-    vis.colorScale.domain(vis.selected.allSelectedAreas);
-    vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
-    vis.yScalePos.domain([0, d3.max(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value)]);
-    vis.yScaleNeg.domain(d3.extent(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value));
-
+    vis.setScaleDomains(filteredSelectedData);
 
     vis.renderVis();
+  }
+
+  setScaleDomains(filteredSelectedData) {
+    let vis = this;
+
+    let minMaxYears;
+    let minMaxPos;
+    let minMaxNeg;
+
+    if (filteredSelectedData.length > 0) {
+      minMaxYears = d3.extent(filteredSelectedData, d => d.year);
+      minMaxPos = [0, d3.max(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value)];
+      minMaxNeg = d3.extent(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value);
+    } else {
+      let { min, max } = this.selected.timeInterval;
+      let minYear = parseTime(min);
+      let maxYear = parseTime(max);
+      minMaxYears = [minYear, maxYear];
+      minMaxPos = [0, 0, 0];
+      minMaxNeg = [0, 0, 0];
+    }
+
+    console.log(vis.selected.allSelectedAreas)
+
+    vis.colorScale.domain(vis.selected.allSelectedAreas);
+    vis.xScale.domain(minMaxYears);
+    vis.yScalePos.domain(minMaxPos);
+    vis.yScaleNeg.domain(minMaxNeg);
   }
 
   renderVis() {
@@ -179,7 +204,7 @@ class LineChart {
       .text('Total ' + vis.selected.indicator);
 
     vis.legend.selectAll('.legend-box')
-      .data(vis.formattedData, d => d.values)
+      .data(vis.selected.allSelectedAreas, d => d)
       .join('rect')
       .attr('class', 'legend-box')
       .attr('x', (d, i) => {
@@ -188,15 +213,15 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 75)
       .attr('width', 10)
       .attr('height', 10)
-      .style('fill', (d, i) => vis.getColour(d, i));
+      .style('fill', (d, i) => vis.getColourForLegend(d, i));
 
     vis.legend.selectAll('.box-label')
-      .data(vis.formattedData, d => d.values)
+      .data(vis.selected.allSelectedAreas, d => d)
       .join('text')
       .attr('class', 'box-label')
       .attr('x', (d, i) => (i * 200) + 25)
       .attr('y', vis.config.containerHeight - 65)
-      .text(d => d.countryName);
+      .text(d => d);
 
     vis.values.selectAll('text')
       .data(vis.formattedData, d => d.values)
@@ -235,97 +260,97 @@ class LineChart {
     const mouseG = vis.mouseG.selectAll('.mouseG')
       .data(vis.formattedData, d => {
         console.log(d)
-        return d});
-      // .join('g')
-      // .attr('class', 'mouseG');
-
-    const mouseGEnter = mouseG.enter().append('g')
+        return d})
+      .join('g')
       .attr('class', 'mouseG');
 
-    mouseGEnter.merge(mouseG);
+    // const mouseGEnter = mouseG.enter().append('g')
+    //   .attr('class', 'mouseG');
 
-    mouseG.exit().remove();
+    // mouseGEnter.merge(mouseG);
 
-    const mouseLine = mouseG.merge(mouseGEnter).selectAll('.mouse-line')
-      .data(d => { 
-        console.log(d)
-        return d});
+    // mouseG.exit().remove();
 
-    const mouseLineEnter = mouseLine.enter().append('path')
-      .attr('class', 'mouse-line');
+    // const mouseLine = mouseG.merge(mouseGEnter).selectAll('.mouse-line')
+    //   .data(d => { 
+    //     console.log(d)
+    //     return d});
 
-    mouseLineEnter.merge(mouseLine)
-      .style('stroke', 'black')
-      .style('stroke-width', '1px')
-      .style('display', 'none');
-    
-    mouseLine.exit().remove();
-  
+    // const mouseLineEnter = mouseLine.enter().append('path')
+    //   .attr('class', 'mouse-line');
 
-
-    const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
-      .data(vis.formattedData, d => d);
-
-    const mousePerLineEnter = mousePerLine.enter().append('g')
-      .attr('class', 'mouse-per-line');
-
-    mousePerLineEnter.merge(mousePerLine);
-
-    mousePerLine.exit().remove();
-
-    const mplCircle = mousePerLine.merge(mousePerLineEnter).selectAll('.mouseCircle')
-      .data(d => {
-        console.log(d)
-        return d;
-      });
-    
-    const mplCircleEnter = mplCircle.enter().append('circle')
-      .attr('class', 'mouseCircle');
-
-    mplCircleEnter.merge(mplCircle)
-      .attr('r', 7)
-      .style('stroke', (d, i) => vis.getColour(d, i))
-      .style('fill', 'none')
-      .style('stroke-width', '1px')
-      .style('display', 'none');
-
-    mplCircle.exit().remove();
-
-    const mplText = mousePerLine.merge(mousePerLineEnter).selectAll('mouse-text')
-      .data(d => {
-        return d;
-      }, d => d);
-
-    const mplTextEnter = mplText.enter().append('text')
-      .attr('class', 'mouse-text');
-
-    mplTextEnter.merge(mplText)
-      .attr('transform', `translate(10,3)`);
-
-    mplText.exit().remove();
-
-    // mouseG.append('path') // this is the black vertical line to follow mouse
-    //   .attr('class', 'mouse-line')
+    // mouseLineEnter.merge(mouseLine)
     //   .style('stroke', 'black')
     //   .style('stroke-width', '1px')
     //   .style('display', 'none');
 
+    // mouseLine.exit().remove();
+
+
+
     // const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
-    //   .data(vis.formattedData, d => d.values)
-    //   .join('g')
+    //   .data(vis.formattedData, d => d);
+
+    // const mousePerLineEnter = mousePerLine.enter().append('g')
     //   .attr('class', 'mouse-per-line');
 
-    // mousePerLine.append('circle')
-    //   .attr('class', 'mouseCircle')
+    // mousePerLineEnter.merge(mousePerLine);
+
+    // mousePerLine.exit().remove();
+
+    // const mplCircle = mousePerLine.merge(mousePerLineEnter).selectAll('.mouseCircle')
+    //   .data(d => {
+    //     console.log(d)
+    //     return d;
+    //   });
+
+    // const mplCircleEnter = mplCircle.enter().append('circle')
+    //   .attr('class', 'mouseCircle');
+
+    // mplCircleEnter.merge(mplCircle)
     //   .attr('r', 7)
     //   .style('stroke', (d, i) => vis.getColour(d, i))
     //   .style('fill', 'none')
     //   .style('stroke-width', '1px')
     //   .style('display', 'none');
 
-    // mousePerLine.append('text')
-    //   .attr('class', 'mouse-text')
+    // mplCircle.exit().remove();
+
+    // const mplText = mousePerLine.merge(mousePerLineEnter).selectAll('mouse-text')
+    //   .data(d => {
+    //     return d;
+    //   }, d => d);
+
+    // const mplTextEnter = mplText.enter().append('text')
+    //   .attr('class', 'mouse-text');
+
+    // mplTextEnter.merge(mplText)
     //   .attr('transform', `translate(10,3)`);
+
+    // mplText.exit().remove();
+
+    mouseG.append('path') // this is the black vertical line to follow mouse
+      .attr('class', 'mouse-line')
+      .style('stroke', 'black')
+      .style('stroke-width', '1px')
+      .style('display', 'none');
+
+    const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
+      .data(vis.formattedData, d => d.values)
+      .join('g')
+      .attr('class', 'mouse-per-line');
+
+    mousePerLine.append('circle')
+      .attr('class', 'mouseCircle')
+      .attr('r', 7)
+      .style('stroke', (d, i) => vis.getColour(d, i))
+      .style('fill', 'none')
+      .style('stroke-width', '1px')
+      .style('display', 'none');
+
+    mousePerLine.append('text')
+      .attr('class', 'mouse-text')
+      .attr('transform', `translate(10,3)`);
 
     mouseG.append('rect') // append a rect to catch mouse movements on canvas
       .attr('width', vis.width) // can't catch mouse events on a g element
@@ -434,15 +459,30 @@ class LineChart {
 
   // ------------------ Helpers ------------------ //
 
-  getColour(d, i) {
+  getColourForLegend(d, i) {
     let vis = this;
 
-    if (d.countryName === vis.selected.area.country) {
+    let isFocusedCountry = vis.constants.countries.isSameCountryName(d, vis.selected.area.country);
+
+    if (isFocusedCountry) {
       return vis.config.colour.selectedArea;
     } else {
       return vis.colorScale(i);
     }
   }
+
+  getColour(d, i) {
+    let vis = this;
+
+    let isFocusedCountry = d.countryName.toLowerCase().trim() === vis.selected.area.country.toLowerCase().trim();
+
+    if (isFocusedCountry) {
+      return vis.config.colour.selectedArea;
+    } else {
+      return vis.colorScale(i);
+    }
+  }
+
 }
 
 
