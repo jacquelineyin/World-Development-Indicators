@@ -182,8 +182,6 @@ class LineChart {
       minMaxNeg = [0, 0, 0];
     }
 
-    console.log(vis.selected.allSelectedAreas)
-
     vis.colorScale.domain(vis.selected.allSelectedAreas);
     vis.xScale.domain(minMaxYears);
     vis.yScalePos.domain(minMaxPos);
@@ -258,9 +256,7 @@ class LineChart {
       });
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
-      .data(vis.formattedData, d => {
-        console.log(d)
-        return d})
+      .data(vis.formattedData, d => d)
       .join('g')
       .attr('class', 'mouseG');
 
