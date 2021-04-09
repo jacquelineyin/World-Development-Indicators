@@ -44,8 +44,7 @@ class YearSlider {
 
     // Append chart group with x- and y-axes
     vis.chart = vis.svg.append('g')
-      .attr('transform', `translate(200,100)rotate(90)`);
-    //.attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+      .attr('transform', `translate(500,100)rotate(90)`);
 
 
     vis.xAxisG = vis.chart.append('g')
@@ -103,15 +102,6 @@ class YearSlider {
 
     const selection = event.selection;
     if (!event.sourceEvent || !selection) return;
-    const selectedDomain = selection.map(vis.xScale.invert, vis.xScale);
-    const selectedYears = [];
-    const minYear = selectedDomain[0].getFullYear();
-    const maxYear = selectedDomain[1].getFullYear();
-    for (let year = minYear; year <= maxYear; year++) {
-      selectedYears.push(year.toString());
-    }
-
-    vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, brushGroup, selectedYears);
 
     const d0 = selection.map(vis.xScale.invert)
     const d1 = d0.map(d3.timeYear.round);
@@ -122,6 +112,14 @@ class YearSlider {
       d1[1] = d3.timeYear.offset(d1[0]);
     }
 
+    const selectedYears = [];
+    const minYear = d1[0].getFullYear();
+    const maxYear = d1[1].getFullYear();
+    for (let year = minYear; year <= maxYear; year++) {
+      selectedYears.push(year.toString());
+    }
+
+    vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, brushGroup, selectedYears);
     d3.select(brushGroup).call(vis.brush.move, d1.map(vis.xScale));
   }
 }
