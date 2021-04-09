@@ -10,8 +10,9 @@
      * @param {string} selectedIndicator : indicator that is selected. Default value: POPULATION_TOTAL 
      * @param {Object} selectedTimeInterval = {min, max} : min as lowerBound year and max as upperBound of timeInterval
      *                                                              Default = NULL;
+     * @param {Object} dispatcher : d3 dispatcher
      */
-    constructor(selectedArea, selectedComparisonAreas, selectedIndicator, selectedTimeInterval) {
+    constructor(selectedArea, selectedComparisonAreas, selectedIndicator, selectedTimeInterval, dispatcher) {
         
         this.inputSanitizer = new InputSanitizer();
         this.availableIndicators = new Indicators();
@@ -20,9 +21,11 @@
         this.comparisonAreas = selectedComparisonAreas ? selectedComparisonAreas : [];
         this.indicator = selectedIndicator ? selectedIndicator : this.availableIndicators.POPULATION_TOTAL;
         this.timeInterval = selectedTimeInterval ? selectedTimeInterval : {};
-
+        
         this.allSelectedAreas = [];
         this.updateAllSelectedAreas(this.area, this.comparisonAreas);
+        
+        this.dispatcher = dispatcher;
     }
 
     /**
@@ -43,6 +46,9 @@
             this.comparisonAreas.push(countryOrRegion);
         } else if (isComparisonListFull) {
             //TODO: Error handling - show warning label
+            if (this.dispatcher && this.dispatcherEvents) {
+                this.dispatcher.call(this.dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, this);
+            }
         }
 
         // Update allSelectedAreas
@@ -163,6 +169,11 @@
         country = formatCountryOrRegionNames(country);
  
         this.allSelectedAreas = country !== '' ? [country, ...comparisonAreas] : [region, ...comparisonAreas];
+    }
+
+    setDispatcher(dispatcher, dispatcherEvents) {
+        this.dispatcher = dispatcher;
+        this.dispatcherEvents = dispatcherEvents;
     }
 
 }
