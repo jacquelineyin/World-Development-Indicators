@@ -19,6 +19,7 @@ class LineChart {
     }
     this.selected = _selectedItems;
     this.data = _data;
+    this.constants = { countries: new Countries() }
     this.initVis();
   }
 
@@ -160,7 +161,6 @@ class LineChart {
     vis.yScalePos.domain([0, d3.max(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value)]);
     vis.yScaleNeg.domain(d3.extent(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value));
 
-
     vis.renderVis();
   }
 
@@ -178,7 +178,7 @@ class LineChart {
       .text('Total ' + vis.selected.indicator);
 
     vis.legend.selectAll('.legend-box')
-      .data(vis.formattedData, d => d.values)
+      .data(vis.selected.allSelectedAreas, d => d)
       .join('rect')
       .attr('class', 'legend-box')
       .attr('x', (d, i) => {
@@ -187,16 +187,15 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 75)
       .attr('width', 10)
       .attr('height', 10)
-      .style('fill', (d, i) => vis.getColour(d, i));
+      .style('fill', (d, i) => vis.getColourForLegend(d, i));
 
     vis.legend.selectAll('.box-label')
-      .data(vis.selected.allSelectedAreas)
+      .data(vis.selected.allSelectedAreas, d => d)
       .join('text')
       .attr('class', 'box-label')
       .attr('x', (d, i) => (i * 250) + 25)
       .attr('y', vis.config.containerHeight - 65)
       .text(d => d);
-
 
     vis.values.selectAll('text')
       .data(vis.formattedData, d => d.values)
@@ -233,7 +232,7 @@ class LineChart {
       });
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
-      .data(vis.formattedData, d => d.values)
+      .data(vis.formattedData, d => d)
       .join('g')
       .attr('class', 'mouseG');
 
@@ -367,15 +366,30 @@ class LineChart {
 
   // ------------------ Helpers ------------------ //
 
-  getColour(d, i) {
+  getColourForLegend(d, i) {
     let vis = this;
 
-    if (d.countryName === vis.selected.area.country) {
+    let isFocusedCountry = vis.constants.countries.isSameCountryName(d, vis.selected.area.country);
+
+    if (isFocusedCountry) {
       return vis.config.colour.selectedArea;
     } else {
       return vis.colorScale(i);
     }
   }
+
+  getColour(d, i) {
+    let vis = this;
+
+    let isFocusedCountry = d.countryName.toLowerCase().trim() === vis.selected.area.country.toLowerCase().trim();
+
+    if (isFocusedCountry) {
+      return vis.config.colour.selectedArea;
+    } else {
+      return vis.colorScale(i);
+    }
+  }
+
 }
 
 
