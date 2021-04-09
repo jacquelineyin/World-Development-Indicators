@@ -98,25 +98,6 @@ class BarChart {
     vis.renderAxisGroups(); 
   }
 
-  /**
-   * Purpose: updates barChart with new data or new selectedItems
-   * @param {Array} _data 
-   * @param {Selected} _selectedItems
-   */
-  update(_data, _selectedItems) {
-    let vis = this;
-    
-    if (_data) {
-      vis.data = _data;
-    }
-
-    if (_selectedItems) {
-      vis.selectedItems = _selectedItems;
-    }
-
-    vis.updateVis();
-  }
-
   // ------------------------------------------ Helper functions ------------------------------------ //
   
   /**
