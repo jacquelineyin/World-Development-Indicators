@@ -15,6 +15,7 @@
     constructor(selectedArea, selectedComparisonAreas, selectedIndicator, selectedTimeInterval, dispatcher) {
         
         this.inputSanitizer = new InputSanitizer();
+        this.constants = {countries: new Countries()}
         this.availableIndicators = new Indicators();
         this.regionMapper = new RegionMapper();
         this.area = selectedArea ? selectedArea : {region: 'World', country: ''};
@@ -76,7 +77,7 @@
      * @param {Object} focusedArea = {region: "", country: ""} : object that holds country or region being selected
      */
     updateComparisonArea(focusedArea) {
-        let isFocusCountryInList = this.comparisonAreas.includes(focusedArea.country);
+        let isFocusCountryInList = this.isFocusCountryInList(focusedArea.country);
         let isFocusRegionInList = this.comparisonAreas.includes(focusedArea.region);
         let index;
 
@@ -88,6 +89,15 @@
             index = this.comparisonAreas.indexOf(focusedArea.region);
             this.comparisonAreas.splice(index, 1);
         } 
+    }
+
+    isFocusCountryInList(focusedCountry) {
+        for (let comparisonArea of this.comparisonAreas) {
+            if (this.constants.countries.isSameCountryName(comparisonArea, focusedCountry)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
