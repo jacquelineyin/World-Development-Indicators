@@ -1,5 +1,5 @@
 g.axis.x-axis.slider g.tick > text {
-  transform: rotate(-45deg);
+  transform: translate(-1%, 1%) rotate(-90deg);
   text-anchor: end;
   fill: black;
 } 

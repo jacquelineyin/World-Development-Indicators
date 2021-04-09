@@ -44,9 +44,9 @@ class YearSlider {
 
     // Append chart group with x- and y-axes
     vis.chart = vis.svg.append('g')
-    .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+      .attr('transform', `translate(200,100)rotate(90)`);
+    //.attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-        //.attr('transform', `translate(200,100)rotate(90)`);
 
     vis.xAxisG = vis.chart.append('g')
         .attr('class', 'axis x-axis slider')
@@ -90,7 +90,7 @@ class YearSlider {
     // Update the brush and define a default position
     vis.brushG
         .call(vis.brush)
-        .call(vis.brush.move, [0,94]);
+        .call(vis.brush.move, [0, 140]);
   }
 
   /**
