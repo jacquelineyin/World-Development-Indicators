@@ -8,11 +8,10 @@ class YearSlider {
   constructor(_config, _data, _dispatcher, _dispatcherEvents) {
     this.config = {
       parentElement: _config.parentElement,
-      width:  1500,
-      height: 1500,
+      width:  900,
+      height: 1200,
       contextHeight: 50,
-      margin: {top: 10, right: 10, bottom: 100, left: 45},
-      contextMargin: {top: 280, right: 10, bottom: 20, left: 25},
+      margin: {top: 500, right: 10, bottom: 100, left: 45},
     }
     this.data = _data;
     this.dispatcher = _dispatcher;
@@ -26,8 +25,8 @@ class YearSlider {
   initVis() {
     let vis = this;
 
-    const containerWidth = vis.config.width + vis.config.margin.left + vis.config.margin.right;
-    const containerHeight = vis.config.height + vis.config.margin.top + vis.config.margin.bottom;
+    const containerWidth = vis.config.width;
+    const containerHeight = vis.config.height + vis.config.margin.top;
   
     vis.xScale = d3.scaleTime()
         .rangeRound([0, vis.config.width]);
@@ -44,7 +43,7 @@ class YearSlider {
 
     // Append chart group with x- and y-axes
     vis.chart = vis.svg.append('g')
-      .attr('transform', `translate(500,100)rotate(90)`);
+      .attr('transform', `translate(70,0)rotate(90)`);
 
 
     vis.xAxisG = vis.chart.append('g')
@@ -89,7 +88,7 @@ class YearSlider {
     // Update the brush and define a default position
     vis.brushG
         .call(vis.brush)
-        .call(vis.brush.move, [0, 140]);
+        .call(vis.brush.move, [0, 85]);
   }
 
   /**
