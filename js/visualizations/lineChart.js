@@ -233,32 +233,99 @@ class LineChart {
       });
 
     const mouseG = vis.mouseG.selectAll('.mouseG')
-      .data(vis.formattedData, d => d.values)
-      .join('g')
+      .data(vis.formattedData, d => {
+        console.log(d)
+        return d});
+      // .join('g')
+      // .attr('class', 'mouseG');
+
+    const mouseGEnter = mouseG.enter().append('g')
       .attr('class', 'mouseG');
 
-    mouseG.append('path') // this is the black vertical line to follow mouse
-      .attr('class', 'mouse-line')
+    mouseGEnter.merge(mouseG);
+
+    mouseG.exit().remove();
+
+    const mouseLine = mouseG.merge(mouseGEnter).selectAll('.mouse-line')
+      .data(d => { 
+        console.log(d)
+        return d});
+
+    const mouseLineEnter = mouseLine.enter().append('path')
+      .attr('class', 'mouse-line');
+
+    mouseLineEnter.merge(mouseLine)
       .style('stroke', 'black')
       .style('stroke-width', '1px')
       .style('display', 'none');
+    
+    mouseLine.exit().remove();
+  
+
 
     const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
-      .data(vis.formattedData, d => d.values)
-      .join('g')
+      .data(vis.formattedData, d => d);
+
+    const mousePerLineEnter = mousePerLine.enter().append('g')
       .attr('class', 'mouse-per-line');
 
-    mousePerLine.append('circle')
-      .attr('class', 'mouseCircle')
+    mousePerLineEnter.merge(mousePerLine);
+
+    mousePerLine.exit().remove();
+
+    const mplCircle = mousePerLine.merge(mousePerLineEnter).selectAll('.mouseCircle')
+      .data(d => {
+        console.log(d)
+        return d;
+      });
+    
+    const mplCircleEnter = mplCircle.enter().append('circle')
+      .attr('class', 'mouseCircle');
+
+    mplCircleEnter.merge(mplCircle)
       .attr('r', 7)
       .style('stroke', (d, i) => vis.getColour(d, i))
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('display', 'none');
 
-    mousePerLine.append('text')
-      .attr('class', 'mouse-text')
+    mplCircle.exit().remove();
+
+    const mplText = mousePerLine.merge(mousePerLineEnter).selectAll('mouse-text')
+      .data(d => {
+        return d;
+      }, d => d);
+
+    const mplTextEnter = mplText.enter().append('text')
+      .attr('class', 'mouse-text');
+
+    mplTextEnter.merge(mplText)
       .attr('transform', `translate(10,3)`);
+
+    mplText.exit().remove();
+
+    // mouseG.append('path') // this is the black vertical line to follow mouse
+    //   .attr('class', 'mouse-line')
+    //   .style('stroke', 'black')
+    //   .style('stroke-width', '1px')
+    //   .style('display', 'none');
+
+    // const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
+    //   .data(vis.formattedData, d => d.values)
+    //   .join('g')
+    //   .attr('class', 'mouse-per-line');
+
+    // mousePerLine.append('circle')
+    //   .attr('class', 'mouseCircle')
+    //   .attr('r', 7)
+    //   .style('stroke', (d, i) => vis.getColour(d, i))
+    //   .style('fill', 'none')
+    //   .style('stroke-width', '1px')
+    //   .style('display', 'none');
+
+    // mousePerLine.append('text')
+    //   .attr('class', 'mouse-text')
+    //   .attr('transform', `translate(10,3)`);
 
     mouseG.append('rect') // append a rect to catch mouse movements on canvas
       .attr('width', vis.width) // can't catch mouse events on a g element
