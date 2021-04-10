@@ -244,10 +244,9 @@ class LineChart {
 
     mouseG.exit().remove();
 
+    // Create black vertical line to follow mouse
     const mouseLine = mouseG.merge(mouseGEnter).selectAll('.mouse-line')
-      .data(d => { 
-        console.log(d)
-        return d});
+      .data(d => [d], d =>d);
 
     const mouseLineEnter = mouseLine.enter().append('path')
       .attr('class', 'mouse-line');
@@ -272,10 +271,7 @@ class LineChart {
     mousePerLine.exit().remove();
 
     const mplCircle = mousePerLine.merge(mousePerLineEnter).selectAll('.mouseCircle')
-      .data(d => {
-        console.log(d)
-        return d;
-      });
+      .data(d => [d], d => d);
 
     const mplCircleEnter = mplCircle.enter().append('circle')
       .attr('class', 'mouseCircle');
@@ -289,10 +285,8 @@ class LineChart {
 
     mplCircle.exit().remove();
 
-    const mplText = mousePerLine.merge(mousePerLineEnter).selectAll('mouse-text')
-      .data(d => {
-        return d;
-      }, d => d);
+    const mplText = mousePerLine.merge(mousePerLineEnter).selectAll('.mouse-text')
+      .data(d => [d], d => d);
 
     const mplTextEnter = mplText.enter().append('text')
       .attr('class', 'mouse-text');
@@ -302,6 +296,113 @@ class LineChart {
 
     mplText.exit().remove();
 
+
+
+    // append a rect to catch mouse movements on canvas
+    const rect = mouseG.merge(mouseGEnter).selectAll('.rect-overlay')
+      .data(d => [d], d => d);
+
+    const rectEnter = rect.enter().append('rect')
+      .attr('class', 'rect-overlay');
+
+    rectEnter.merge(rect)
+      .attr('width', vis.width) // can't catch mouse events on a g element
+      .attr('height', vis.height)
+      .attr('fill', 'none')
+      .attr('pointer-events', 'all')
+      .on('mouseleave', () => { // on mouse out hide line, circles and text
+        d3.select('.mouse-line')
+          .style('display', 'none');
+        d3.selectAll('.mouse-per-line circle')
+          .style('display', 'none');
+        d3.selectAll('.mouse-per-line text')
+          .style('display', 'none');
+        d3.selectAll('.value')
+          .style('display', 'none');
+        d3.select('.yearValue')
+          .style('display', 'none');
+      })
+      .on('mouseenter', () => { // on mouse in show line, circles and text
+        d3.select('.mouse-line')
+          .style('display', 'block');
+        d3.selectAll('.mouse-per-line circle')
+          .style('display', 'block');
+        d3.selectAll('.mouse-per-line text')
+          .style('display', 'block');
+        d3.selectAll('.value')
+          .style('display', 'block');
+        d3.select('.yearValue')
+          .style('display', 'block');
+      })
+      .on('mousemove', function (event) { // mouse moving over canvas
+        const mouse = d3.pointer(event, this)[0];
+        const formatNumbers = d3.format(',');
+
+        d3.selectAll('.mouse-per-line')
+          .attr('transform', function (d, i) {
+            const xDate = vis.xScale.invert(mouse);
+            const bisect = d3.bisector(d => d.year).left;
+            const idx = bisect(d.values, xDate);
+            const item = d.values[idx];
+            if (item) {
+              const currentYear = item.Year;
+
+              if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+                d3.select(this).select('text')
+                  .text(d => item.value !== null || item.value === 0 ?
+                    formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
+
+                d3.select('.values').selectAll('.value')
+                  .attr('x', vis.width + 130)
+                  .attr('y', (d, i) => {
+                    return (i * 20) + 5
+                  })
+                  .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
+                    d.countryName + ': ' + formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(d.values[idx].value)).toFixed(2))
+                    : d.countryName + ': N/A');
+
+              } else {
+                d3.select(this).select('text')
+                  .text(d => item.value !== null || item.value === 0 ?
+                    formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
+
+                d3.select('.values').selectAll('.value')
+                  .attr('x', vis.width + 130)
+                  .attr('y', (d, i) => {
+                    return (i * 20) + 5
+                  })
+                  .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
+                    d.countryName + ': ' + formatNumbers(vis.yScalePos.invert(vis.yScalePos(d.values[idx].value)).toFixed(2))
+                    : d.countryName + ': N/A');
+              }
+
+              if (currentYear) {
+                d3.select('.yearValue')
+                  .text(currentYear);
+              }
+
+              vis.svg.select('.mouse-line')
+                .attr('d', function () {
+                  var data = 'M' + vis.xScale(item.year) + ',' + vis.height;
+                  data += ' ' + vis.xScale(item.year) + ',' + 0;
+                  return data;
+                });
+
+              if (item.value !== null || item.value === 0) {
+                if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+                  return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
+                } else {
+                  return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
+                }
+              }
+              return `translate(${vis.xScale(item.year)},${vis.width / 2})`;
+            }
+            return null;
+          });
+      });
+
+      rect.exit().remove();
+
     // Update the axes
     vis.xAxisG.call(vis.xAxis.ticks(d3.timeYear));
     if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
@@ -310,139 +411,6 @@ class LineChart {
       vis.yAxisG.call(vis.yAxisPos);
     }
   }
-
-  //   const mouseG = vis.mouseG.selectAll('.mouseG')
-  //   .data(vis.formattedData, d => d)
-  //   .join('g')
-  //   .attr('class', 'mouseG');
-
-  //   mouseG.append('path') // this is the black vertical line to follow mouse
-  //     .attr('class', 'mouse-line')
-  //     .style('stroke', 'black')
-  //     .style('stroke-width', '1px')
-  //     .style('display', 'none');
-
-  //   const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
-  //     .data(vis.formattedData, d => d.values)
-  //     .join('g')
-  //     .attr('class', 'mouse-per-line');
-
-  //   mousePerLine.append('circle')
-  //     .attr('class', 'mouseCircle')
-  //     .attr('r', 7)
-  //     .style('stroke', (d, i) => vis.getColour(d, i))
-  //     .style('fill', 'none')
-  //     .style('stroke-width', '1px')
-  //     .style('display', 'none');
-
-  //   mousePerLine.append('text')
-  //     .attr('class', 'mouse-text')
-  //     .attr('transform', `translate(10,3)`);
-
-  //   mouseG.append('rect') // append a rect to catch mouse movements on canvas
-  //     .attr('width', vis.width) // can't catch mouse events on a g element
-  //     .attr('height', vis.height)
-  //     .attr('fill', 'none')
-  //     .attr('pointer-events', 'all')
-  //     .on('mouseleave', () => { // on mouse out hide line, circles and text
-  //       d3.select('.mouse-line')
-  //         .style('display', 'none');
-  //       d3.selectAll('.mouse-per-line circle')
-  //         .style('display', 'none');
-  //       d3.selectAll('.mouse-per-line text')
-  //         .style('display', 'none');
-  //       d3.selectAll('.value')
-  //         .style('display', 'none');
-  //       d3.select('.yearValue')
-  //         .style('display', 'none');
-  //     })
-  //     .on('mouseenter', () => { // on mouse in show line, circles and text
-  //       d3.select('.mouse-line')
-  //         .style('display', 'block');
-  //       d3.selectAll('.mouse-per-line circle')
-  //         .style('display', 'block');
-  //       d3.selectAll('.mouse-per-line text')
-  //         .style('display', 'block');
-  //       d3.selectAll('.value')
-  //         .style('display', 'block');
-  //       d3.select('.yearValue')
-  //         .style('display', 'block');
-  //     })
-  //     .on('mousemove', function (event) { // mouse moving over canvas
-  //       const mouse = d3.pointer(event, this)[0];
-  //       const formatNumbers = d3.format(',');
-
-  //       d3.selectAll('.mouse-per-line')
-  //         .attr('transform', function (d, i) {
-  //           const xDate = vis.xScale.invert(mouse);
-  //           const bisect = d3.bisector(d => d.year).left;
-  //           const idx = bisect(d.values, xDate);
-  //           const item = d.values[idx];
-  //           if (item) {
-  //             const currentYear = item.Year;
-
-  //             if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
-  //               d3.select(this).select('text')
-  //                 .text(d => item.value !== null || item.value === 0 ?
-  //                   formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
-
-  //               d3.select('.values').selectAll('.value')
-  //                 .attr('x', vis.width + 130)
-  //                 .attr('y', (d, i) => {
-  //                   return (i * 20) + 5
-  //                 })
-  //                 .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
-  //                   d.countryName + ': ' + formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(d.values[idx].value)).toFixed(2))
-  //                   : d.countryName + ': N/A');
-
-  //             } else {
-  //               d3.select(this).select('text')
-  //                 .text(d => item.value !== null || item.value === 0 ?
-  //                   formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
-
-  //               d3.select('.values').selectAll('.value')
-  //                 .attr('x', vis.width + 130)
-  //                 .attr('y', (d, i) => {
-  //                   return (i * 20) + 5
-  //                 })
-  //                 .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
-  //                   d.countryName + ': ' + formatNumbers(vis.yScalePos.invert(vis.yScalePos(d.values[idx].value)).toFixed(2))
-  //                   : d.countryName + ': N/A');
-  //             }
-
-  //             if (currentYear) {
-  //               d3.select('.yearValue')
-  //                 .text(currentYear);
-  //             }
-
-  //             vis.svg.select('.mouse-line')
-  //               .attr('d', function () {
-  //                 var data = 'M' + vis.xScale(item.year) + ',' + vis.height;
-  //                 data += ' ' + vis.xScale(item.year) + ',' + 0;
-  //                 return data;
-  //               });
-
-  //             if (item.value !== null || item.value === 0) {
-  //               if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
-  //                 return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
-  //               } else {
-  //                 return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
-  //               }
-  //             }
-  //             return `translate(${vis.xScale(item.year)},${vis.width / 2})`;
-  //           }
-  //           return null;
-  //         });
-  //     });
-
-  //   // Update the axes
-  //   vis.xAxisG.call(vis.xAxis.ticks(d3.timeYear));
-  //   if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
-  //     vis.yAxisG.call(vis.yAxisNeg)
-  //   } else {
-  //     vis.yAxisG.call(vis.yAxisPos);
-  //   }
-  // }
 
   // ------------------ Helpers ------------------ //
 
