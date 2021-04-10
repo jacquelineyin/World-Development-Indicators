@@ -26,8 +26,11 @@ class GeoMap {
                      '#eff3ff';
   }
 
+  // ----------------------------------- init -----------------------------------
   // Create SVG area, initialize scales and axes
   initVis() {
+    let vis = this;
+
     // Initialize map and retrieve raster layer
     this.map = L.map('map', {
       minZoom: this.config.zoom.min,
@@ -40,17 +43,31 @@ class GeoMap {
       accessToken: 'sk.eyJ1IjoiYnJldHRwYXN1bGEiLCJhIjoiY2ttaThjenpqMGVyMDJzcmh6d2w5anQ2aiJ9.x43UBzwi3iRfsZSSb5ubIQ'
     }).addTo(this.map);
 
+    // https://observablehq.com/@idris-maps/leaflet-et-d3
+    L.svg().addTo(this.map);
+    const overlayPane = d3.select(this.map.getPanes().overlayPane);
+    const svg = overlayPane.select('svg');
+    this.tileGroup = svg.append('g').attr('class', 'leaflet-zoom-hide');
+    const projectPoint = function(x, y) {
+      const point = vis.map.latLngToLayerPoint(new L.LatLng(y, x));
+      this.stream.point(point.x, point.y);
+    }
+    const projection = d3.geoTransform({point: projectPoint});
+    this.pathCreator = d3.geoPath().projection(projection);
+
     // Initialize indicator scale
     this.indicatorScale = d3.scaleLinear()
       .range([0, 1]);
-
   }
 
+  // ----------------------------------- update -----------------------------------
   // Prepare data and scales
   updateVis() {
 
-    // If a GeoJSON layer already exists, remove it
-    this.removeGeoJsonLayers();
+    // Remove selected GeoJSON layer, if it exists
+    if (this.geoJsonLayerOfSelected) {
+      this.map.removeLayer(this.geoJsonLayerOfSelected);
+    }
 
     // If a legend exits, remove to re-render on update
     if (this.legend) {
@@ -59,27 +76,14 @@ class GeoMap {
 
     // Filter data by selected years and selected indicator
     const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
-    const filteredPopulationData = this.populationData.filter(d => this.selected.selectedYears.includes(d.Year));
 
     // Aggregate data by country and calculate the mean
     const groupedData = d3.rollup(filteredData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
-    const groupedPopulationData = d3.rollup(filteredPopulationData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
 
-    // Normalize some indicators
     // Remove countries for which we do not have a corresponding vector tile, e.g. "WLD"
-    const indicatorsToNormalize = [this.indicators.RURAL_POPULATION,
-    this.indicators.URBAN_POPULATION,
-    this.indicators.ENROLMENT_IN_PRIMARY_EDUCATION,
-    this.indicators.ENROLMENT_IN_SECONDARY_GENERAL,
-    this.indicators.MOBILE_CELLULAR_SUBSCRIPTIONS];
-    for (let country of groupedData.keys()) {
-      if (this.countries.includes(country)) {
-        if (indicatorsToNormalize.includes(this.selected.indicator)) {
-          let normalizedByPopulationValue = groupedData.get(country) / groupedPopulationData.get(country);
-          groupedData.set(country, normalizedByPopulationValue);
-        }
-      } else {
-        groupedData.delete(country);
+    for (let countryCode of groupedData.keys()) {
+      if (!this.countries.includes(countryCode)) {
+        groupedData.delete(countryCode);
       }
     }
 
@@ -94,35 +98,44 @@ class GeoMap {
     this.renderVis();
   }
 
-  removeGeoJsonLayers() {
-    if (this.geoJsonLayer) {
-      this.map.removeLayer(this.geoJsonLayer);
-    }
-
-    if (this.geoJsonLayerOfSelected) {
-      this.map.removeLayer(this.geoJsonLayerOfSelected);
-    }
-  }
-
+  // ----------------------------------- render -----------------------------------
   // Bind data to visual elements, update axes
   renderVis() {
     let vis = this;
 
-    // Add GeoJSON
-    this.geoJsonLayer = L.geoJson(this.geoJson,
+    // Bind GeoJSON to Leaflet
+    L.geoJson(this.geoJson,
       {
         style: this.styleFeature,
         onEachFeature: this.onEachFeature
-      }).addTo(this.map);
+      })
+
+    // Add country paths
+    const countryPaths = this.tileGroup.selectAll('path')
+      .data(this.geoJson.features, d => d)
+      .join(
+        enter => enter
+          .append('path')
+          .attr('opacity', 0.5)
+          .attr('fill', d => GeoMap.getTileColor(d.properties.indicatorValue))
+          .attr('d', vis.pathCreator),
+        update => update
+          .attr('fill', d => GeoMap.getTileColor(d.properties.indicatorValue)),
+        exit => exit.remove()
+      ); 
+
+    // When the map is zoomed, we need to re-render the paths
+    const onZoom = () => countryPaths.attr('d', vis.pathCreator);
+    vis.map.on('zoomend', onZoom);
 
     // Map focus on selected areas
-    this.fitMapBoundsToSelectedAreas();
+    vis.fitMapBoundsToSelectedAreas();
 
     // Legend
     // https://leafletjs.com/examples/choropleth/
-    this.legend = L.control({ position: 'bottomleft' });
+    vis.legend = L.control({ position: 'bottomleft' });
 
-    this.legend.onAdd = function () {
+    vis.legend.onAdd = function () {
 
       const div = L.DomUtil.create('div', 'info legend');
       const bins = [1, 0.8, 0.6, 0.4, 0.2, NaN];
@@ -142,26 +155,10 @@ class GeoMap {
       return div;
     };
 
-    this.legend.addTo(this.map);
+    vis.legend.addTo(vis.map);
   }
 
   // ---------------------------------------- Helper functions -------------------------------------- //
-
-  /**
-   * Purpose: Returns a css styling pattern for all countries 
-   * @param {Object} feature : geoJson feature object representing a country
-   * @param {GeoMap} geoMapInstance : "this" instantiated GeoMap object
-   * @returns {Object} : styling rules to set as in-line styling for map polygons
-   */
-  styleFeature(feature) {
-    return {
-      fillColor: GeoMap.getTileColor(feature.properties.indicatorValue),
-      fillOpacity: 0.7,
-      weight: 2,
-      color: 'white',
-      dashArray: '3'
-    };
-  }
 
   /**
    * Purpose: Returns a css styling pattern for selected countries/comparison countries
@@ -173,7 +170,7 @@ class GeoMap {
     return {
       fillOpacity: 0,
       color: geoMapInstance.getBorderColour(feature, geoMapInstance),
-      dashArray: '3'
+      dashArray: '1'
     };
   }
 

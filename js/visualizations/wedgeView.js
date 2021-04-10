@@ -5,6 +5,7 @@ class WedgeView {
       this.dispatcher = _dispatcher;
       this.dispatcherEvents = _dispatcherEvents;
       this.indicators = new Indicators();
+      this.countryCodeMapper = new CountryCodeMapper();
       this.populationData = _data.filter(d => d.IndicatorName == this.indicators.POPULATION_TOTAL);
       this.selected = _selected;
       this.initVis();
@@ -39,8 +40,9 @@ class WedgeView {
 
       // Initialize pie generator
       this.pie = d3.pie()
+        .sort(null)
         .startAngle(0)
-        .endAngle(6.28); // 360 degrees in rad
+        .endAngle(6.2);
 
       // Intialize arc generators
       this.countryArc = d3.arc()
@@ -55,17 +57,26 @@ class WedgeView {
     // Prepare data, render
     updateVis() {
       // Filter the data to the range of selected years
-      const filteredToYearsDataNoWLD = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.CountryCode != "WLD");
-      const filterToYearsCountryData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.CountryName == this.selected.area.country);
-      const filteredPopulationData = this.populationData.filter(d => this.selected.selectedYears.includes(d.Year));
+      const filteredDataAllCountries = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && Object.values(this.countryCodeMapper).includes(d.CountryCode));
+
       // Each wedge (indicator) needs three pieces of data from the subset of data within the range of selected years
       // 1. maximum value for that indicator (maxDataMap)
-      // 2. average value for the selected country (countryDataMap)
-      // 3. average value for the world (worldDataMap), which is the average of all country's averages
+      // 2. average value for the selected country (selectedCountryDataMap)
+      // 3. average value for the world (worldAverageDataMap), which is the average of all country's averages
       // https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
-      this.maxDataMap = d3.rollup(filteredToYearsDataNoWLD, v => Math.max.apply(Math, v.map((o) => o.Value)), d => d.IndicatorName);
-      this.countryDataMap = d3.rollup(filterToYearsCountryData, v => d3.mean(v, i => i.Value), d => d.IndicatorName);
-      this.worldDataMap = d3.rollup(filteredToYearsDataNoWLD, v => d3.mean(v, i => i.Value), d => d.IndicatorName);
+      const dataByIndicatorCountryAverage = d3.rollup(filteredDataAllCountries, v => d3.mean(v, i => i.Value), d => d.IndicatorName, d => d.CountryName)
+      this.maxDataMap = new Map();
+      this.selectedCountryDataMap = new Map();
+      this.worldAverageDataMap = new Map();
+      dataByIndicatorCountryAverage.forEach((map, indicator) => { 
+        let values = Array.from(map.values());
+        this.maxDataMap.set(indicator, d3.max(values));
+        this.worldAverageDataMap.set(indicator, d3.mean(values));
+        this.selectedCountryDataMap.set(indicator, map.get(this.selected.area.country)); 
+      }, this);
+      console.log(this.maxDataMap)
+      console.log(this.worldAverageDataMap)
+      console.log(this.selectedCountryDataMap)
 
       this.renderVis();
     }
@@ -73,36 +84,47 @@ class WedgeView {
     // Loop through all indicators, rendering wedges for each
     // If no data is available, render nothing
     renderVis() {
-      Object.keys(this.indicators).forEach(d => {
-        const max = this.maxDataMap.get(this.indicators[d]);
-        const countryAvg = this.countryDataMap.get(this.indicators[d]);
-        const worldAvg = this.worldDataMap.get(this.indicators[d]);
+      Object.keys(this.indicators).forEach(i => {
+        console.log(i)
+        const max = this.maxDataMap.get(this.indicators[i]);
+        const countryAvg = this.selectedCountryDataMap.get(this.indicators[i]);
+        const worldAvg = this.worldAverageDataMap.get(this.indicators[i]);
 
          // World
-         if (max && worldAvg && countryAvg) {
+         if (max && worldAvg) {
           const worldData = [worldAvg, (max - worldAvg)];
-          const worldWedges = d3.select('#' + d + ' svg g')
+          console.log(worldData)
+          d3.select('#' + i + ' svg g')
             .selectAll('.w-arc')
-            .data(this.pie(worldData), d => d.data);
-          worldWedges.enter().append('path')
+            .data(this.pie(worldData))
+            .join(
+            enter => enter.append('path')
                 .attr('class', 'w-arc')
                 .attr('num', d => d.index)
-                .attr('d', this.worldArc);
-          worldWedges.exit().remove();
+                .attr('d', this.worldArc),
+           update => update
+            .attr('num', d => d.index)
+            .attr('d', this.worldArc),
+           exit => exit.remove());
           }
         
         // Country
         if (max && countryAvg) {
         const countryData = [countryAvg, (max - countryAvg)];
+        console.log(countryData);
         // https://stackoverflow.com/questions/24118919/how-do-i-get-the-index-number-from-the-array-in-d3/24118970
-        const countryWedges = d3.select('#' + d + ' svg g')
+        d3.select('#' + i + ' svg g')
           .selectAll('.c-arc')
-          .data(this.pie(countryData), d => d.data);
-        countryWedges.enter().append('path')
-              .attr('class', 'c-arc')
-              .attr('num', d => d.index)
-              .attr('d', this.countryArc);
-        countryWedges.exit().remove();
+          .data(this.pie(countryData))
+          .join(
+          enter => enter.append('path')
+            .attr('class', 'c-arc')
+            .attr('num', d => d.index)
+            .attr('d', this.countryArc),
+          update => update
+            .attr('num', d => d.index)
+            .attr('d', this.countryArc),
+          exit => exit.remove());
         }
       });
     }
