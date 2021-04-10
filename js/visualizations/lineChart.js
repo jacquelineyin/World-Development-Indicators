@@ -236,30 +236,75 @@ class LineChart {
       .join('g')
       .attr('class', 'mouseG');
 
-    mouseG.append('path') // this is the black vertical line to follow mouse
-      .attr('class', 'mouse-line')
+    const mouseGEnter = mouseG.enter().append('g')
+      .attr('class', 'mouseG');
+
+    mouseGEnter.merge(mouseG);
+
+    mouseG.exit().remove();
+
+    // Create black vertical line to follow mouse
+    const mouseLine = mouseG.merge(mouseGEnter).selectAll('.mouse-line')
+      .data(d => [d], d =>d);
+
+    const mouseLineEnter = mouseLine.enter().append('path')
+      .attr('class', 'mouse-line');
+
+    mouseLineEnter.merge(mouseLine)
       .style('stroke', 'black')
       .style('stroke-width', '1px')
       .style('display', 'none');
 
+    mouseLine.exit().remove();
+
+
+
     const mousePerLine = vis.mouseG.selectAll('.mouse-per-line')
-      .data(vis.formattedData, d => d.values)
-      .join('g')
+      .data(vis.formattedData, d => d);
+
+    const mousePerLineEnter = mousePerLine.enter().append('g')
       .attr('class', 'mouse-per-line');
 
-    mousePerLine.append('circle')
-      .attr('class', 'mouseCircle')
+    mousePerLineEnter.merge(mousePerLine);
+
+    mousePerLine.exit().remove();
+
+    const mplCircle = mousePerLine.merge(mousePerLineEnter).selectAll('.mouseCircle')
+      .data(d => [d], d => d);
+
+    const mplCircleEnter = mplCircle.enter().append('circle')
+      .attr('class', 'mouseCircle');
+
+    mplCircleEnter.merge(mplCircle)
       .attr('r', 7)
       .style('stroke', (d, i) => vis.getColour(d, i))
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('display', 'none');
 
-    mousePerLine.append('text')
-      .attr('class', 'mouse-text')
+    mplCircle.exit().remove();
+
+    const mplText = mousePerLine.merge(mousePerLineEnter).selectAll('.mouse-text')
+      .data(d => [d], d => d);
+
+    const mplTextEnter = mplText.enter().append('text')
+      .attr('class', 'mouse-text');
+
+    mplTextEnter.merge(mplText)
       .attr('transform', `translate(10,3)`);
 
-    mouseG.append('rect') // append a rect to catch mouse movements on canvas
+    mplText.exit().remove();
+
+
+
+    // append a rect to catch mouse movements on canvas
+    const rect = mouseG.merge(mouseGEnter).selectAll('.rect-overlay')
+      .data(d => [d], d => d);
+
+    const rectEnter = rect.enter().append('rect')
+      .attr('class', 'rect-overlay');
+
+    rectEnter.merge(rect)
       .attr('width', vis.width) // can't catch mouse events on a g element
       .attr('height', vis.height)
       .attr('fill', 'none')
@@ -354,6 +399,8 @@ class LineChart {
             return null;
           });
       });
+
+      rect.exit().remove();
 
     // Update the axes
     vis.xAxisG.call(vis.xAxis.ticks(d3.timeYear));
