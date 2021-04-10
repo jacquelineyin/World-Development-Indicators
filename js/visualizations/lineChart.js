@@ -318,7 +318,7 @@ class LineChart {
               } else {
                 d3.select(this).select('text')
                   .text(d => item.value !== null || item.value === 0 ?
-                    formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
+                    formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : 'N/A');
 
                 d3.select('.values').selectAll('.value')
                   .attr('x', vis.width + 200)
@@ -349,7 +349,7 @@ class LineChart {
                   return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
                 }
               }
-              return `translate(${vis.xScale(item.year)},${vis.width / 2})`;
+              return `translate(${vis.xScale(item.year)}, ${vis.height})`;
             }
             return null;
           });
