@@ -352,10 +352,9 @@ class BarChart {
       .data(d => [d]);
 
     const barTextEnter = barText.enter().append('text')
-      .attr('class', d => 'bar-label');
+      .attr('class', d => `bar-label bar-label-${vis.constants.countries.getKey(d.key)}`);
 
     barTextEnter.merge(barText)
-      .attr('id', d => `bar-label-${vis.constants.countries.getKey(d.key)}`)
       .attr('x', (d) => vis.xScale(vis.xValue(d)) + (vis.xScale.bandwidth() / 2))
       .attr('y', (d) => vis.getYPosOfBarLabel(d))
       .attr('display', d => isNaN(d.avg) ? 'block' : 'none')
@@ -491,16 +490,27 @@ class BarChart {
   handleMouseOver(event) {
     let vis = this;
     //TODO
+    const { labelClass, barClass } = vis.getClassesOfBarElems(event);
+
+    // Display value of country
+    const targetLabel = vis.chart.selectAll(labelClass);
+    targetLabel.attr('display', 'block');
+
+    // Emphasize target bar
+    const targetBar = vis.chart.selectAll(barClass);
+    targetBar.attr('stroke', 'black');
+
+    // Dispatch dispatchEvent
+  }
+
+  getClassesOfBarElems(event) {
     const { target } = event;
     const classes = target.className.baseVal.split(' ');
     const countryKey = classes[1].split('-')[1];
-    const id = `#bar-label-${countryKey}`;
 
-    // Display value of country
-    const label = vis.chart.selectAll(id);
-    label.attr('display', 'block');
-
-    // Dispatch dispatchEvent
+    const labelClass = `.bar-label-${countryKey}`;
+    const barClass = `.bar-${countryKey}`;
+    return { labelClass, barClass };
   }
 
   handleMouseLeave(event) {
@@ -509,14 +519,16 @@ class BarChart {
     const { target } = event;
     const classes = target.className.baseVal.split(' ');
     const countryKey = classes[1].split('-')[1];
-    const id = `#bar-label-${countryKey}`;
+    const targetLabel = `.bar-label-${countryKey}`;
 
-    // Display value of country
-    const label = vis.chart.selectAll(id);
+    // Hide value of country
+    const label = vis.chart.selectAll(targetLabel);
     label.attr('display', 'none');
 
-    // Dispatch dispatchEvent  }
+    // Remove stroke emphasis of any bar
+    const bars = d3.selectAll('.bar');
+    bars.attr('stroke', 'none')
+      .attr('stroke-width', 2);
   }
-
 
 }
