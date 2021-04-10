@@ -155,6 +155,14 @@ dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
   lineChart.updateVis();
 })
 
+dispatcher.on(dispatcherEvents.BAR_HOVER, countryName => {
+  // TODO
+})
+
+dispatcher.on(dispatcherEvents.BAR_UNHOVER, countryName => {
+  //TODO
+})
+
 dispatcher.on(dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, () => {
   comparisonWidget.displayWarning(warningType.TOO_MANY_SELECTED);
 })
