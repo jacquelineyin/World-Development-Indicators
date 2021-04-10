@@ -264,6 +264,11 @@ class BarChart {
     return timeInterval;
   }
 
+  /**
+   * Purpose: Returns a colour based off the country of the data given
+   * @param {Object} d = {key: <string>, avg: <Number>} : key is country name 
+   * @returns {string} representing a hex colour
+   */
   getColourOfLegendBoxes(d) {
     let vis = this;
     let { colour, legend } = vis.config;
@@ -487,6 +492,11 @@ class BarChart {
     return filtered;
   }
 
+  /**
+   * Purpose: Handles mouseover event by creating a stroke around target bar 
+   *          and calling dispatcher for other chart interactions
+   * @param {Event} event : Native JS event (i.e. 'mouseover')
+   */
   handleMouseOver(event) {
     let vis = this;
     //TODO
@@ -503,6 +513,11 @@ class BarChart {
     // Dispatch dispatchEvent
   }
 
+  /**
+   * Purpose: Returns the classes of the bar that triggered the event and its label
+   * @param {Event} event : native JS event (i.e. 'mouseover'/'mouseleave')
+   * @returns {Object} = {labelClass: <string>, barClass: <string>}
+   */
   getClassesOfBarElems(event) {
     const { target } = event;
     const classes = target.className.baseVal.split(' ');
@@ -513,6 +528,11 @@ class BarChart {
     return { labelClass, barClass };
   }
 
+  /**
+   * Purpose: Handles mouseleave event by removing strokes from target bar 
+   *          and calling dispatcher for other chart interactions
+   * @param {Event} event : Native JS event (i.e. 'mouseleave')
+   */
   handleMouseLeave(event) {
     let vis = this;
     //TODO
