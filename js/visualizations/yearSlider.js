@@ -94,7 +94,6 @@ class YearSlider {
   /**
    * React to brush events
    */
-
   brushended(event) {
     let vis = this;
     let brushGroup = document.getElementById('x-brush');
