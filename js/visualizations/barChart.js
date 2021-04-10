@@ -7,7 +7,7 @@ class BarChart {
    * @param {Selected} _selectedItems : Selected class object holding selectedItem values
    * @param {Object} _dispatcher : d3 dispatcher
    */
-  constructor(_config, _data, _selectedItems, _dispatcher) {
+  constructor(_config, _data, _selectedItems, _dispatcher, _constants) {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 1000,
@@ -29,6 +29,7 @@ class BarChart {
     }
     this.data = _data,
     this.dispatcher = _dispatcher,
+    this.constants = _constants || { countries: new Countries() }
     this.selected = _selectedItems;
     this.initVis();
   }
@@ -346,9 +347,12 @@ class BarChart {
     // TODO: Need to style bar-width when no comparison areas are selected and there is only focusedArea
     // Bind data to visual elements
     const bars = vis.chart.selectAll('.bar')
-        .data(vis.aggregatedData, vis.xValue)
-      .join('rect')
-        .attr('class', d => `bar bar-${d.key.toLowerCase()}`)
+        .data(vis.aggregatedData, vis.xValue);
+
+    const barsEnter = bars.enter().append('rect')
+        .attr('class', d => `bar bar-${vis.constants.countries.getKey(d.key)}`);
+
+    barsEnter.merge(bars)
         .attr('x', d => vis.xScale(vis.xValue(d)))
         .attr('y', d => vis.yScale(vis.yValue(d)))
         .attr('width', vis.xScale.bandwidth())
@@ -356,7 +360,21 @@ class BarChart {
         .attr('fill', d => vis.getBarColour(d))
         .on('mouseover', e => vis.handleMouseOver(e))
         .on('mouseleave', e => vis.handleMouseLeave(e))
-        .on('click', (e) => vis.handleClick(e));
+
+    bars.exit().remove();
+
+    const barText = bars.merge(barsEnter).selectAll('.bar-label')
+      .data(d => [d]);
+
+    const barTextEnter = barText.enter().append('text')
+      .attr('class', 'bar-label');
+
+    barTextEnter.merge(barText)
+      // .attr('display', 'none')
+      .attr('x', (d) => vis.xScale(vis.xValue(d)) + 10)
+      .attr('y', (d) => vis.yScale(vis.yValue(d)))
+      // .attr('transform',  d => `translate(${vis.xScale(vis.xValue(d))}, ${vis.yScale(vis.yValue(d)) + 10})`)
+      .text(d => d.avg);
     }
 
   /**
@@ -394,7 +412,6 @@ class BarChart {
 
   /**
    * Purpose: Returns a filtered array containing only items that fit the selectedItems
-   * TODO: Need to adjust to incorporate regions
    * @param {Array} dataArr 
    * @param {Selected} selectedItems 
    * @returns {Array} of objects
@@ -403,7 +420,6 @@ class BarChart {
     let {allSelectedAreas, indicator, timeInterval} = selectedItems;
     let isWithinTimeInterval = d => d.Year >= timeInterval.min && d.Year <= timeInterval.max;
 
-    // TODO: Need to adjust to incorporate regions
     let filtered = dataArr.filter(d => allSelectedAreas.includes(d.CountryName) 
                                         && d.IndicatorName === indicator 
                                         && isWithinTimeInterval(d));
@@ -413,13 +429,16 @@ class BarChart {
 
   handleMouseOver(event) {
     //TODO
+    const {target} = event;
+    const classes = target.className.baseVal.split(' ');
+    const countryKey = classes[1].split('-')[1];
+    
+    // Display value of country
+
+    // Dispatch dispatchEvent
   }
 
   handleMouseLeave(event) {
-    //TODO
-  }
-
-  handleClick(event) {
     //TODO
   }
   
