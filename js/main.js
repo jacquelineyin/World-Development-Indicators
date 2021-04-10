@@ -19,6 +19,8 @@ const dispatcher = d3.dispatch(
     dispatcherEvents.SELECT_FOCUS_AREA,
     dispatcherEvents.SELECT_COMPARISON_ITEM,
     dispatcherEvents.DELETE_COMPARISON_ITEM,
+    dispatcherEvents.BAR_HOVER,
+    dispatcherEvents.BAR_UNHOVER,
     dispatcherEvents.ERROR_TOO_MANY_COMPARISONS
   );
 
