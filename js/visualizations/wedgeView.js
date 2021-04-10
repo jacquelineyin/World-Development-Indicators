@@ -42,7 +42,7 @@ class WedgeView {
       this.pie = d3.pie()
         .sort(null)
         .startAngle(0)
-        .endAngle(6.2);
+        .endAngle(6.28);
 
       // Intialize arc generators
       this.countryArc = d3.arc()
@@ -74,9 +74,6 @@ class WedgeView {
         this.worldAverageDataMap.set(indicator, d3.mean(values));
         this.selectedCountryDataMap.set(indicator, map.get(this.selected.area.country)); 
       }, this);
-      console.log(this.maxDataMap)
-      console.log(this.worldAverageDataMap)
-      console.log(this.selectedCountryDataMap)
 
       this.renderVis();
     }
@@ -85,7 +82,6 @@ class WedgeView {
     // If no data is available, render nothing
     renderVis() {
       Object.keys(this.indicators).forEach(i => {
-        console.log(i)
         const max = this.maxDataMap.get(this.indicators[i]);
         const countryAvg = this.selectedCountryDataMap.get(this.indicators[i]);
         const worldAvg = this.worldAverageDataMap.get(this.indicators[i]);
@@ -93,7 +89,6 @@ class WedgeView {
          // World
          if (max && worldAvg) {
           const worldData = [worldAvg, (max - worldAvg)];
-          console.log(worldData)
           d3.select('#' + i + ' svg g')
             .selectAll('.w-arc')
             .data(this.pie(worldData))
@@ -111,7 +106,6 @@ class WedgeView {
         // Country
         if (max && countryAvg) {
         const countryData = [countryAvg, (max - countryAvg)];
-        console.log(countryData);
         // https://stackoverflow.com/questions/24118919/how-do-i-get-the-index-number-from-the-array-in-d3/24118970
         d3.select('#' + i + ' svg g')
           .selectAll('.c-arc')
