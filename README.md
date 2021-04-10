@@ -173,6 +173,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [Stack Exchange: Getting bounds of layer group in leaflet](https://gis.stackexchange.com/questions/180678/how-do-i-get-the-bounds-of-a-layergroup-in-leaflet/180680)
 
 ##### Year slider
+- [D3 brushing linking](https://codesandbox.io/s/github/UBC-InfoVis/2021-436V-examples/tree/master/d3-brushing-linking)
 - [D3 Snapping brush](https://blockbuilder.org/mforando/942ba2486980a4ba44eda80b616abe07)
 
 ##### Multi-line chart
