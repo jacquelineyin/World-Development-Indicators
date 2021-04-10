@@ -13,23 +13,23 @@ class BarChart {
       containerWidth: _config.containerWidth || 1000,
       containerHeight: _config.containerHeight || 400,
       margin: _config.margin || { top: 50, right: 320, bottom: 70, left: 50 },
-      colour: _config.colour || { selectedCountry: 'blue', comparisonCountry: 'green'},
-      legend: _config.legend || 
-              {
-                width: 180,
-                height: 8,
-                yPadding: 25,
-                colourBox: { width: 12, height: 12 },
-                labelText: {
-                  SELECTED_COUNTRY: 'Selected Country',
-                  OTHER_COUNTRIES: 'Other Countries'
-                }
-              },
-      tooltip: _config.tooltip || {padding: 15},
+      colour: _config.colour || { selectedCountry: 'blue', comparisonCountry: 'green' },
+      legend: _config.legend ||
+      {
+        width: 180,
+        height: 8,
+        yPadding: 25,
+        colourBox: { width: 12, height: 12 },
+        labelText: {
+          SELECTED_COUNTRY: 'Selected Country',
+          OTHER_COUNTRIES: 'Other Countries'
+        }
+      },
+      tooltip: _config.tooltip || { padding: 15 },
     }
-    this.data = _data,
-    this.dispatcher = _dispatcher,
-    this.constants = _constants || { countries: new Countries() }
+    this.data = _data;
+    this.dispatcher = _dispatcher;
+    this.constants = _constants || { countries: new Countries() };
     this.selected = _selectedItems;
     this.initVis();
   }
@@ -44,12 +44,12 @@ class BarChart {
 
     // Define size of SVG drawing area
     vis.svg = d3.select(vis.config.parentElement)
-        .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
+      .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
 
     // Append group element that will contain our actual chart 
     // and position it according to the given margin config
     vis.chartArea = vis.svg.append('g')
-        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+      .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
     vis.chart = vis.chartArea.append('g');
 
@@ -71,7 +71,7 @@ class BarChart {
 
   updateVis() {
     let vis = this;
-    
+
     // Prepare data
     vis.aggregatedData = vis.getAverages(vis.selected);
 
@@ -83,33 +83,23 @@ class BarChart {
     vis.renderAxisTitles('Countries/Regions', vis.selected.indicator);
 
     // Update Scale domains
-    vis.updateYScale();
+    vis.yScale.domain([0, d3.max(vis.getAllAverages())]);
     vis.xScale.domain(vis.selected.allSelectedAreas);
 
     vis.renderVis();
   }
 
-  updateYScale() {
-    let vis = this;
-
-    if (vis.aggregatedData.length > 0) {
-      vis.yScale.domain([0, d3.max(vis.getAllAverages())]);
-    } else {
-      vis.yScale.domain([0, 0]);
-    }
-  }
-
   renderVis() {
     let vis = this;
     // Bind data to visual elements, update axes
-    vis.renderBars();
+    vis.renderBarElems();
 
     // Update axes
-    vis.renderAxisGroups(); 
+    vis.renderAxisGroups();
   }
 
   // ------------------------------------------ Helper functions ------------------------------------ //
-  
+
   /**
    * Purpose: Initializes x- and y-scales
    * Note: Domain is not defined here as they are dynamic
@@ -131,9 +121,9 @@ class BarChart {
    */
   initAxes() {
     let vis = this;
-    
+
     // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
-    let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/,"B");
+    let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/, "B");
 
     vis.xAxis = d3.axisBottom(vis.xScale)
       .tickSizeOuter([0]);
@@ -152,10 +142,10 @@ class BarChart {
     let vis = this;
 
     vis.xAxisG = vis.chart.append('g')
-    .attr('class', 'axis x-axis x-axis-barchart');
+      .attr('class', 'axis x-axis x-axis-barchart');
 
     vis.yAxisG = vis.chart.append('g')
-    .attr('class', 'axis y-axis y-axis-barchart');
+      .attr('class', 'axis y-axis y-axis-barchart');
   }
 
   /**
@@ -190,7 +180,7 @@ class BarChart {
    */
   renderLegendColourBoxes() {
     let vis = this;
-    const {SELECTED_COUNTRY, OTHER_COUNTRIES} = vis.config.legend.labelText;
+    const { SELECTED_COUNTRY, OTHER_COUNTRIES } = vis.config.legend.labelText;
     let labelYOffset = 0;
 
     vis.legend.selectAll('.legend-box')
@@ -209,7 +199,7 @@ class BarChart {
    */
   renderLegendElemLabels() {
     let vis = this;
-    const {SELECTED_COUNTRY, OTHER_COUNTRIES} = vis.config.legend.labelText;
+    const { SELECTED_COUNTRY, OTHER_COUNTRIES } = vis.config.legend.labelText;
     let labelYOffset = 0 - 14;
 
     vis.legend.selectAll('.box-label')
@@ -227,7 +217,7 @@ class BarChart {
    * @param {string} yAxisTitle 
    */
   renderAxisTitles(xAxisTitle, yAxisTitle) {
-    let vis = this; 
+    let vis = this;
     let newYAxisTitle = `Average ${yAxisTitle} from ${vis.selected.timeInterval.min}-${vis.selected.timeInterval.max}`;
 
     // Append x-axis title to svg
@@ -240,7 +230,7 @@ class BarChart {
         .attr('dy', '.71em')
         .style('text-anchor', 'end')
         .text(xAxisTitle);
-  
+
     if (yAxisTitle) {
       // Append y-axis title to svg
       vis.chartArea.selectAll('.barchart-y-axis-title')
@@ -276,8 +266,8 @@ class BarChart {
 
   getColourOfLegendBoxes(d) {
     let vis = this;
-    let {colour, legend} = vis.config;
-    const {SELECTED_COUNTRY, OTHER_COUNTRIES} = legend.labelText;
+    let { colour, legend } = vis.config;
+    const { SELECTED_COUNTRY, OTHER_COUNTRIES } = legend.labelText;
 
     switch (d) {
       case SELECTED_COUNTRY:
@@ -293,7 +283,7 @@ class BarChart {
    */
   renderAxisGroups() {
     let vis = this;
-  
+
     vis.xAxisG
       .call(vis.xAxis)
       .attr('transform', `translate(0 ,${vis.height})`);
@@ -314,7 +304,6 @@ class BarChart {
   /**
    * Purpose: Returns an array of objects containing 
    *          regions/countries paired with their averages for the indicator of interest
-   * TODO: Need to implement ability to aggregate by both region and country. Currently can only aggregate via CountryName
    * @param {Array} selectedAreas
    * @param {string} indicator 
    * @param {Object} timeInterval = {min: YYYY, max: YYYY}
@@ -330,7 +319,6 @@ class BarChart {
     let vis = this;
 
     let dataOfInterest = vis.filterData(vis.data, selected);
-    // TODO: Allow regions to also be aggregated if regions are selected
     let res = d3.rollups(dataOfInterest, v => d3.mean(v, d => d.Value), d => d.CountryName);
     res = Array.from(res, ([key, avg]) => ({ key, avg }));
 
@@ -339,43 +327,116 @@ class BarChart {
 
   /**
    * Purpose: Renders bars using enter-update-exit pattern
-   * TODO: Need to style bar-width when no comparison areas are selected and there is only focusedArea
    */
-  renderBars() {
+  renderBarElems() {
+    let vis = this;
+    // Bind data to visual elements
+
+    // Create group
+    const { barG, barGEnter } = vis.createBarGroup();
+
+    // Append and render grouped elems
+    vis.renderBars(barG, barGEnter);
+    vis.renderBarLabels(barG, barGEnter);
+  }
+
+  /**
+   * Purpose: Renders bar labels by appending them to .barG elems using 'enter-update-exit' pattern
+   * @param {Selection} barG : d3 selection of .barG elems
+   * @param {Selection} barGEnter : d3 selection of .barG.enter().append('g') elems
+   */
+  renderBarLabels(barG, barGEnter) {
     let vis = this;
 
-    // TODO: Need to style bar-width when no comparison areas are selected and there is only focusedArea
-    // Bind data to visual elements
-    const bars = vis.chart.selectAll('.bar')
-        .data(vis.aggregatedData, vis.xValue);
-
-    const barsEnter = bars.enter().append('rect')
-        .attr('class', d => `bar bar-${vis.constants.countries.getKey(d.key)}`);
-
-    barsEnter.merge(bars)
-        .attr('x', d => vis.xScale(vis.xValue(d)))
-        .attr('y', d => vis.yScale(vis.yValue(d)))
-        .attr('width', vis.xScale.bandwidth())
-        .attr('height', d => vis.getBarHeight(d))
-        .attr('fill', d => vis.getBarColour(d))
-        .on('mouseover', e => vis.handleMouseOver(e))
-        .on('mouseleave', e => vis.handleMouseLeave(e))
-
-    bars.exit().remove();
-
-    const barText = bars.merge(barsEnter).selectAll('.bar-label')
+    const barText = barG.merge(barGEnter).selectAll('.bar-label')
       .data(d => [d]);
 
     const barTextEnter = barText.enter().append('text')
-      .attr('class', 'bar-label');
+      .attr('class', d => 'bar-label');
 
     barTextEnter.merge(barText)
-      // .attr('display', 'none')
-      .attr('x', (d) => vis.xScale(vis.xValue(d)) + 10)
-      .attr('y', (d) => vis.yScale(vis.yValue(d)))
-      // .attr('transform',  d => `translate(${vis.xScale(vis.xValue(d))}, ${vis.yScale(vis.yValue(d)) + 10})`)
-      .text(d => d.avg);
+      .attr('id', d => `bar-label-${vis.constants.countries.getKey(d.key)}`)
+      .attr('x', (d) => vis.xScale(vis.xValue(d)) + (vis.xScale.bandwidth() / 2))
+      .attr('y', (d) => vis.getYPosOfBarLabel(d))
+      .attr('display', d => isNaN(d.avg) ? 'block' : 'none')
+      .attr('text-anchor', 'middle')
+      .text(d => isNaN(d.avg) ? 'N/A' : d.avg);
+
+    barText.exit().remove();
+  }
+
+  /**
+   * Purpose: Renders bars by appending them to .barG elems using 'enter-update-exit' pattern
+   * @param {Selection} barG : d3 selection of .barG elems 
+   * @param {Selection} barGEnter : d3 selection of .barG.enter().append('g') elems
+   */
+  renderBars(barG, barGEnter) {
+    let vis = this;
+
+    // Bind data to selection
+    const bars = barG.merge(barGEnter).selectAll('.bar')
+      .data(d => [d]);
+
+    // Enter
+    const barsEnter = bars.enter().append('rect')
+      .attr('class', d => `bar bar-${vis.constants.countries.getKey(d.key)}`);
+
+    // Enter + Update
+    barsEnter.merge(bars)
+      .attr('x', d => vis.xScale(vis.xValue(d)))
+      .attr('y', d => vis.yScale(vis.yValue(d)))
+      .attr('width', vis.xScale.bandwidth())
+      .attr('height', d => vis.getBarHeight(d))
+      .attr('fill', d => vis.getBarColour(d))
+      .on('mouseover', e => vis.handleMouseOver(e))
+      .on('mouseleave', e => vis.handleMouseLeave(e));
+
+    // Exit
+    bars.exit().remove();
+  }
+
+  /**
+   * Purpose: Creates (and updates) a group ('g') element to hold bar elements
+   *          Uses 'enter-update-exit' pattern
+   * @returns { Selection, Selection } : d3 selection of all .barG elements
+   */
+  createBarGroup() {
+    let vis = this;
+
+    // Bind data to selection
+    const barG = vis.chart.selectAll('.barG')
+      .data(vis.aggregatedData, vis.xValue);
+
+    // Enter
+    const barGEnter = barG.enter().append('g')
+      .attr('class', 'barG');
+
+    // Enter + Update
+    barGEnter.merge(barG);
+
+    // Exit
+    barG.exit().remove();
+
+    return { barG, barGEnter };
+  }
+
+  /**
+   * Purpose: Returns a y-position of bar label
+   * @param {Object} d = {key: <string>, avg: <Number>}
+   * @returns {Integer} : y-position of bar label
+   */
+  getYPosOfBarLabel(d) {
+    let vis = this;
+    const bottomPaddingOffset = 5;
+
+    let yPos = vis.yScale(vis.yValue(d)) + 15;
+
+    if (yPos > vis.height) {
+      yPos = vis.yScale(vis.yValue(d)) - bottomPaddingOffset;
     }
+
+    return yPos ? yPos : vis.height - bottomPaddingOffset;
+  }
 
   /**
    * Purpose: Returns colour depending on state/status of bar/bar data
@@ -383,9 +444,9 @@ class BarChart {
    */
   getBarColour(data) {
     let vis = this;
-  
-    let isSelectedArea =  data.key === vis.selected.area.country 
-                          || data.key === vis.selected.area.region;
+
+    let isSelectedArea = data.key === vis.selected.area.country
+      || data.key === vis.selected.area.region;
 
     let isHovered = false;
 
@@ -417,29 +478,45 @@ class BarChart {
    * @returns {Array} of objects
    */
   filterData(dataArr, selectedItems) {
-    let {allSelectedAreas, indicator, timeInterval} = selectedItems;
+    let { allSelectedAreas, indicator, timeInterval } = selectedItems;
     let isWithinTimeInterval = d => d.Year >= timeInterval.min && d.Year <= timeInterval.max;
 
-    let filtered = dataArr.filter(d => allSelectedAreas.includes(d.CountryName) 
-                                        && d.IndicatorName === indicator 
-                                        && isWithinTimeInterval(d));
+    let filtered = dataArr.filter(d => allSelectedAreas.includes(d.CountryName)
+      && d.IndicatorName === indicator
+      && isWithinTimeInterval(d));
 
     return filtered;
   }
 
   handleMouseOver(event) {
+    let vis = this;
     //TODO
-    const {target} = event;
+    const { target } = event;
     const classes = target.className.baseVal.split(' ');
     const countryKey = classes[1].split('-')[1];
-    
+    const id = `#bar-label-${countryKey}`;
+
     // Display value of country
+    const label = vis.chart.selectAll(id);
+    label.attr('display', 'block');
 
     // Dispatch dispatchEvent
   }
 
   handleMouseLeave(event) {
+    let vis = this;
     //TODO
+    const { target } = event;
+    const classes = target.className.baseVal.split(' ');
+    const countryKey = classes[1].split('-')[1];
+    const id = `#bar-label-${countryKey}`;
+
+    // Display value of country
+    const label = vis.chart.selectAll(id);
+    label.attr('display', 'none');
+
+    // Dispatch dispatchEvent  }
   }
-  
+
+
 }
