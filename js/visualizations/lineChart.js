@@ -349,9 +349,9 @@ class LineChart {
                   return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
                 }
               }
-              return `translate(${vis.xScale(item.year)}, ${vis.height})`;
+              return `translate(${vis.xScale(item.year)}, ${vis.width})`;
             }
-            return null;
+            return `translate(${vis.xScale(item.year)}, ${vis.width})`;
           });
       });
 
