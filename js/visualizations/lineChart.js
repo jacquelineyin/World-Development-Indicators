@@ -13,9 +13,9 @@ class LineChart {
         selectedArea: 'blue',
         otherAreas: d3.schemeCategory10,
       },
-      containerWidth: _config.containerWidth || 1500,
-      containerHeight: _config.containerHeight || 600,
-      margin: _config.margin || { top: 50, right: 300, bottom: 110, left: 50 }
+      containerWidth: _config.containerWidth || 2100,
+      containerHeight: _config.containerHeight || 800,
+      margin: _config.margin || { top: 50, right: 500, bottom: 110, left: 50 }
     }
     this.selected = _selectedItems;
     this.data = _data;
@@ -103,7 +103,7 @@ class LineChart {
     vis.yearValue = vis.svg.append('text')
       .attr('class', 'yearValue')
       .attr('y', 20)
-      .attr('x', vis.width + 180)
+      .attr('x', vis.width + 250)
       .attr('dy', '.71em');
 
     vis.mouseG = vis.lines.append('g')
@@ -123,7 +123,6 @@ class LineChart {
 
     // group data by country
     const countryGroups = d3.groups(filteredSelectedData, d => d.CountryName);
-
     // re-arrange data
     vis.formattedData = [];
 
@@ -183,7 +182,7 @@ class LineChart {
       .join('rect')
       .attr('class', 'legend-box')
       .attr('x', (d, i) => {
-        return (i * 200) + 10;
+        return (i * 250) + 10;
       })
       .attr('y', vis.config.containerHeight - 75)
       .attr('width', 10)
@@ -194,7 +193,7 @@ class LineChart {
       .data(vis.selected.allSelectedAreas, d => d)
       .join('text')
       .attr('class', 'box-label')
-      .attr('x', (d, i) => (i * 200) + 25)
+      .attr('x', (d, i) => (i * 250) + 25)
       .attr('y', vis.config.containerHeight - 65)
       .text(d => d);
 
@@ -353,7 +352,7 @@ class LineChart {
                     formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
 
                 d3.select('.values').selectAll('.value')
-                  .attr('x', vis.width + 130)
+                  .attr('x', vis.width + 200)
                   .attr('y', (d, i) => {
                     return (i * 20) + 5
                   })
@@ -367,7 +366,7 @@ class LineChart {
                     formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
 
                 d3.select('.values').selectAll('.value')
-                  .attr('x', vis.width + 130)
+                  .attr('x', vis.width + 200)
                   .attr('y', (d, i) => {
                     return (i * 20) + 5
                   })
