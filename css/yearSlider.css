@@ -1,39 +1,24 @@
-/** Slider */
+g.axis.x-axis.slider g.tick > text {
+  transform: translate(-1.5%, 1%) rotate(-90deg);
+  text-anchor: end;
+  fill: black;
+} 
+
+/* Axes */
+.axis line {
+  fill: none;
+  stroke: #8693a0;
+  shape-rendering: crispEdges;
+}
+.axis text {
+  font-size: 13px;
+  fill: #6b6b6b;
+}
+
+.x-axis .domain {
+  stroke: #8693a0;
+}
+
 #slider {
-  display: block;
-  align-items: center;
-  flex-wrap: wrap;
-  flex-grow: 1.5;
-  margin-top: 320px;
-  margin-left: -15px;
-  margin-right: -15px;
-  padding-left: 30px;
-  flex-shrink: 0;
-}
-
-#value-range {
-  margin-left: 20px;
-}
-
-.axis text,
-.slider text {
-  font-size: 16px;
-}
-
-.slider text {
-  transform: translate(10px, -65px);
-}
-
-/**--------------- Bigger Screens -----------------**/
-
-@media only screen and (min-width: 1440px) and (max-width: 1619px) {
-  #slider {
-    margin-top: 500px;
-  }
-}
-
-@media only screen and (min-width: 1619px) {
-  #slider {
-    margin-top: 250px;
-  }
+  overflow: visible;
 }
