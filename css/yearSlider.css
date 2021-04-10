@@ -1,21 +1,21 @@
-g.axis.x-axis.slider g.tick > text {
-  transform: translate(-1.5%, 1%) rotate(-90deg);
+g.axis.y-axis.slider g.tick > text {
   text-anchor: end;
   fill: black;
+  font-size: 10px;
 } 
 
 /* Axes */
-.axis line {
+.y-axis line {
   fill: none;
   stroke: #8693a0;
   shape-rendering: crispEdges;
 }
-.axis text {
+.y-axis text {
   font-size: 13px;
   fill: #6b6b6b;
 }
 
-.x-axis .domain {
+.y-axis .domain {
   stroke: #8693a0;
 }
 
