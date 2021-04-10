@@ -92,9 +92,11 @@
     }
 
     isFocusCountryInList(focusedCountry) {
-        for (let comparisonArea of this.comparisonAreas) {
-            if (this.constants.countries.isSameCountryName(comparisonArea, focusedCountry)) {
-                return true;
+        if (focusedCountry) {
+            for (let comparisonArea of this.comparisonAreas) {
+                if (this.constants.countries.isSameCountryName(comparisonArea, focusedCountry)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -172,10 +174,9 @@
      */
     updateAllSelectedAreas(area, comparisonAreas) {
         let {region, country} = area;
-        let {formatCountryOrRegionNames} = this.inputSanitizer;
 
-        region = formatCountryOrRegionNames(region);
-        country = formatCountryOrRegionNames(country);
+        region = this.inputSanitizer.formatCountryOrRegionNames(region);
+        country = this.inputSanitizer.formatCountryOrRegionNames(country);
  
         this.allSelectedAreas = country !== '' ? [country, ...comparisonAreas] : [region, ...comparisonAreas];
     }

@@ -157,35 +157,12 @@ class LineChart {
       .defined(d => { return d.value !== null });
 
     // Set the scale input domains
-    vis.setScaleDomains(filteredSelectedData);
+    vis.colorScale.domain(vis.selected.allSelectedAreas);
+    vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
+    vis.yScalePos.domain([0, d3.max(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value)]);
+    vis.yScaleNeg.domain(d3.extent(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value));
 
     vis.renderVis();
-  }
-
-  setScaleDomains(filteredSelectedData) {
-    let vis = this;
-
-    let minMaxYears;
-    let minMaxPos;
-    let minMaxNeg;
-
-    if (filteredSelectedData.length > 0) {
-      minMaxYears = d3.extent(filteredSelectedData, d => d.year);
-      minMaxPos = [0, d3.max(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value)];
-      minMaxNeg = d3.extent(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value);
-    } else {
-      let { min, max } = this.selected.timeInterval;
-      let minYear = parseTime(min);
-      let maxYear = parseTime(max);
-      minMaxYears = [minYear, maxYear];
-      minMaxPos = [0, 0, 0];
-      minMaxNeg = [0, 0, 0];
-    }
-
-    vis.colorScale.domain(vis.selected.allSelectedAreas);
-    vis.xScale.domain(minMaxYears);
-    vis.yScalePos.domain(minMaxPos);
-    vis.yScaleNeg.domain(minMaxNeg);
   }
 
   renderVis() {
