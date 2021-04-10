@@ -8,10 +8,10 @@ class YearSlider {
   constructor(_config, _data, _dispatcher, _dispatcherEvents) {
     this.config = {
       parentElement: _config.parentElement,
-      width:  900,
-      height: 1200,
-      contextHeight: 50,
-      margin: {top: 500, right: 10, bottom: 100, left: 45},
+      width:  50,
+      height: 850,
+      contextWidth: 30,
+      margin: {top: 50, right: 10, bottom: 100, left: 45},
     }
     this.data = _data;
     this.dispatcher = _dispatcher;
@@ -28,11 +28,12 @@ class YearSlider {
     const containerWidth = vis.config.width;
     const containerHeight = vis.config.height + vis.config.margin.top;
   
-    vis.xScale = d3.scaleTime()
-        .rangeRound([0, vis.config.width]);
+    vis.yScale = d3.scaleTime()
+        .rangeRound([0, containerHeight]);
   
     // Initialize axes
-    vis.xAxis = d3.axisBottom(vis.xScale)
+    vis.yAxis = d3.axisLeft(vis.yScale)
+      .tickPadding(12)
       .tickSizeOuter(0)
       .ticks(52);
 
@@ -43,21 +44,19 @@ class YearSlider {
 
     // Append chart group with x- and y-axes
     vis.chart = vis.svg.append('g')
-      .attr('transform', `translate(70,0)rotate(90)`);
+      .attr('transform', `translate(30, 10)`);
 
-
-    vis.xAxisG = vis.chart.append('g')
-        .attr('class', 'axis x-axis slider')
-        .attr('transform', `translate(0,20)`);
+    vis.yAxisG = vis.chart.append('g')
+        .attr('class', 'axis y-axis slider');
 
     vis.brushG = vis.chart.append('g')
-        .attr('class', 'brush x-brush')
-        .attr('id', 'x-brush');
-
+        .attr('class', 'brush y-brush')
+        .attr('id', 'y-brush')
+        .attr('transform', `translate(-15, 0)`);
 
     // Initialize brush component
-    vis.brush = d3.brushX()
-        .extent([[0, 0], [vis.config.width, vis.config.contextHeight]])
+    vis.brush = d3.brushY()
+        .extent([[0, 0], [vis.config.contextWidth, containerHeight]])
         .on("end", (e) => vis.brushended(e));
   }
 
@@ -67,10 +66,10 @@ class YearSlider {
   updateVis() {
     let vis = this;
     
-    vis.xValue = d => d.year;
+    vis.yValue = d => d.year;
 
     // Set the scale input domains
-    vis.xScale.domain(d3.extent(vis.data, vis.xValue));
+    vis.yScale.domain(d3.extent(vis.data, vis.yValue));
   
     vis.renderVis();
   }
@@ -83,12 +82,12 @@ class YearSlider {
 
     
     // Update the axes
-    vis.xAxisG.call(vis.xAxis);
+    vis.yAxisG.call(vis.yAxis);
 
     // Update the brush and define a default position
     vis.brushG
         .call(vis.brush)
-        .call(vis.brush.move, [0, 85]);
+        .call(vis.brush.move, [0, 62]);
   }
 
   /**
@@ -96,12 +95,12 @@ class YearSlider {
    */
   brushended(event) {
     let vis = this;
-    let brushGroup = document.getElementById('x-brush');
+    let brushGroup = document.getElementById('y-brush');
 
     const selection = event.selection;
     if (!event.sourceEvent || !selection) return;
 
-    const d0 = selection.map(vis.xScale.invert)
+    const d0 = selection.map(vis.yScale.invert)
     const d1 = d0.map(d3.timeYear.round);
 
     // If empty when rounded, use floor & ceil instead.
@@ -118,6 +117,6 @@ class YearSlider {
     }
 
     vis.dispatcher.call(vis.dispatcherEvents.FILTER_YEAR, brushGroup, selectedYears);
-    d3.select(brushGroup).call(vis.brush.move, d1.map(vis.xScale));
+    d3.select(brushGroup).call(vis.brush.move, d1.map(vis.yScale));
   }
 }

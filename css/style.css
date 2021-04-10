@@ -12,17 +12,18 @@
 
 #left-col {
   float: left;
-  width: 9%;
+  width: 5%;
 }
 
 #middle-col {
   float: left;
-  width: 41%;
+  width: 40%;
 }
 
 #right-col {
   float: left;
-  width: 50%;
+  width: 40%;
+  margin-left: 50px;
 }
 
 .col {
