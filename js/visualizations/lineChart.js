@@ -120,7 +120,7 @@ class LineChart {
     const selectedYears = vis.selected.selectedYears;
     const filteredSelectedData = vis.data.filter(d => d.IndicatorName === selectedIndicator
       && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
-
+    vis.negativeDomains = ['Net official development assistance and official aid received (current US$)', 'Inflation, GDP deflator (annual %)'];
     // group data by country
     const countryGroups = d3.groups(filteredSelectedData, d => d.CountryName);
     // re-arrange data
@@ -147,7 +147,7 @@ class LineChart {
     vis.line = d3.line()
       .x(d => vis.xScale(d.year))
       .y(d => {
-        if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+        if (vis.negativeDomains.includes(vis.selected.indicator)) {
           return vis.yScaleNeg(d.value)
         } else {
           return vis.yScalePos(d.value)
@@ -224,7 +224,7 @@ class LineChart {
       .attr('r', 3)
       .attr('cx', d => vis.xScale(d.year))
       .attr('cy', d => {
-        if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+        if (vis.negativeDomains.includes(vis.selected.indicator)) {
           return vis.yScaleNeg(d.value)
         } else {
           return vis.yScalePos(d.value)
@@ -301,7 +301,7 @@ class LineChart {
             if (item) {
               const currentYear = item.Year;
 
-              if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+              if (vis.negativeDomains.includes(vis.selected.indicator)) {
                 d3.select(this).select('text')
                   .text(d => item.value !== null || item.value === 0 ?
                     formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
@@ -343,7 +343,7 @@ class LineChart {
                 });
 
               if (item.value !== null || item.value === 0) {
-                if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+                if (vis.negativeDomains.includes(vis.selected.indicator)) {
                   return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
                 } else {
                   return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
@@ -357,7 +357,7 @@ class LineChart {
 
     // Update the axes
     vis.xAxisG.call(vis.xAxis.ticks(d3.timeYear));
-    if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+    if (vis.negativeDomains.includes(vis.selected.indicator)) {
       vis.yAxisG.call(vis.yAxisNeg)
     } else {
       vis.yAxisG.call(vis.yAxisPos);
