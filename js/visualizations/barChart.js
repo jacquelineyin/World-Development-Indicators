@@ -62,6 +62,9 @@ class BarChart {
     // Append axis groups
     vis.appendAxisGroups();
 
+    // Update separator for positive and negative values
+    vis.appendSeparatorLine();
+
     
     // Append legend group and render legend
     vis.appendLegendGroup();
@@ -84,15 +87,17 @@ class BarChart {
     
     // Update axis titles
     vis.renderAxisTitles('Countries/Regions', vis.selected.indicator);
-    
-    // Update separator for positive and negative values
-    vis.renderSeparatorLine();
 
-    // Update separator line's positioning if applicable
+    // // Update separator line's positioning if applicable
     // vis.hasNegMin() ? vis.updateSeparatorLine() : null;
 
     // Update Scale domains
-    vis.updateYAxisScale();
+    // polylinear scale
+    let averages = vis.getAllAverages();
+    let [min, max] = d3.extent(averages);
+    console.log('min, max', min, max)
+    vis.yScalePos.domain([0, max]);
+    vis.yScaleNeg.domain([min, max])
     vis.xScale.domain(vis.selected.allSelectedAreas);
 
     vis.renderVis();
@@ -107,7 +112,7 @@ class BarChart {
     vis.renderAxisGroups();
 
     // Render separator line if applicable
-    vis.hasNegMin() ? vis.showSeparatorLine() : null;
+    vis.hasNegMin() ? vis.showSeparatorLine() : vis.hideSeparatorLine();
   }
 
   // ------------------------------------------ Helper functions ------------------------------------ //
@@ -118,22 +123,20 @@ class BarChart {
    */
   initScales() {
     let vis = this;
-    let avgs = vis.getAllAverages();
-    let [min, max] = d3.extent(avgs);
 
     vis.xScale = d3.scaleBand()
       .range([0, vis.width])
-      .paddingInner(0.2)
+      .paddingInner(0.2) 
       .paddingOuter(0.1);
 
-    // Handles neg values
-    vis.yScale = d3.scaleLinear()
-      .domain([0, max])
-      .range([0, vis.height]);
+    // Handles pos values
+    vis.yScalePos = d3.scaleLinear()
+      .range([vis.height, 0]);
     
     // If has neg vals, we need a different scale for drawing the y-axis. It needs
     // a reversed range, and a larger domain to accomodate negaive values.
-    vis.yAxisScale = d3.scaleLinear();
+    vis.yScaleNeg = d3.scaleLinear()
+      .range([vis.height, 0]);
   }
 
   /**
@@ -148,7 +151,13 @@ class BarChart {
     vis.xAxis = d3.axisBottom(vis.xScale)
       .tickSizeOuter([0]);
 
-    vis.yAxis = d3.axisLeft(vis.yAxisScale)
+    vis.yAxisPos = d3.axisLeft(vis.yScalePos)
+      .tickSize(-vis.width)
+      .tickSizeOuter([0])
+      .tickPadding(10)
+      .tickFormat(format);
+
+    vis.yAxisNeg = d3.axisLeft(vis.yScaleNeg)
       .tickSize(-vis.width)
       .tickSizeOuter([0])
       .tickPadding(10)
@@ -308,13 +317,14 @@ class BarChart {
    */
   renderAxisGroups() {
     let vis = this;
+    let yAxis = vis.hasNegMin() ? vis.yAxisNeg : vis.yAxisPos;
 
     vis.xAxisG
       .call(vis.xAxis)
       .attr('transform', `translate(0 ,${vis.height})`);
 
     vis.yAxisG
-      .call(vis.yAxis)
+      .call(yAxis);
   }
 
   /**
@@ -362,7 +372,7 @@ class BarChart {
 
     // Append and render grouped elems
     vis.renderBars(barG, barGEnter);
-    vis.renderBarLabels(barG, barGEnter);
+    // vis.renderBarLabels(barG, barGEnter);
   }
 
   /**
@@ -429,14 +439,23 @@ class BarChart {
 
   getYPosOfBar(d) {
     let vis = this;
-    // let yPos = vis.yScale(vis.yValue(d));
-    // let yZero = vis.yScale(0);
+    let hasNegDomain = vis.hasNegMin();
+    let val = d.avg;
+    let yScale = hasNegDomain ? vis.yScaleNeg : vis.yScalePos;
+    let yPos; 
+    console.log(hasNegDomain);
+    console.log(val <= 0);
+    
+    if (hasNegDomain && val <= 0) {
+      yPos = yScale(0);
+      console.log(yPos)
+    } else {
+      yPos = yScale(val);
+    }
+    console.log(yPos)
 
-    // if (yZero < yPos) {
-    //   yPos = yZero;
-    // }
-    // return yPos;
-    return vis.height - Math.max(0, vis.yScale(vis.yValue(d)));
+    return yPos;
+    // return vis.height - Math.max(0, yScale(vis.yValue(d)));
   }
 
   /**
@@ -473,10 +492,10 @@ class BarChart {
     let vis = this;
     const bottomPaddingOffset = 5;
 
-    let yPos = vis.yScale(vis.yValue(d)) + 15;
+    let yPos = vis.yScalePos(vis.yValue(d)) + 15;
 
     if (yPos > vis.height) {
-      yPos = vis.yScale(vis.yValue(d)) - bottomPaddingOffset;
+      yPos = vis.yScalePos(vis.yValue(d)) - bottomPaddingOffset;
     }
 
     return yPos ? yPos : vis.height - bottomPaddingOffset;
@@ -510,27 +529,26 @@ class BarChart {
    */
   getBarHeight(data) {
     let vis = this;
-    // let height;
-    // let yPos = vis.yScale(vis.yValue(data));
-    // console.log(data)
-    // let isNeg = data.avg < 0;
-    // console.log(isNeg);
+    let height;
+    let domainHasNeg = vis.hasNegMin();
+    let yScale = domainHasNeg ? vis.yScaleNeg : vis.yScalePos;
+    let yPos;
+    let val = vis.yValue(data);
 
-    // if (isNeg) {
-    //   height = vis.yScale(0) - yPos;
-    //   height = Math.abs(height);
-    // } else {
-    //   height = vis.height - yPos;
-    //   console.log(vis.height, yPos, height);
-    //   height = height ? height : 0;
-    //   console.log(height);
-    // }
-    // console.log(height);
-    // return height;
-    console.log(data)
-    console.log(vis.height - Math.abs(vis.yScale(vis.yValue(data))));
-    console.log(Math.abs(vis.yScale(vis.yValue(data))))
-    return Math.abs(vis.yScale(vis.yValue(data)));
+    if (domainHasNeg) {
+      if (val < 0) {
+        height = vis.height - yScale(0);
+      } else {
+        height = yScale(0)
+      }
+    } else {
+      yPos = yScale(val);
+      height = vis.height - yPos;
+      height = height ? height : 0;
+
+    }
+    console.log(height);
+    return height;
   }
 
   /**
@@ -615,24 +633,26 @@ class BarChart {
     dispatcher.call(dispatcherEvents.BAR_UNHOVER, vis, country);
   }
 
-  renderSeparatorLine() {
+  appendSeparatorLine() {
     let vis = this;
 
-    console.log('yScale', vis.yScale(-1));
-    console.log('yScale', vis.yScale(0));
-    console.log('yScale', vis.yScale(3));
-
-    vis.chartArea.selectAll('.separator')
-      .data(vis.aggregatedData)
-    .join('line')
+    vis.chartArea.append('line')
       .attr('class', 'separator')
       .style('stroke', 'red')
       .style('stroke-width', 2)
       .attr('x1', 0)
-      .attr('y1', vis.getYPosOfBar({avg: 0}))//so that the line passes through the y 0
       .attr('x2', vis.width)
-      .attr('y2', vis.getYPosOfBar({avg: 0}))//so that the line passes through the y 0
+      // .attr('y1', vis.getYPosOfBar({avg: 0}))//so that the line passes through the y 0
+      // .attr('y2', vis.getYPosOfBar({avg: 0}))//so that the line passes through the y 0
       .style('visibility', 'hidden');
+  }
+
+  updateSeparatorLine() {
+    let vis = this;
+    let separator = vis.chartArea.selectAll('.separator');
+    separator
+      .attr('y1', () => {console.log( vis.getYPosOfBar({avg: 0})); return vis.getYPosOfBar({avg: 0})})//so that the line passes through the y 0
+      .attr('y2', vis.getYPosOfBar({avg: 0}))//so that the line passes through the y 0
   }
 
   updateYAxisScale() {
@@ -642,20 +662,25 @@ class BarChart {
 
     min = min > 0 ? 0: min;
 
-    const range = vis.hasNegMin() ? [vis.height - vis.yScale(min), 0] : [vis.height, 0];
+    const range = vis.hasNegMin() ? [vis.height - vis.yScalePos(min), 0] : [vis.height, 0];
     console.log('min, max', min, max)
-    vis.yAxisScale.domain([min, max]).range(range);
+    vis.yScaleNeg.domain([min, max]).range(range);
   }
 
   showSeparatorLine() {
     let vis = this;
     
     vis.chartArea.selectAll('.separator')
+    .attr('y1', () => {console.log( vis.getYPosOfBar({avg: 0})); return vis.getYPosOfBar({avg: 0})})//so that the line passes through the y 0
+      .attr('y2', vis.getYPosOfBar({avg: 0}))//so that the line passes through the y 0
       .style('visibility', 'visible');
   }
 
-  updateSeparatorLine() {
-
+  hideSeparatorLine() {
+    let vis = this; 
+    console.log('hide separator')
+    vis.chartArea.selectAll('.separator')
+    .style('visibility', 'hidden');
   }
 
   hasNegMin() {
