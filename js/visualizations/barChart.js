@@ -353,19 +353,27 @@ class BarChart {
   renderBarLabels(barG, barGEnter) {
     let vis = this;
 
+    // Round averages and format them with commas for thousands
+    let round = (val) => d3.format('d')(val);
+    let format = (val) => d3.format(',')(round(val));
+
+    // Bind data to selection
     const barText = barG.merge(barGEnter).selectAll('.bar-label')
       .data(d => [d]);
 
+    // Enter
     const barTextEnter = barText.enter().append('text')
       .attr('class', d => `bar-label bar-label-${vis.constants.countries.getKey(d.key)}`);
 
+    // Enter + Update
     barTextEnter.merge(barText)
       .attr('x', (d) => vis.xScale(vis.xValue(d)) + (vis.xScale.bandwidth() / 2))
       .attr('y', (d) => vis.getYPosOfBarLabel(d))
       .attr('display', d => isNaN(d.avg) ? 'block' : 'none')
       .attr('text-anchor', 'middle')
-      .text(d => isNaN(d.avg) ? 'N/A' : d.avg);
+      .text(d => isNaN(d.avg) ? 'N/A' : format(d.avg));
 
+    // Exit
     barText.exit().remove();
   }
 
