@@ -333,76 +333,75 @@ class LineChart {
           .style('display', 'block');
       })
       .on('mousemove', function (event) { // mouse moving over canvas
-        if (event) {
-          const mouse = d3.pointer(event, this)[0];
-          const formatNumbers = d3.format(',');
+        const mouse = d3.pointer(event, this)[0];
+        const formatNumbers = d3.format(',');
 
-          d3.selectAll('.mouse-per-line')
-            .attr('transform', function (d, i) {
-              const xDate = vis.xScale.invert(mouse);
-              const bisect = d3.bisector(d => d.year).left;
-              const idx = bisect(d.values, xDate);
-              const item = d.values[idx];
-              if (item) {
-                const currentYear = item.Year;
+        d3.selectAll('.mouse-per-line')
+          .attr('transform', function (d, i) {
+            const xDate = vis.xScale.invert(mouse);
+            const bisect = d3.bisector(d => d.year).left;
+            const idx = bisect(d.values, xDate);
+            const item = d.values[idx];
+            if (item) {
+              const currentYear = item.Year;
 
-                if (vis.negativeDomains.includes(vis.selected.indicator)) {
-                  d3.select(this).select('text')
-                    .text(d => item.value !== null || item.value === 0 ?
-                      formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
+              if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+                d3.select(this).select('text')
+                  .text(d => item.value !== null || item.value === 0 ?
+                    formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
 
-                  d3.select('.values').selectAll('.value')
-                    .attr('x', vis.width + 200)
-                    .attr('y', (d, i) => {
-                      return (i * 20) + 5
-                    })
-                    .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
-                      d.countryName + ': ' + formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(d.values[idx].value)).toFixed(2))
-                      : d.countryName + ': N/A');
+                d3.select('.values').selectAll('.value')
+                  .attr('x', vis.width + 200)
+                  .attr('y', (d, i) => {
+                    return (i * 20) + 5
+                  })
+                  .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
+                    d.countryName + ': ' + formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(d.values[idx].value)).toFixed(2))
+                    : d.countryName + ': N/A');
 
-                } else {
-                  d3.select(this).select('text')
-                    .text(d => item.value !== null || item.value === 0 ?
-                      formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
+              } else {
+                d3.select(this).select('text')
+                  .text(d => item.value !== null || item.value === 0 ?
+                    formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
 
-                  d3.select('.values').selectAll('.value')
-                    .attr('x', vis.width + 200)
-                    .attr('y', (d, i) => {
-                      return (i * 20) + 5
-                    })
-                    .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
-                      d.countryName + ': ' + formatNumbers(vis.yScalePos.invert(vis.yScalePos(d.values[idx].value)).toFixed(2))
-                      : d.countryName + ': N/A');
-                }
-
-                if (currentYear) {
-                  d3.select('.yearValue')
-                    .text(currentYear);
-                }
-
-                vis.svg.select('.mouse-line')
-                  .attr('d', function () {
-                    var data = 'M' + vis.xScale(item.year) + ',' + vis.height;
-                    data += ' ' + vis.xScale(item.year) + ',' + 0;
-                    return data;
-                  });
-
-                  let circle = d3.select(this).select('.mouseCircle');
-                  circle.attr('visibility', 'visible');
-
-                if (item.value !== null || item.value === 0) {
-                  if (vis.negativeDomains.includes(vis.selected.indicator)) {
-                    return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
-                  } else {
-                    return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
-                  }
-                }
-                circle.attr('visibility', 'hidden');
-                return 'translate(0,0)'
+                d3.select('.values').selectAll('.value')
+                  .attr('x', vis.width + 200)
+                  .attr('y', (d, i) => {
+                    return (i * 20) + 5
+                  })
+                  .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
+                    d.countryName + ': ' + formatNumbers(vis.yScalePos.invert(vis.yScalePos(d.values[idx].value)).toFixed(2))
+                    : d.countryName + ': N/A');
               }
-            });
-        }
-      });
+
+              if (currentYear) {
+                d3.select('.yearValue')
+                  .text(currentYear);
+              }
+
+              vis.svg.select('.mouse-line')
+                .attr('d', function () {
+                  var data = 'M' + vis.xScale(item.year) + ',' + vis.height;
+                  data += ' ' + vis.xScale(item.year) + ',' + 0;
+                  return data;
+                });
+              
+              let circle = d3.select(this).select('.mouseCircle');
+              circle.attr('visibility', 'visible');
+
+              if (item.value !== null || item.value === 0) {
+                if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+                  return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
+                } else {
+                  return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
+                }
+              }
+              
+              circle.attr('visibility', 'hidden');
+              return 'translate(0,0)'
+            }
+          });
+      });      
 
     rect.exit().remove();
 
@@ -440,7 +439,6 @@ class LineChart {
       return vis.colorScale(vis.colorValue(d));
     }
   }
-
 }
 
 
