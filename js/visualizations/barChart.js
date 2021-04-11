@@ -458,7 +458,7 @@ class BarChart {
     let vis = this;
 
     let isSelectedArea = data.key === vis.selected.area.country
-      || data.key === vis.selected.area.region;
+                         || data.key === vis.selected.area.region;
 
     let isHovered = false;
 
