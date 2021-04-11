@@ -345,7 +345,7 @@ class LineChart {
             if (item) {
               const currentYear = item.Year;
 
-              if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+              if (vis.negativeDomains.includes(vis.selected.indicator)) {
                 d3.select(this).select('text')
                   .text(d => item.value !== null || item.value === 0 ?
                     formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
@@ -390,7 +390,7 @@ class LineChart {
               circle.attr('visibility', 'visible');
 
               if (item.value !== null || item.value === 0) {
-                if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
+                if (vis.negativeDomains.includes(vis.selected.indicator)) {
                   return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
                 } else {
                   return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
