@@ -385,8 +385,8 @@ class BarChart {
     let vis = this;
 
     // Round averages and format them with commas for thousands
-    let round = (val) => d3.format('d')(val);
-    let format = (val) => d3.format(',')(round(val));
+    let round = (val) => val > 100 ? Math.round(val) : val.toFixed(2);
+    let format = (val) => val >= 0 ? d3.format(',')(round(val)) : round(val);
 
     // Bind data to selection
     const barText = barG.merge(barGEnter).selectAll('.bar-label')
