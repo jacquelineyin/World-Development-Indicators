@@ -120,7 +120,7 @@ class GeoMap {
       for (let i = 0; i < bins.length; i++) {
         if (bins[i]) {
           div.innerHTML +=
-            '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i> ' + Number(vis.indicatorScale.invert(bins[i])).toLocaleString() + '<br>';
+            '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i> ' + Number(vis.indicatorScale.invert(bins[i])).toFixed(0).toLocaleString() + '<br>';
         } else {
           div.innerHTML += '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i>No data<br>';
         }

@@ -47,7 +47,7 @@ class WedgeView {
       // Intialize arc generators
       this.countryArc = d3.arc()
         .innerRadius(10)
-        .outerRadius(20);
+        .outerRadius(15);
 
       this.worldArc = d3.arc()
         .innerRadius(15)
