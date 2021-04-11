@@ -413,7 +413,7 @@ class BarChart {
       .attr('width', vis.xScale.bandwidth())
       .attr('height', d => vis.getBarHeight(d))
       .attr('fill', d => vis.getBarColour(d))
-      .on('mouseover', e => vis.handleMouseOver(e))
+      .on('mouseenter', e => vis.handleMouseEnter(e))
       .on('mouseleave', e => vis.handleMouseLeave(e));
 
     // Exit
@@ -527,11 +527,11 @@ class BarChart {
   }
 
   /**
-   * Purpose: Handles mouseover event by creating a stroke around target bar 
+   * Purpose: Handles mouseenter event by creating a stroke around target bar 
    *          and calling dispatcher for other chart interactions
-   * @param {Event} event : Native JS event (i.e. 'mouseover')
+   * @param {Event} event : Native JS event (i.e. 'mouseenter')
    */
-  handleMouseOver(event) {
+  handleMouseEnter(event) {
     let vis = this;
 
     const { labelClass, barClass, countryKey } = vis.getClassesOfBarElems(event);
@@ -551,7 +551,7 @@ class BarChart {
 
   /**
    * Purpose: Returns the classes of the bar that triggered the event and its label
-   * @param {Event} event : native JS event (i.e. 'mouseover'/'mouseleave')
+   * @param {Event} event : native JS event (i.e. 'mouseenter'/'mouseleave')
    * @returns {Object} = {labelClass: <string>, barClass: <string>}
    */
   getClassesOfBarElems(event) {
