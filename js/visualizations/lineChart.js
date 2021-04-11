@@ -13,6 +13,7 @@ class LineChart {
         selectedArea: 'blue',
         otherAreas: d3.schemeCategory10,
       },
+      circle: { radius: 3 },
       containerWidth: _config.containerWidth || 2100,
       containerHeight: _config.containerHeight || 800,
       margin: _config.margin || { top: 50, right: 500, bottom: 110, left: 50 }
@@ -206,9 +207,9 @@ class LineChart {
     // Add line path
     vis.countries.selectAll('.line')
       .data(vis.formattedData, d => d.values)
-      .attr('class', d => d.countryName)
+      // .attr('class', d => vis.constants.countries.getKey(d.countryName))
       .join('path')
-      .attr('class', 'line')
+      .attr('class', d => `line line-${vis.constants.countries.getKey(d.countryName)}`)
       .attr('d', d => vis.line(d.values))
       .style('stroke', d => vis.getColour(d));
 
@@ -221,8 +222,8 @@ class LineChart {
       .selectAll('circle')
       .data(d => d.values.filter(d => d.value !== null))
       .join('circle')
-      .attr('class', 'circle')
-      .attr('r', 3)
+      .attr('class', d => `circle circle-${vis.constants.countries.getKey(d.CountryName)}`)
+      .attr('r', vis.config.circle.radius)
       .attr('cx', d => vis.xScale(d.year))
       .attr('cy', d => {
         if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
@@ -412,6 +413,24 @@ class LineChart {
     }
   }
 
+  emphasizeLine(country) {
+    let vis = this;
+
+    const countryKey = vis.constants.countries.getKey(country);
+
+    vis.emphasizeActiveElems(countryKey);
+    vis.deEmphasizeInactiveElems();
+  }
+
+  deEmphasizeLine(country) {
+    let vis = this;
+
+    const countryKey = vis.constants.countries.getKey(country);
+
+    vis.toggleOff(countryKey);
+    vis.resetAllElemStyles();
+  }
+
   // ------------------ Helpers ------------------ //
 
   getColourForLegend(d, i) {
@@ -436,6 +455,67 @@ class LineChart {
     } else {
       return vis.colorScale(vis.colorValue(d));
     }
+  }
+
+  getInactiveElems(className, activeClassName) {
+    let vis = this;
+
+    return vis.lines.selectAll(className).filter(function() {
+      return !this.classList.contains(activeClassName);
+    })
+  }
+
+  deEmphasizeInactiveElems() {
+    let vis = this;
+
+    let opacityOfInactive = 0.3;
+
+    const inactiveLines = vis.getInactiveElems('.line', 'active-line');
+    inactiveLines.attr('opacity', opacityOfInactive);
+
+    const inactiveCircles = vis.getInactiveElems('.circle', 'active-circle');
+    inactiveCircles.attr('opacity', opacityOfInactive);
+  }
+
+  emphasizeActiveElems(countryKey) {
+    let vis = this;
+
+    const activeCircles = vis.circles.selectAll(`.circle-${countryKey}`);
+    activeCircles
+      .classed('active-circle', true)
+      .attr('r', vis.config.circle.radius * 1.5)
+      .attr('opacity', 1);
+
+    const activeLine = vis.countries.selectAll(`.line-${countryKey}`);
+    activeLine
+      .classed('active-line', true)
+      .attr('opacity', 1)
+      .style('stroke-width', 3);
+  }
+
+  resetAllElemStyles() {
+    let vis = this;
+    
+    const lines = vis.countries.selectAll('.line');
+    lines
+      .attr('opacity', 1)
+      .style('stroke-width', 1);
+
+    const circles = vis.circles.selectAll('.circle');
+    circles
+      .classed('active-circle', false)
+      .attr('opacity', 1)
+      .attr('r', vis.config.circle.radius);
+  }
+
+  toggleOff(countryKey) {
+    let vis = this;
+
+    const activeLine = vis.countries.selectAll(`.line-${countryKey}`);
+    activeLine.classed('active-line', false);
+
+    const activeCircle = vis.circles.selectAll(`.circle-${countryKey}`);
+    activeCircle.classed('active-circle', false);
   }
 
 }

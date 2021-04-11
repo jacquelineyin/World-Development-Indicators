@@ -499,8 +499,8 @@ class BarChart {
    */
   handleMouseOver(event) {
     let vis = this;
-    //TODO
-    const { labelClass, barClass } = vis.getClassesOfBarElems(event);
+
+    const { labelClass, barClass, countryKey } = vis.getClassesOfBarElems(event);
 
     // Display value of country
     const targetLabel = vis.chart.selectAll(labelClass);
@@ -511,6 +511,8 @@ class BarChart {
     targetBar.attr('stroke', 'black');
 
     // Dispatch dispatchEvent
+    const country = vis.constants.countries[countryKey];
+    dispatcher.call(dispatcherEvents.BAR_HOVER, vis, country);
   }
 
   /**
@@ -525,7 +527,7 @@ class BarChart {
 
     const labelClass = `.bar-label-${countryKey}`;
     const barClass = `.bar-${countryKey}`;
-    return { labelClass, barClass };
+    return { labelClass, barClass, countryKey };
   }
 
   /**
@@ -535,7 +537,7 @@ class BarChart {
    */
   handleMouseLeave(event) {
     let vis = this;
-    //TODO
+
     const { target } = event;
     const classes = target.className.baseVal.split(' ');
     const countryKey = classes[1].split('-')[1];
@@ -549,6 +551,10 @@ class BarChart {
     const bars = d3.selectAll('.bar');
     bars.attr('stroke', 'none')
       .attr('stroke-width', 2);
+
+    // Dispatch dispatchEvent
+    const country = vis.constants.countries[countryKey];
+    dispatcher.call(dispatcherEvents.BAR_UNHOVER, vis, country);
   }
 
 }

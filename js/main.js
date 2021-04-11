@@ -156,11 +156,13 @@ dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
 })
 
 dispatcher.on(dispatcherEvents.BAR_HOVER, countryName => {
-  // TODO
+  // TODO map
+  lineChart.emphasizeLine(countryName);
 })
 
 dispatcher.on(dispatcherEvents.BAR_UNHOVER, countryName => {
-  //TODO
+  //TODO map
+  lineChart.deEmphasizeLine(countryName);
 })
 
 dispatcher.on(dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, () => {
