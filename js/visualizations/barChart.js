@@ -221,7 +221,8 @@ class BarChart {
         .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset -= vis.config.legend.yPadding)
         .attr('width', vis.config.legend.colourBox.width)
         .attr('height', vis.config.legend.colourBox.height)
-        .style('fill', d => vis.getColourOfLegendBoxes(d));
+        // .style('fill', d => vis.getColourOfLegendBoxes(d));
+        .style('fill', d => vis.getBarColour({key: d}));
   }
 
   /**
@@ -371,7 +372,7 @@ class BarChart {
 
     // Bind data to selection
     const barText = barG.merge(barGEnter).selectAll('.bar-label')
-      .data(d => [d]);
+      .data(d => [d], d => d.key);
 
     // Enter
     const barTextEnter = barText.enter().append('text')
@@ -399,7 +400,7 @@ class BarChart {
 
     // Bind data to selection
     const bars = barG.merge(barGEnter).selectAll('.bar')
-      .data(d => [d]);
+      .data(d =>[d], d => d.key);
 
     // Enter
     const barsEnter = bars.enter().append('rect')
