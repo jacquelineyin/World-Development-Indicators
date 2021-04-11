@@ -413,6 +413,11 @@ class LineChart {
     }
   }
 
+  /**
+   * Purpose: Toggles target country's elems as active and emphasizes them
+   *          De-emphasizes the elems of other countries
+   * @param {string} country : Name of Country
+   */
   emphasizeLine(country) {
     let vis = this;
 
@@ -422,6 +427,11 @@ class LineChart {
     vis.deEmphasizeInactiveElems();
   }
 
+  /**
+   * Purpose: Toggles country elems as inactive and resets all elems to
+   *          default styling
+   * @param {string} country : Name of Country
+   */
   deEmphasizeLine(country) {
     let vis = this;
 
@@ -495,7 +505,7 @@ class LineChart {
 
   resetAllElemStyles() {
     let vis = this;
-    
+
     const lines = vis.countries.selectAll('.line');
     lines
       .attr('opacity', 1)
