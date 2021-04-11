@@ -19,6 +19,8 @@ const dispatcher = d3.dispatch(
     dispatcherEvents.SELECT_FOCUS_AREA,
     dispatcherEvents.SELECT_COMPARISON_ITEM,
     dispatcherEvents.DELETE_COMPARISON_ITEM,
+    dispatcherEvents.BAR_HOVER,
+    dispatcherEvents.BAR_UNHOVER,
     dispatcherEvents.ERROR_TOO_MANY_COMPARISONS
   );
 
@@ -151,6 +153,16 @@ dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
   map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
+})
+
+dispatcher.on(dispatcherEvents.BAR_HOVER, countryName => {
+  // TODO map
+  lineChart.emphasizeLine(countryName);
+})
+
+dispatcher.on(dispatcherEvents.BAR_UNHOVER, countryName => {
+  //TODO map
+  lineChart.deEmphasizeLine(countryName);
 })
 
 dispatcher.on(dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, () => {

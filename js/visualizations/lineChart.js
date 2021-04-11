@@ -13,6 +13,7 @@ class LineChart {
         selectedArea: 'blue',
         otherAreas: d3.schemeCategory10,
       },
+      circle: { radius: 3 },
       containerWidth: _config.containerWidth || 2100,
       containerHeight: _config.containerHeight || 800,
       margin: _config.margin || { top: 50, right: 500, bottom: 110, left: 50 }
@@ -188,7 +189,7 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 75)
       .attr('width', 10)
       .attr('height', 10)
-      .style('fill', (d, i) => vis.getColourForLegend(d, i));
+      .style('fill', d => vis.getColourForLegend(d));
 
     vis.legend.selectAll('.box-label')
       .data(vis.selected.allSelectedAreas, d => d)
@@ -206,9 +207,8 @@ class LineChart {
     // Add line path
     vis.countries.selectAll('.line')
       .data(vis.formattedData, d => d.values)
-      .attr('class', d => d.countryName)
       .join('path')
-      .attr('class', 'line')
+      .attr('class', d => `line line-${vis.constants.countries.getKey(d.countryName)}`)
       .attr('d', d => vis.line(d.values))
       .style('stroke', d => vis.getColour(d));
 
@@ -221,8 +221,8 @@ class LineChart {
       .selectAll('circle')
       .data(d => d.values.filter(d => d.value !== null))
       .join('circle')
-      .attr('class', 'circle')
-      .attr('r', 3)
+      .attr('class', d => `circle circle-${vis.constants.countries.getKey(d.CountryName)}`)
+      .attr('r', vis.config.circle.radius)
       .attr('cx', d => vis.xScale(d.year))
       .attr('cy', d => {
         if (vis.negativeDomains.includes(vis.selected.indicator)) {
@@ -413,23 +413,62 @@ class LineChart {
     }
   }
 
-  // ------------------ Helpers ------------------ //
-
-  getColourForLegend(d, i) {
+  /**
+   * Purpose: Toggles target country's elems as active and emphasizes them
+   *          De-emphasizes the elems of other countries
+   * @param {string} country : Name of Country
+   */
+  emphasizeLine(country) {
     let vis = this;
 
-    let isFocusedCountry = vis.constants.countries.isSameCountryName(d, vis.selected.area.country);
+    const countryKey = vis.constants.countries.getKey(country);
+
+    vis.toggleElems(countryKey, true);
+    vis.emphasizeActiveElems(countryKey);
+    vis.deEmphasizeInactiveElems();
+  }
+
+  /**
+   * Purpose: Toggles country elems as inactive and resets all elems to
+   *          default styling
+   * @param {string} country : Name of Country
+   */
+  deEmphasizeLine(country) {
+    let vis = this;
+
+    const countryKey = vis.constants.countries.getKey(country);
+
+    vis.toggleElems(countryKey, false);
+    vis.resetAllElemStyles();
+  }
+
+  // ------------------ Helpers ------------------ //
+
+  /**
+   * Purpose: Returns an appropriate colour depending on the given country
+   * @param {string} country : Name of Country
+   * @returns {string} representing a hex colour
+   */
+  getColourForLegend(country) {
+    let vis = this;
+
+    let isFocusedCountry = vis.constants.countries.isSameCountryName(country, vis.selected.area.country);
 
     if (isFocusedCountry) {
       return vis.config.colour.selectedArea;
     } else {
-      return vis.colorScale(i);
+      return vis.colorScale(country);
     }
   }
 
+  /**
+   * Purpose: Returns an appropriate colour depending on country of given object
+   * @param {Object} d = { countryName: <string>, values: <Array of data objects>}
+   * @returns {string} representing a hex colour
+   */
   getColour(d) {
     let vis = this;
-
+  
     let isFocusedCountry = d.countryName.toLowerCase().trim() === vis.selected.area.country.toLowerCase().trim();
 
     if (isFocusedCountry) {
@@ -438,6 +477,88 @@ class LineChart {
       return vis.colorScale(vis.colorValue(d));
     }
   }
+
+  /**
+   * Purpose: Returns all elems of class <className> that is inactive
+   * @param {string} className : class of elem to check (format: ".<className>")
+   * @param {string} activeClassName : toggled elem's active class (format: "<activeClassName>")
+   * @returns {Selection} : d3 selection 
+   */
+  getInactiveElems(className, activeClassName) {
+    let vis = this;
+
+    return vis.lines.selectAll(className).filter(function() {
+      return !this.classList.contains(activeClassName);
+    })
+  }
+
+  /**
+   * Purpose: Makes inactive elems more transparent
+   */
+  deEmphasizeInactiveElems() {
+    let vis = this;
+
+    let opacityOfInactive = 0.3;
+
+    const inactiveLines = vis.getInactiveElems('.line', 'active-line');
+    inactiveLines.attr('opacity', opacityOfInactive);
+
+    const inactiveCircles = vis.getInactiveElems('.circle', 'active-circle');
+    inactiveCircles.attr('opacity', opacityOfInactive);
+  }
+
+  /**
+   * Purpose: Toggles country that matches <countryKey> as active and 
+   *          Styles its relevant elems to emphasize them
+   */
+  emphasizeActiveElems() {
+    let vis = this;
+
+    const activeCircles = vis.circles.selectAll(`.active-circle`);
+    const activeLine = vis.countries.selectAll(`.active-line`);
+
+    //Emphasize elems
+    activeCircles
+      .attr('r', vis.config.circle.radius * 1.5)
+      .attr('opacity', 1);
+
+    activeLine
+      .attr('opacity', 1)
+      .style('stroke-width', 3);
+  }
+
+  /**
+   * Purpose: Resets all the line and circles to default styles
+   */
+  resetAllElemStyles() {
+    let vis = this;
+
+    const lines = vis.countries.selectAll('.line');
+    lines
+      .attr('opacity', 1)
+      .style('stroke-width', 1);
+
+    const circles = vis.circles.selectAll('.circle');
+    circles
+      .attr('opacity', 1)
+      .attr('r', vis.config.circle.radius);
+  }
+
+  /**
+   * Purpose: Toggles the elems of given <countryKey> as active or inactive
+   * @param {string} countryKey : key of country as defined in ./constants/countries.js
+   * @param {Boolean} toggleSetting : true to toggle active; false for inactive
+   */
+  toggleElems(countryKey, toggleSetting) {
+    let vis = this;
+
+    const line = vis.countries.selectAll(`.line-${countryKey}`);
+    line.classed('active-line', toggleSetting);
+
+    const circle = vis.circles.selectAll(`.circle-${countryKey}`);
+    circle.classed('active-circle', toggleSetting);
+  }
+
 }
 
 
