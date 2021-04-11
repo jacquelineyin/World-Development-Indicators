@@ -44,7 +44,7 @@ class BarChart {
 
     // Define size of SVG drawing area
     vis.svg = d3.select(vis.config.parentElement)
-      .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
+      .attr('viewBox', `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
 
     // Append group element that will contain our actual chart 
     // and position it according to the given margin config
@@ -123,7 +123,7 @@ class BarChart {
     let vis = this;
 
     // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
-    let format = (strInput) => d3.format(".2~s")(strInput).replace(/G/, "B");
+    let format = (strInput) => d3.format('.2~s')(strInput).replace(/G/, 'B');
 
     vis.xAxis = d3.axisBottom(vis.xScale)
       .tickSizeOuter([0]);
