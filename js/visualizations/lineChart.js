@@ -32,7 +32,8 @@ class LineChart {
     vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
     vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-    vis.colorScale = d3.scaleOrdinal(vis.config.colour.otherAreas);
+    vis.colorScale = d3.scaleOrdinal()
+      .range(vis.config.colour.otherAreas);
 
     vis.xScale = d3.scaleTime()
       .range([0, vis.width]);
@@ -209,14 +210,14 @@ class LineChart {
       .join('path')
       .attr('class', 'line')
       .attr('d', d => vis.line(d.values))
-      .style('stroke', (d, i) => vis.getColour(d, i));
+      .style('stroke', d => vis.getColour(d));
 
     // Add data points(dots) on line
     vis.circles.selectAll('.circle-group')
       .data(vis.formattedData)
       .join('g')
       .attr('class', 'circle-group')
-      .style('fill', (d, i) => vis.getColour(d, i))
+      .style('fill', d => vis.getColour(d))
       .selectAll('circle')
       .data(d => d.values.filter(d => d.value !== null))
       .join('circle')
@@ -275,7 +276,7 @@ class LineChart {
 
     mplCircleEnter.merge(mplCircle)
       .attr('r', 7)
-      .style('stroke', (d, i) => vis.getColour(d, i))
+      .style('stroke', d => vis.getColour(d))
       .style('fill', 'none')
       .style('stroke-width', '1px')
       .style('display', 'none');
@@ -428,7 +429,7 @@ class LineChart {
     }
   }
 
-  getColour(d, i) {
+  getColour(d) {
     let vis = this;
 
     let isFocusedCountry = d.countryName.toLowerCase().trim() === vis.selected.area.country.toLowerCase().trim();
@@ -436,7 +437,7 @@ class LineChart {
     if (isFocusedCountry) {
       return vis.config.colour.selectedArea;
     } else {
-      return vis.colorScale(i);
+      return vis.colorScale(vis.colorValue(d));
     }
   }
 
