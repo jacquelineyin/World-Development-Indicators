@@ -207,7 +207,6 @@ class LineChart {
     // Add line path
     vis.countries.selectAll('.line')
       .data(vis.formattedData, d => d.values)
-      // .attr('class', d => vis.constants.countries.getKey(d.countryName))
       .join('path')
       .attr('class', d => `line line-${vis.constants.countries.getKey(d.countryName)}`)
       .attr('d', d => vis.line(d.values))
