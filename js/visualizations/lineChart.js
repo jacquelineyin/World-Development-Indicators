@@ -189,7 +189,7 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 75)
       .attr('width', 10)
       .attr('height', 10)
-      .style('fill', (d, i) => vis.getColourForLegend(d, i));
+      .style('fill', d => vis.getColourForLegend(d));
 
     vis.legend.selectAll('.box-label')
       .data(vis.selected.allSelectedAreas, d => d)
@@ -450,10 +450,9 @@ class LineChart {
   /**
    * Purpose: Returns an appropriate colour depending on the given country
    * @param {string} country : Name of Country
-   * @param {Integer} i : index of array
    * @returns {string} representing a hex colour
    */
-  getColourForLegend(country, i) {
+  getColourForLegend(country) {
     let vis = this;
 
     let isFocusedCountry = vis.constants.countries.isSameCountryName(country, vis.selected.area.country);
@@ -461,7 +460,7 @@ class LineChart {
     if (isFocusedCountry) {
       return vis.config.colour.selectedArea;
     } else {
-      return vis.colorScale(i);
+      return vis.colorScale(country);
     }
   }
 
