@@ -385,8 +385,8 @@ class LineChart {
                   data += ' ' + vis.xScale(item.year) + ',' + 0;
                   return data;
                 });
-              
-              let circle = d3.select(this).select('.mouseCircle');
+
+              let circle = d3.select(this).selectAll('.mouseCircle');
               circle.attr('visibility', 'visible');
 
               if (item.value !== null || item.value === 0) {
@@ -396,12 +396,11 @@ class LineChart {
                   return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
                 }
               }
-              
               circle.attr('visibility', 'hidden');
               return 'translate(0,0)'
             }
           });
-      });      
+      });
 
     rect.exit().remove();
 
