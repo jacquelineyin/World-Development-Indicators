@@ -388,6 +388,9 @@ class LineChart {
                   data += ' ' + vis.xScale(item.year) + ',' + 0;
                   return data;
                 });
+              
+              let circle = d3.select(this).select('.mouseCircle');
+              circle.attr('visibility', 'visible');
 
               if (item.value !== null || item.value === 0) {
                 if (vis.selected.indicator === 'Inflation, GDP deflator (annual %)') {
@@ -396,9 +399,10 @@ class LineChart {
                   return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
                 }
               }
-              return `translate(${vis.xScale(item.year)},${vis.width / 2})`;
+              
+              circle.attr('visibility', 'hidden');
+              return 'translate(0,0)'
             }
-            return null;
           });
       });
 
