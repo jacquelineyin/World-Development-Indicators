@@ -276,25 +276,6 @@ class BarChart {
   }
 
   /**
-   * Purpose: Returns a default timeInterval such that 
-   *          min is the earliest year of dataset and 
-   *          max is the most recent year of dataset   
-   * @returns {Object} timeInterval = {min, max} : 
-   *                   min, max are the lowerBound and upperBound years of the interval respectively
-   */
-  getDefaultTimeInterval() {
-    let vis = this;
-
-    let years = vis.data.map(d => d.Year);
-
-    let timeInterval = {};
-    timeInterval.min = d3.min(years);
-    timeInterval.max = d3.max(years);
-
-    return timeInterval;
-  }
-
-  /**
    * Purpose: Returns a colour based off the country of the data given
    * @param {Object} d = {key: <string>, avg: <Number>} : key is country name 
    * @returns {string} representing a hex colour
