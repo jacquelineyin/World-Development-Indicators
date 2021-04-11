@@ -362,7 +362,7 @@ class LineChart {
                 } else {
                   d3.select(this).select('text')
                     .text(d => item.value !== null || item.value === 0 ?
-                      formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : 'N/A');
+                      formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
 
                   d3.select('.values').selectAll('.value')
                     .attr('x', vis.width + 200)
@@ -386,6 +386,9 @@ class LineChart {
                     return data;
                   });
 
+                  let circle = d3.select(this).select('.mouseCircle');
+                  circle.attr('visibility', 'visible');
+
                 if (item.value !== null || item.value === 0) {
                   if (vis.negativeDomains.includes(vis.selected.indicator)) {
                     return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
@@ -393,9 +396,9 @@ class LineChart {
                     return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
                   }
                 }
-                return `translate(${vis.xScale(item.year)}, ${vis.width})`;
+                circle.attr('visibility', 'hidden');
+                return 'translate(0,0)'
               }
-              return `translate(${vis.xScale(item.year)}, ${vis.width})`;
             });
         }
       });
