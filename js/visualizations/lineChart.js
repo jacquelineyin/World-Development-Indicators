@@ -427,6 +427,7 @@ class LineChart {
 
     const countryKey = vis.constants.countries.getKey(country);
 
+    vis.toggleElems(countryKey, true);
     vis.emphasizeActiveElems(countryKey);
     vis.deEmphasizeInactiveElems();
   }
@@ -441,16 +442,22 @@ class LineChart {
 
     const countryKey = vis.constants.countries.getKey(country);
 
-    vis.toggleOff(countryKey);
+    vis.toggleElems(countryKey, false);
     vis.resetAllElemStyles();
   }
 
   // ------------------ Helpers ------------------ //
 
-  getColourForLegend(d, i) {
+  /**
+   * Purpose: Returns an appropriate colour depending on the given country
+   * @param {string} country : Name of Country
+   * @param {Integer} i : index of array
+   * @returns {string} representing a hex colour
+   */
+  getColourForLegend(country, i) {
     let vis = this;
 
-    let isFocusedCountry = vis.constants.countries.isSameCountryName(d, vis.selected.area.country);
+    let isFocusedCountry = vis.constants.countries.isSameCountryName(country, vis.selected.area.country);
 
     if (isFocusedCountry) {
       return vis.config.colour.selectedArea;
@@ -459,9 +466,14 @@ class LineChart {
     }
   }
 
+  /**
+   * Purpose: Returns an appropriate colour depending on country of given object
+   * @param {Object} d = { countryName: <string>, values: <Array of data objects>}
+   * @returns {string} representing a hex colour
+   */
   getColour(d) {
     let vis = this;
-
+  
     let isFocusedCountry = d.countryName.toLowerCase().trim() === vis.selected.area.country.toLowerCase().trim();
 
     if (isFocusedCountry) {
@@ -471,6 +483,12 @@ class LineChart {
     }
   }
 
+  /**
+   * Purpose: Returns all elems of class <className> that is inactive
+   * @param {string} className : class of elem to check (format: ".<className>")
+   * @param {string} activeClassName : toggled elem's active class (format: "<activeClassName>")
+   * @returns {Selection} : d3 selection 
+   */
   getInactiveElems(className, activeClassName) {
     let vis = this;
 
@@ -479,6 +497,9 @@ class LineChart {
     })
   }
 
+  /**
+   * Purpose: Makes inactive elems more transparent
+   */
   deEmphasizeInactiveElems() {
     let vis = this;
 
@@ -491,22 +512,29 @@ class LineChart {
     inactiveCircles.attr('opacity', opacityOfInactive);
   }
 
-  emphasizeActiveElems(countryKey) {
+  /**
+   * Purpose: Toggles country that matches <countryKey> as active and 
+   *          Styles its relevant elems to emphasize them
+   */
+  emphasizeActiveElems() {
     let vis = this;
 
-    const activeCircles = vis.circles.selectAll(`.circle-${countryKey}`);
+    const activeCircles = vis.circles.selectAll(`.active-circle`);
+    const activeLine = vis.countries.selectAll(`.active-line`);
+
+    //Emphasize elems
     activeCircles
-      .classed('active-circle', true)
       .attr('r', vis.config.circle.radius * 1.5)
       .attr('opacity', 1);
 
-    const activeLine = vis.countries.selectAll(`.line-${countryKey}`);
     activeLine
-      .classed('active-line', true)
       .attr('opacity', 1)
       .style('stroke-width', 3);
   }
 
+  /**
+   * Purpose: Resets all the line and circles to default styles
+   */
   resetAllElemStyles() {
     let vis = this;
 
@@ -517,19 +545,23 @@ class LineChart {
 
     const circles = vis.circles.selectAll('.circle');
     circles
-      .classed('active-circle', false)
       .attr('opacity', 1)
       .attr('r', vis.config.circle.radius);
   }
 
-  toggleOff(countryKey) {
+  /**
+   * Purpose: Toggles the elems of given <countryKey> as active or inactive
+   * @param {string} countryKey : key of country as defined in ./constants/countries.js
+   * @param {Boolean} toggleSetting : true to toggle active; false for inactive
+   */
+  toggleElems(countryKey, toggleSetting) {
     let vis = this;
 
-    const activeLine = vis.countries.selectAll(`.line-${countryKey}`);
-    activeLine.classed('active-line', false);
+    const line = vis.countries.selectAll(`.line-${countryKey}`);
+    line.classed('active-line', toggleSetting);
 
-    const activeCircle = vis.circles.selectAll(`.circle-${countryKey}`);
-    activeCircle.classed('active-circle', false);
+    const circle = vis.circles.selectAll(`.circle-${countryKey}`);
+    circle.classed('active-circle', toggleSetting);
   }
 
 }
