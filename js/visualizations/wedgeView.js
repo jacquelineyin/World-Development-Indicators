@@ -86,6 +86,24 @@ class WedgeView {
         const countryAvg = this.selectedCountryDataMap.get(this.indicators[i]);
         const worldAvg = this.worldAverageDataMap.get(this.indicators[i]);
 
+        // Country
+        if (max && countryAvg) {
+          const countryData = [countryAvg, (max - countryAvg)];
+          // https://stackoverflow.com/questions/24118919/how-do-i-get-the-index-number-from-the-array-in-d3/24118970
+          d3.select('#' + i + ' svg g')
+            .selectAll('.c-arc')
+            .data(this.pie(countryData))
+            .join(
+            enter => enter.append('path')
+              .attr('class', 'c-arc')
+              .attr('num', d => d.index)
+              .attr('d', this.countryArc),
+            update => update
+              .attr('num', d => d.index)
+              .attr('d', this.countryArc),
+            exit => exit.remove());
+          }
+
          // World
          if (max && worldAvg) {
           const worldData = [worldAvg, (max - worldAvg)];
@@ -102,24 +120,6 @@ class WedgeView {
             .attr('d', this.worldArc),
            exit => exit.remove());
           }
-        
-        // Country
-        if (max && countryAvg) {
-        const countryData = [countryAvg, (max - countryAvg)];
-        // https://stackoverflow.com/questions/24118919/how-do-i-get-the-index-number-from-the-array-in-d3/24118970
-        d3.select('#' + i + ' svg g')
-          .selectAll('.c-arc')
-          .data(this.pie(countryData))
-          .join(
-          enter => enter.append('path')
-            .attr('class', 'c-arc')
-            .attr('num', d => d.index)
-            .attr('d', this.countryArc),
-          update => update
-            .attr('num', d => d.index)
-            .attr('d', this.countryArc),
-          exit => exit.remove());
-        }
       });
     }
   }

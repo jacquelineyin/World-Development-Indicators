@@ -11,12 +11,12 @@ div[selected="true"] .c-arc[num="0"] {
 .c-arc[num="0"] {
   fill: #ee4266;
   border: 2px solid rgb(200, 200, 200);
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .w-arc[num="0"] {
   fill: black;
-  opacity: 0.5;
+  opacity: 1;
 }
 
 #wedges {

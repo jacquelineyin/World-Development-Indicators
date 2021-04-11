@@ -43,18 +43,6 @@ class GeoMap {
       accessToken: 'sk.eyJ1IjoiYnJldHRwYXN1bGEiLCJhIjoiY2ttaThjenpqMGVyMDJzcmh6d2w5anQ2aiJ9.x43UBzwi3iRfsZSSb5ubIQ'
     }).addTo(this.map);
 
-    // https://observablehq.com/@idris-maps/leaflet-et-d3
-    L.svg().addTo(this.map);
-    const overlayPane = d3.select(this.map.getPanes().overlayPane);
-    const svg = overlayPane.select('svg');
-    this.tileGroup = svg.append('g').attr('class', 'leaflet-zoom-hide');
-    const projectPoint = function(x, y) {
-      const point = vis.map.latLngToLayerPoint(new L.LatLng(y, x));
-      this.stream.point(point.x, point.y);
-    }
-    const projection = d3.geoTransform({point: projectPoint});
-    this.pathCreator = d3.geoPath().projection(projection);
-
     // Initialize indicator scale
     this.indicatorScale = d3.scaleLinear()
       .range([0, 1]);
@@ -64,12 +52,16 @@ class GeoMap {
   // Prepare data and scales
   updateVis() {
 
-    // Remove selected GeoJSON layer, if it exists
+    // Remove GeoJSON layers, if they exist
+    if (this.geoJsonLayer) { 
+      this.map.removeLayer(this.geoJsonLayer);
+    }
+
     if (this.geoJsonLayerOfSelected) {
       this.map.removeLayer(this.geoJsonLayerOfSelected);
     }
 
-    // If a legend exits, remove to re-render on update
+    // If a legend exists, remove to re-render on update
     if (this.legend) {
       d3.select('.info.legend.leaflet-control').remove();
     }
@@ -103,30 +95,12 @@ class GeoMap {
   renderVis() {
     let vis = this;
 
-    // Bind GeoJSON to Leaflet
-    L.geoJson(this.geoJson,
+    // Add GeoJSON
+    this.geoJsonLayer = L.geoJson(this.geoJson,
       {
         style: this.styleFeature,
         onEachFeature: this.onEachFeature
-      })
-
-    // Add country paths
-    const countryPaths = this.tileGroup.selectAll('path')
-      .data(this.geoJson.features, d => d)
-      .join(
-        enter => enter
-          .append('path')
-          .attr('opacity', 0.5)
-          .attr('fill', d => GeoMap.getTileColor(d.properties.indicatorValue))
-          .attr('d', vis.pathCreator),
-        update => update
-          .attr('fill', d => GeoMap.getTileColor(d.properties.indicatorValue)),
-        exit => exit.remove()
-      ); 
-
-    // When the map is zoomed, we need to re-render the paths
-    const onZoom = () => countryPaths.attr('d', vis.pathCreator);
-    vis.map.on('zoomend', onZoom);
+      }).addTo(this.map);
 
     // Map focus on selected areas
     vis.fitMapBoundsToSelectedAreas();
@@ -146,7 +120,7 @@ class GeoMap {
       for (let i = 0; i < bins.length; i++) {
         if (bins[i]) {
           div.innerHTML +=
-            '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i> ' + (vis.indicatorScale.invert(bins[i])).toFixed(2) + '<br>';
+            '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i> ' + Number(vis.indicatorScale.invert(bins[i])).toLocaleString() + '<br>';
         } else {
           div.innerHTML += '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i>No data<br>';
         }
@@ -159,6 +133,22 @@ class GeoMap {
   }
 
   // ---------------------------------------- Helper functions -------------------------------------- //
+
+    /**
+   * Purpose: Returns a css styling pattern for all countries 
+   * @param {Object} feature : geoJson feature object representing a country
+   * @param {GeoMap} geoMapInstance : "this" instantiated GeoMap object
+   * @returns {Object} : styling rules to set as in-line styling for map polygons
+   */
+     styleFeature(feature) {
+      return {
+        fillColor: GeoMap.getTileColor(feature.properties.indicatorValue),
+        fillOpacity: 0.7,
+        weight: 2,
+        color: 'white',
+        dashArray: '3'
+      };
+    }
 
   /**
    * Purpose: Returns a css styling pattern for selected countries/comparison countries
