@@ -1,11 +1,14 @@
 body {
   position: relative;
+  overflow: hidden;
+  height: 100%;
 }
 
 html {
-  overflow-y: hidden;
+  overflow: hidden;
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 /** Chart Positioning */
