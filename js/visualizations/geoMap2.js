@@ -1,8 +1,5 @@
 class GeoMapNew {
-    constructor(_config, _data, 
-        _countries, 
-        // _world,
-        _selected, _constants) {
+    constructor(_config, _data, _countries, _selected, _constants) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 600,
@@ -12,7 +9,6 @@ class GeoMapNew {
             defaultCoords: [36.1408, 5.3536]
         }
         this.data = _data;
-        // this.world = _world;
         this.countries = _countries;
         this.selected = _selected;
         this.constants = _constants || {
@@ -25,12 +21,6 @@ class GeoMapNew {
 
     initVis() {
         let vis = this;
-
-        console.log(vis.world);
-
-        // Convert compressed TopoJSON to GeoJSON format
-        // vis.countriesAsGeoJson = topojson.feature(vis.world, vis.world.objects.countries);
-        vis.countriesAsGeoJson = vis.countries;
 
         // Initialize map and retrieve raster layer
         vis.map = L.map('map', {
@@ -85,27 +75,6 @@ class GeoMapNew {
     updateVis() {
         let vis = this;
 
-        vis.bounds = vis.geoPath.bounds(vis.countriesAsGeoJson);
-        // vis.topLeft = vis.bounds[0];
-        // vis.bottomRight = vis.bounds[1];
-
-        // vis.svg
-        // .attr("width", vis.bottomRight[0] - vis.topLeft[0])
-        // .attr("height", vis.bottomRight[1] - vis.topLeft[1])
-        // .style("left", vis.topLeft[0] + "px")
-        // .style("top", vis.topLeft[1] + "px")
-        // // .style("right", vis.topRight[0] + "px")
-        // // .style("bottom", vis.topBottom[1] + "px");;
-
-        // vis.chart.attr("transform", "translate(" + -vis.topLeft[0] + "," + -vis.topLeft[1] + ")");
-
-
-        // Defines the scale of the projection so that the geometry fits within the SVG area
-
-
-
-
-
         vis.renderVis();
     }
 
@@ -115,7 +84,7 @@ class GeoMapNew {
         let countries = vis.chart.selectAll("path");
 
         countries
-            .data(vis.countriesAsGeoJson.features)
+            .data(vis.countries.features)
         .join("path")
             .attr("class", "map-country")
             .attr("cursor", "default")
