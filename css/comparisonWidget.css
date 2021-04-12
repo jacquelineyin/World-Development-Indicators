@@ -1,7 +1,7 @@
 #comparison-title {
   margin-top: 0px;
   margin-bottom: 10px;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 #comparison-input {
@@ -131,6 +131,10 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
 
  /* -------------------  Bigger Screens -----------------------*/
  @media only screen and (min-width: 1300px){
+  #comparison-title {
+    font-size: 1rem;
+  }
+
   #comparison-container {
     flex-direction: row;
     flex-wrap: nowrap;
@@ -141,6 +145,7 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
   #warning-container {
     width: 50%;
     margin-bottom: 0px;
+    margin-left: 15px;
    }
 
 }
