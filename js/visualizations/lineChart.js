@@ -16,7 +16,7 @@ class LineChart {
       circle: { radius: 3 },
       containerWidth: _config.containerWidth || 2100,
       containerHeight: _config.containerHeight || 800,
-      margin: _config.margin || { top: 50, right: 500, bottom: 110, left: 50 }
+      margin: _config.margin || { top: 50, right: 350, bottom: 110, left: 120 }
     }
     this.selected = _selectedItems;
     this.data = _data;
@@ -173,7 +173,7 @@ class LineChart {
       .data([vis.selected.indicator])
       .join('text')
       .attr('class', 'y-axis-title')
-      .attr('y', -vis.config.margin.top + 10)
+      .attr('y', -vis.config.margin.top + 5)
       .attr('x', -vis.config.margin.left)
       .attr('dy', '.71em')
       .style('font-weight', 'bold')

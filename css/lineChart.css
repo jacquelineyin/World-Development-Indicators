@@ -10,6 +10,10 @@ body {
   font-size: 2.5rem;
 }
 
+#linechart .axis text {
+  font-size: 4em;
+}
+
 .axis path,
 .axis line {
   fill: none;
@@ -44,10 +48,18 @@ g.axis.x-axis.linechart g.tick > text {
   #linechart .y-axis-title {
     font-size: 2.2rem;
   }
+
+  #linechart .axis text {
+    font-size: 3em;
+  }
 }
 
 @media only screen and (min-width: 1750px) {
   #linechart .y-axis-title {
     font-size: 2rem;
+  }
+
+  #linechart .axis text {
+    font-size: 2.7em;
   }
 }
