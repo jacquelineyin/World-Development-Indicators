@@ -1,5 +1,8 @@
 class GeoMapNew {
-    constructor(_config, _data, _countries, _selected, _constants) {
+    constructor(_config, _data, 
+        _countries, 
+        // _world,
+        _selected, _constants) {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 600,
@@ -9,6 +12,7 @@ class GeoMapNew {
             defaultCoords: [36.1408, 5.3536]
         }
         this.data = _data;
+        // this.world = _world;
         this.countries = _countries;
         this.selected = _selected;
         this.constants = _constants || {
@@ -22,14 +26,16 @@ class GeoMapNew {
     initVis() {
         let vis = this;
 
+        console.log(vis.world);
+
         // Convert compressed TopoJSON to GeoJSON format
-        // vis.countriesAsGeoJson = topojson.feature(vis.countries, vis.countries.feature);
+        // vis.countriesAsGeoJson = topojson.feature(vis.world, vis.world.objects.countries);
         vis.countriesAsGeoJson = vis.countries;
 
         // Initialize map and retrieve raster layer
         vis.map = L.map('map', {
             minZoom: vis.config.zoom.min,
-        }).setView(vis.config.defaultCoords, 1);
+        }).setView(vis.config.defaultCoords, 2);
 
         L.Icon.Default.imagePath = "images/";
         L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -121,7 +127,7 @@ class GeoMapNew {
         // // Function to place svg based on zoom
         let onZoom = () =>{ 
             console.log("zoomed")
-            countries.attr('d', vis.geoPath).attr("fill", "black")}
+            vis.chart.selectAll("path").attr('d', vis.geoPath)}
         // initialize positioning
         onZoom()
         // reset whenever map is moved
