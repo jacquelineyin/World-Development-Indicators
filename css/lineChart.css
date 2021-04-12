@@ -62,4 +62,11 @@ g.axis.x-axis.linechart g.tick > text {
   #linechart .axis text {
     font-size: 2.7em;
   }
+
+  .mouse-text {
+    font-size: 2.5em;
+    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
+      1px 1px 0 #fff;
+    -webkit-font-smoothing: antialiased;
+  }
 }
