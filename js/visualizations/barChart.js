@@ -53,7 +53,7 @@ class BarChart {
 
     vis.chart = vis.chartArea.append('g');
 
-    vis.aggregatedData = vis.aggregateAverages(vis.selected);
+    // vis.aggregatedData = vis.aggregateAverages(vis.selected);
 
     // Initialize scales, axes, static elements, etc.
     vis.initScales();
@@ -486,8 +486,9 @@ class BarChart {
       height = val < 0 ? vis.height - vis.yScale(0) : vis.yScale(0) - vis.yScale(val);
     } else {
       height = vis.yScale(0) - vis.yScale(val);
-      height = height ? height : 0;      
     }
+
+    height = height ? height : 0;      
     return height;
   }
 
