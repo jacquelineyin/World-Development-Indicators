@@ -18,166 +18,212 @@
 </head>
 
 <body>
-
-    <div id="parent-container">
-        <h4 class="title" id="project-title">World Development Indicators</h4>
-
-        <div id="chart-container">
-            <div class="col" id="left-col">
-                <svg id="slider"></svg>
+    <div id="landing" class="scroll">
+        <p>World Development Indicators</p>
+        <a href="#viz"><button>Next</button></a>
+    </div>
+    <div id="viz" class="scroll">
+        <div id="parent-container">
+            <h4 class="title" id="project-title">World Development Indicators</h4>
+    
+            <div id="chart-container">
+                <div class="col" id="left-col">
+                    <svg id="slider"></svg>
+                </div>
+                <div class="col" id="middle-col">
+                    <div class="select-container" id="select-focus">
+                        <div id="country-selector-container"></div>
+                        <div id="region-selector-container"></div>
+                    </div>
+                    <div id="map"></div>
+                    <div id="wedges">
+                        <div id="demographics" class="wedge-group-container">
+                            <strong>Demographics</strong>
+                            <div class="indicator-container">
+                                <div id="POPULATION_TOTAL" class="wedge-container">
+                                    <text class="wedge-label">Population, total (number of people)</text>
+                                </div>
+                                <div id="RURAL_POPULATION" class="wedge-container">
+                                    <text class="wedge-label">Rural population (number of people)</text>
+                                </div>
+                                <div id="URBAN_POPULATION" class="wedge-container">
+                                    <text class="wedge-label">Urban population (number of people)</text>
+                                </div>
+                                <div id="POPULATION_DENSITY" class="wedge-container">
+                                    <text class="wedge-label">Population density (people per sq. km of land area)</text>
+                                </div>
+                                <div id="POPULATION_AGES_0_TO_14" class="wedge-container">
+                                    <text class="wedge-label">Population, ages 0-14 (% of total)</text>
+                                </div>
+                                <div id="POPULATION_AGES_15_TO_64" class="wedge-container">
+                                    <text class="wedge-label">Population, ages 15-64 (% of total)</text>
+                                </div>
+                                <div id="POPULATION_AGES_65_AND_ABOVE" class="wedge-container">
+                                    <text class="wedge-label">Population ages 65 and above (% of total)</text>
+                                </div>
+                                <div id="AGE_DEPENDENCY_RATIO" class="wedge-container">
+                                    <text class="wedge-label">Age dependency ratio (% of working-age population)</text>
+                                </div>
+                                <div id="AGE_DEPENDENCY_RATIO_OLD" class="wedge-container">
+                                    <text class="wedge-label">Age dependency ratio, old (% of working-age population)</text>
+                                </div>
+                                <div id="AGE_DEPENDENCY_RATIO_YOUNG" class="wedge-container">
+                                    <text class="wedge-label">Age dependency ratio, young (% of working-age
+                                        population)</text>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="economic" class="wedge-group-container">
+                            <strong>Economics</strong>
+                            <div class="indicator-container">
+                                <div id="MERCHANDISE_EXPORTS" class="wedge-container">
+                                    <text class="wedge-label">Merchandise exports</text>
+                                </div>
+                                <div id="MERCHANDISE_IMPORTS" class="wedge-container">
+                                    <text class="wedge-label">Merchandise imports</text>
+                                </div>
+                                <div id="EXPORTS_OF_GOODS_AND_SERVICES" class="wedge-container">
+                                    <text class="wedge-label">Exports of goods and services</text>
+                                </div>
+                                <div id="IMPORTS_OF_GOODS_AND_SERVICES" class="wedge-container">
+                                    <text class="wedge-label">Imports of goods and services</text>
+                                </div>
+                                <div id="GDP_PER_CAPITA" class="wedge-container">
+                                    <text class="wedge-label">GDP per capita</text>
+                                </div>
+                                <div id="NET_OFFICIAL_DEVELOPMENT_ASSISTANCE_AND_OFFICIAL_AID_RECEIVED"
+                                    class="wedge-container">
+                                    <text class="wedge-label">Net official development assistance and official aid
+                                        received</text>
+                                </div>
+                                <div id="PERCENTAGE_OF_GDP_MERCHANDISE_TRADE" class="wedge-container">
+                                    <text class="wedge-label">Merchandise trade (% of GDP) (goods)</text>
+                                </div>
+                                <div id="PERCENTAGE_OF_GDP_TRADE" class="wedge-container">
+                                    <text class="wedge-label">Trade (% of GDP)</text>
+                                </div>
+                                <div id="GNI" class="wedge-container">
+                                    <text class="wedge-label">GNI</text>
+                                </div>
+                                <div id="GROSS_NATIONAL_EXPENDITURE" class="wedge-container">
+                                    <text class="wedge-label">Gross national expenditure</text>
+                                </div>
+                                <div id="INFLATION_GDP_DEFLATOR_ANNUAL_PERCENTAGE" class="wedge-container">
+                                    <text class="wedge-label">Inflation, GDP deflator</text>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="expectancy" class="wedge-group-container">
+                            <strong>Life/Death Expectancy Statistics</strong>
+                            <div class="indicator-container">
+                                <div id="DEATH_RATE" class="wedge-container">
+                                    <text class="wedge-label">Death rate, crude (per 1,000 people)</text>
+                                </div>
+                                <div id="BIRTH_RATE" class="wedge-container">
+                                    <text class="wedge-label">Birth rate, crude (per 1,000 people)</text>
+                                </div>
+                                <div id="LIFE_EXPECTANCY_TOTAL" class="wedge-container">
+                                    <text class="wedge-label">Life expectancy at birth, total (years)</text>
+                                </div>
+                                <div id="LIFE_EXPECTANCY_MALE" class="wedge-container">
+                                    <text class="wedge-label">Life expectancy at birth, male (years)</text>
+                                </div>
+                                <div id="LIFE_EXPECTANCY_FEMALE" class="wedge-container">
+                                    <text class="wedge-label">Life expectancy at birth, female (years)</text>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="education" class="wedge-group-container">
+                            <strong>Education</strong>
+                            <div class="indicator-container">
+                                <div id="ENROLMENT_IN_PRIMARY_EDUCATION" class="wedge-container">
+                                    <text class="wedge-label">Enrolment in primary education, both sexes</text>
+                                </div>
+                                <div id="ENROLMENT_IN_SECONDARY_GENERAL" class="wedge-container">
+                                    <text class="wedge-label">Enrolment in secondary general, both sexes</text>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="expectancy" class="wedge-group-container">
+                            <strong>Environmental</strong>
+                            <div class="indicator-container" class="wedge-container">
+                                <div id="AGRICULTURAL_LAND_PERCENT_OF_LAND_AREA" class="wedge-container">
+                                    <text class="wedge-label">Agricultural land (% of land area)</text>
+                                </div>
+                                <div id="CO2_EMISSIONS_METRIC_TON_PER_CAPITA" class="wedge-container">
+                                    <text class="wedge-label">CO2 emissions (metric tons per capita)</text>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="other" class="wedge-group-container">
+                            <strong>Other</strong>
+                            <div class="indicator-container">
+                                <div id="MOBILE_CELLULAR_SUBSCRIPTIONS" class="wedge-container" selected="true">
+                                    <text class="wedge-label">Mobile cellular subscriptions</text>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col" id="right-col">
+                    <div class="select-container" id="select-comparison">
+                        <div class="row" id="comparison-container">
+                            <div id="comparison-selector-container"></div>
+                            <div id="warning-container"></div>
+                        </div>
+                        <form id="tag-container" autocomplete="off"></form>
+                    </div>
+                    <svg id="barchart"></svg>
+                    <svg id="linechart"></svg>
+                </div>    
             </div>
-            <div class="col" id="middle-col">
-                <div class="select-container" id="select-focus">
-                    <div id="country-selector-container"></div>
-                    <div id="region-selector-container"></div>
-                </div>
-                <div id="map"></div>
-                <div id="wedges">
-                    <div id="demographics" class="wedge-group-container">
-                        <strong>Demographics</strong>
-                        <div class="indicator-container">
-                            <div id="POPULATION_TOTAL" class="wedge-container">
-                                <text class="wedge-label">Population, total (number of people)</text>
-                            </div>
-                            <div id="RURAL_POPULATION" class="wedge-container">
-                                <text class="wedge-label">Rural population (number of people)</text>
-                            </div>
-                            <div id="URBAN_POPULATION" class="wedge-container">
-                                <text class="wedge-label">Urban population (number of people)</text>
-                            </div>
-                            <div id="POPULATION_DENSITY" class="wedge-container">
-                                <text class="wedge-label">Population density (people per sq. km of land area)</text>
-                            </div>
-                            <div id="POPULATION_AGES_0_TO_14" class="wedge-container">
-                                <text class="wedge-label">Population, ages 0-14 (% of total)</text>
-                            </div>
-                            <div id="POPULATION_AGES_15_TO_64" class="wedge-container">
-                                <text class="wedge-label">Population, ages 15-64 (% of total)</text>
-                            </div>
-                            <div id="POPULATION_AGES_65_AND_ABOVE" class="wedge-container">
-                                <text class="wedge-label">Population ages 65 and above (% of total)</text>
-                            </div>
-                            <div id="AGE_DEPENDENCY_RATIO" class="wedge-container">
-                                <text class="wedge-label">Age dependency ratio (% of working-age population)</text>
-                            </div>
-                            <div id="AGE_DEPENDENCY_RATIO_OLD" class="wedge-container">
-                                <text class="wedge-label">Age dependency ratio, old (% of working-age population)</text>
-                            </div>
-                            <div id="AGE_DEPENDENCY_RATIO_YOUNG" class="wedge-container">
-                                <text class="wedge-label">Age dependency ratio, young (% of working-age
-                                    population)</text>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="economic" class="wedge-group-container">
-                        <strong>Economics</strong>
-                        <div class="indicator-container">
-                            <div id="MERCHANDISE_EXPORTS" class="wedge-container">
-                                <text class="wedge-label">Merchandise exports</text>
-                            </div>
-                            <div id="MERCHANDISE_IMPORTS" class="wedge-container">
-                                <text class="wedge-label">Merchandise imports</text>
-                            </div>
-                            <div id="EXPORTS_OF_GOODS_AND_SERVICES" class="wedge-container">
-                                <text class="wedge-label">Exports of goods and services</text>
-                            </div>
-                            <div id="IMPORTS_OF_GOODS_AND_SERVICES" class="wedge-container">
-                                <text class="wedge-label">Imports of goods and services</text>
-                            </div>
-                            <div id="GDP_PER_CAPITA" class="wedge-container">
-                                <text class="wedge-label">GDP per capita</text>
-                            </div>
-                            <div id="NET_OFFICIAL_DEVELOPMENT_ASSISTANCE_AND_OFFICIAL_AID_RECEIVED"
-                                class="wedge-container">
-                                <text class="wedge-label">Net official development assistance and official aid
-                                    received</text>
-                            </div>
-                            <div id="PERCENTAGE_OF_GDP_MERCHANDISE_TRADE" class="wedge-container">
-                                <text class="wedge-label">Merchandise trade (% of GDP) (goods)</text>
-                            </div>
-                            <div id="PERCENTAGE_OF_GDP_TRADE" class="wedge-container">
-                                <text class="wedge-label">Trade (% of GDP)</text>
-                            </div>
-                            <div id="GNI" class="wedge-container">
-                                <text class="wedge-label">GNI</text>
-                            </div>
-                            <div id="GROSS_NATIONAL_EXPENDITURE" class="wedge-container">
-                                <text class="wedge-label">Gross national expenditure</text>
-                            </div>
-                            <div id="INFLATION_GDP_DEFLATOR_ANNUAL_PERCENTAGE" class="wedge-container">
-                                <text class="wedge-label">Inflation, GDP deflator</text>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="expectancy" class="wedge-group-container">
-                        <strong>Life/Death Expectancy Statistics</strong>
-                        <div class="indicator-container">
-                            <div id="DEATH_RATE" class="wedge-container">
-                                <text class="wedge-label">Death rate, crude (per 1,000 people)</text>
-                            </div>
-                            <div id="BIRTH_RATE" class="wedge-container">
-                                <text class="wedge-label">Birth rate, crude (per 1,000 people)</text>
-                            </div>
-                            <div id="LIFE_EXPECTANCY_TOTAL" class="wedge-container">
-                                <text class="wedge-label">Life expectancy at birth, total (years)</text>
-                            </div>
-                            <div id="LIFE_EXPECTANCY_MALE" class="wedge-container">
-                                <text class="wedge-label">Life expectancy at birth, male (years)</text>
-                            </div>
-                            <div id="LIFE_EXPECTANCY_FEMALE" class="wedge-container">
-                                <text class="wedge-label">Life expectancy at birth, female (years)</text>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="education" class="wedge-group-container">
-                        <strong>Education</strong>
-                        <div class="indicator-container">
-                            <div id="ENROLMENT_IN_PRIMARY_EDUCATION" class="wedge-container">
-                                <text class="wedge-label">Enrolment in primary education, both sexes</text>
-                            </div>
-                            <div id="ENROLMENT_IN_SECONDARY_GENERAL" class="wedge-container">
-                                <text class="wedge-label">Enrolment in secondary general, both sexes</text>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="expectancy" class="wedge-group-container">
-                        <strong>Environmental</strong>
-                        <div class="indicator-container" class="wedge-container">
-                            <div id="AGRICULTURAL_LAND_PERCENT_OF_LAND_AREA" class="wedge-container">
-                                <text class="wedge-label">Agricultural land (% of land area)</text>
-                            </div>
-                            <div id="CO2_EMISSIONS_METRIC_TON_PER_CAPITA" class="wedge-container">
-                                <text class="wedge-label">CO2 emissions (metric tons per capita)</text>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="other" class="wedge-group-container">
-                        <strong>Other</strong>
-                        <div class="indicator-container">
-                            <div id="MOBILE_CELLULAR_SUBSCRIPTIONS" class="wedge-container" selected="true">
-                                <text class="wedge-label">Mobile cellular subscriptions</text>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col" id="right-col">
-                <div class="select-container" id="select-comparison">
-                    <div class="row" id="comparison-container">
-                        <div id="comparison-selector-container"></div>
-                        <div id="warning-container"></div>
-                    </div>
-                    <form id="tag-container" autocomplete="off"></form>
-                </div>
-                <svg id="barchart"></svg>
-                <svg id="linechart"></svg>
-            </div>    
+            <a href="#landing"><button id="backBtn">^</button></a>  
         </div>
     </div>
 
-
     <div id="tooltip"></div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // https://css-tricks.com/snippets/jquery/smooth-scrolling/
+        $(function () {
+            $('a[href*="#"]')
+                // Remove links that don't actually link to anything
+                .not('[href="#"]')
+                .not('[href="#0"]')
+                .click(function (event) {
+                    // On-page links
+                    if (
+                        location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+                        &&
+                        location.hostname == this.hostname
+                    ) {
+                        // Figure out element to scroll to
+                        var target = $(this.hash);
+                        target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                        // Check if scroll target exist
+                        if (target.length) {
+                            // Only prevent default if animation is actually gonna happen
+                            event.preventDefault();
+                            $('html, body').animate({
+                                scrollTop: target.offset().top
+                            }, 1000, function () {
+                                // Callback after animation
+                                // Change focus
+                                var $target = $(target);
+                                $target.focus();
+                                if ($target.is(":focus")) { // Checking if the target was focused
+                                    return false;
+                                } else {
+                                    $target.attr('tabindex', '-1'); // Adding tabindex for elements not focusable
+                                    $target.focus(); // Set focus again
+                                };
+                            });
+                        }
+                    }
+                });
+            });
+    </script>
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>
     <script src="js/constants/indicators.js"></script>
