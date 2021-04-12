@@ -29,7 +29,7 @@ class BarChart {
     }
     this.data = _data;
     this.dispatcher = _dispatcher;
-    this.constants = _constants || { countries: new Countries(), indicators: new Indicators() };
+    this.constants = _constants || { countries: new Countries() };
     this.selected = _selectedItems;
     this.initVis();
   }
