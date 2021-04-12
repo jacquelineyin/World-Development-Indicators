@@ -60,6 +60,9 @@ class BarChart {
     // Append axis groups
     vis.appendAxisGroups();
 
+    // Append separator line for pos vs neg values
+    vis.appendSeparatorLine();
+
     // Append legend group and render legend
     vis.appendLegendGroup();
     vis.renderLegend();
@@ -73,7 +76,9 @@ class BarChart {
     let vis = this;
 
     // Prepare data
-    vis.aggregatedData = vis.getAverages(vis.selected);
+    vis.aggregatedData = vis.aggregateAverages(vis.selected);
+    vis.averages = vis.getAllAverages();
+    vis.domainHasNeg = vis.hasNegMin(vis.averages);
 
     // Specificy accessor functions
     vis.xValue = d => d.key;
@@ -81,10 +86,13 @@ class BarChart {
 
     // Update axis titles
     vis.renderAxisTitles('Countries/Regions', vis.selected.indicator);
-
+    
     // Update Scale domains
-    vis.yScale.domain([0, d3.max(vis.getAllAverages())]);
+    vis.updateYScaleDomains();
     vis.xScale.domain(vis.selected.allSelectedAreas);
+
+    // Update separator line
+    vis.updateSeparatorLine();
 
     vis.renderVis();
   }
@@ -96,6 +104,9 @@ class BarChart {
 
     // Update axes
     vis.renderAxisGroups();
+
+    // Render separator line if applicable
+    vis.domainHasNeg ? vis.showSeparatorLine() : vis.hideSeparatorLine();
   }
 
   // ------------------------------------------ Helper functions ------------------------------------ //
@@ -184,14 +195,14 @@ class BarChart {
     let labelYOffset = 0;
 
     vis.legend.selectAll('.legend-box')
-      .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
-    .join('rect')
-      .attr('class', 'legend-box')
-      .attr('x', 0)
-      .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset -= vis.config.legend.yPadding)
-      .attr('width', vis.config.legend.colourBox.width)
-      .attr('height', vis.config.legend.colourBox.height)
-      .style('fill', d => vis.getColourOfLegendBoxes(d));
+        .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
+      .join('rect')
+        .attr('class', 'legend-box')
+        .attr('x', 0)
+        .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset -= vis.config.legend.yPadding)
+        .attr('width', vis.config.legend.colourBox.width)
+        .attr('height', vis.config.legend.colourBox.height)
+        .style('fill', d => vis.getColourOfLegendBoxes(d));
   }
 
   /**
@@ -203,12 +214,12 @@ class BarChart {
     let labelYOffset = 0 - 14;
 
     vis.legend.selectAll('.box-label')
-      .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
-    .join('text')
-      .attr('class', 'box-label')
-      .attr('x', () => vis.config.legend.colourBox.width + 10)
-      .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
-      .text(d => d);
+        .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
+      .join('text')
+        .attr('class', 'box-label')
+        .attr('x', () => vis.config.legend.colourBox.width + 10)
+        .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
+        .text(d => d);
   }
 
   /**
@@ -222,14 +233,14 @@ class BarChart {
 
     // Append x-axis title to svg
     vis.chartArea.selectAll('.barchart-x-axis-title')
-        .data([xAxisTitle])
-      .join('text')
-        .attr('class', 'axis-title barchart-x-axis-title')
-        .attr('y', vis.height + 25)
-        .attr('x', vis.width)
-        .attr('dy', '.71em')
-        .style('text-anchor', 'end')
-        .text(xAxisTitle);
+          .data([xAxisTitle])
+        .join('text')
+          .attr('class', 'axis-title barchart-x-axis-title')
+          .attr('y', vis.height + 25)
+          .attr('x', vis.width)
+          .attr('dy', '.71em')
+          .style('text-anchor', 'end')
+          .text(xAxisTitle);
 
     if (yAxisTitle) {
       // Append y-axis title to svg
@@ -243,25 +254,6 @@ class BarChart {
           .style('text-anchor', 'start')
           .text(newYAxisTitle);
     }
-  }
-
-  /**
-   * Purpose: Returns a default timeInterval such that 
-   *          min is the earliest year of dataset and 
-   *          max is the most recent year of dataset   
-   * @returns {Object} timeInterval = {min, max} : 
-   *                   min, max are the lowerBound and upperBound years of the interval respectively
-   */
-  getDefaultTimeInterval() {
-    let vis = this;
-
-    let years = vis.data.map(d => d.Year);
-
-    let timeInterval = {};
-    timeInterval.min = d3.min(years);
-    timeInterval.max = d3.max(years);
-
-    return timeInterval;
   }
 
   /**
@@ -294,7 +286,7 @@ class BarChart {
       .attr('transform', `translate(0 ,${vis.height})`);
 
     vis.yAxisG
-      .call(vis.yAxis)
+      .call(vis.yAxis);
   }
 
   /**
@@ -320,7 +312,7 @@ class BarChart {
    *    ...
    * ]
    */
-  getAverages(selected) {
+  aggregateAverages(selected) {
     let vis = this;
 
     let dataOfInterest = vis.filterData(vis.data, selected);
@@ -335,7 +327,6 @@ class BarChart {
    */
   renderBarElems() {
     let vis = this;
-    // Bind data to visual elements
 
     // Create group
     const { barG, barGEnter } = vis.createBarGroup();
@@ -354,12 +345,12 @@ class BarChart {
     let vis = this;
 
     // Round averages and format them with commas for thousands
-    let round = (val) => d3.format('d')(val);
-    let format = (val) => d3.format(',')(round(val));
+    let round = (val) => val > 100 ? Math.round(val) : val.toFixed(2);
+    let format = (val) => val >= 0 ? d3.format(',')(round(val)) : round(val);
 
     // Bind data to selection
     const barText = barG.merge(barGEnter).selectAll('.bar-label')
-      .data(d => [d]);
+      .data(d => [d], d => d.key);
 
     // Enter
     const barTextEnter = barText.enter().append('text')
@@ -387,7 +378,7 @@ class BarChart {
 
     // Bind data to selection
     const bars = barG.merge(barGEnter).selectAll('.bar')
-      .data(d => [d]);
+      .data(d =>[d], d => d.key);
 
     // Enter
     const barsEnter = bars.enter().append('rect')
@@ -396,15 +387,30 @@ class BarChart {
     // Enter + Update
     barsEnter.merge(bars)
       .attr('x', d => vis.xScale(vis.xValue(d)))
-      .attr('y', d => vis.yScale(vis.yValue(d)))
+      .attr('y', d => vis.getYPosition(d))
       .attr('width', vis.xScale.bandwidth())
       .attr('height', d => vis.getBarHeight(d))
       .attr('fill', d => vis.getBarColour(d))
-      .on('mouseover', e => vis.handleMouseOver(e))
+      .on('mouseenter', e => vis.handleMouseEnter(e))
       .on('mouseleave', e => vis.handleMouseLeave(e));
 
     // Exit
     bars.exit().remove();
+  }
+
+  /**
+   * Purpose: Returns a y-position for a given <d> object
+   * @param {Object} d = {key: <string>, avg: <Number>} 
+   * @returns {Integer} : y-position on scale for a given object
+   */
+  getYPosition(d) {
+    let vis = this;
+
+    const val = vis.yValue(d);
+    const isValNeg = val < 0;
+
+    let yPos = vis.domainHasNeg && isValNeg ? vis.yScale(0) : vis.yScale(val);
+    return yPos;
   }
 
   /**
@@ -441,10 +447,12 @@ class BarChart {
     let vis = this;
     const bottomPaddingOffset = 5;
 
-    let yPos = vis.yScale(vis.yValue(d)) + 15;
+    let yPos = vis.getYPosition(d) + 15;
 
-    if (yPos > vis.height) {
-      yPos = vis.yScale(vis.yValue(d)) - bottomPaddingOffset;
+    if (vis.domainHasNeg && isNaN(d.avg)) {
+      yPos = vis.getYPosition({avg: 0}) - (bottomPaddingOffset * 2)
+    } else if (yPos > vis.height) {
+      yPos = vis.getYPosition(d) - bottomPaddingOffset;
     }
 
     return yPos ? yPos : vis.height - bottomPaddingOffset;
@@ -460,15 +468,8 @@ class BarChart {
     let isSelectedArea = data.key === vis.selected.area.country
                          || data.key === vis.selected.area.region;
 
-    let isHovered = false;
-
-    if (isHovered) {
-      return vis.config.colour.hoveredBar;
-    } else if (isSelectedArea) {
-      return vis.config.colour.selectedCountry;
-    } else {
-      return vis.config.colour.comparisonCountry;
-    }
+    return isSelectedArea ?
+      vis.config.colour.selectedCountry : vis.config.colour.comparisonCountry;
   }
 
   /**
@@ -478,9 +479,17 @@ class BarChart {
    */
   getBarHeight(data) {
     let vis = this;
+    const val = vis.yValue(data);
+    let height;
 
-    let height = vis.height - vis.yScale(vis.yValue(data));
-    return height ? height : 0;
+    if (vis.domainHasNeg) {
+      height = val < 0 ? vis.height - vis.yScale(0) : vis.yScale(0) - vis.yScale(val);
+    } else {
+      height = vis.yScale(0) - vis.yScale(val);
+    }
+
+    height = height ? height : 0;      
+    return height;
   }
 
   /**
@@ -501,11 +510,11 @@ class BarChart {
   }
 
   /**
-   * Purpose: Handles mouseover event by creating a stroke around target bar 
+   * Purpose: Handles mouseenter event by creating a stroke around target bar 
    *          and calling dispatcher for other chart interactions
-   * @param {Event} event : Native JS event (i.e. 'mouseover')
+   * @param {Event} event : Native JS event (i.e. 'mouseenter')
    */
-  handleMouseOver(event) {
+  handleMouseEnter(event) {
     let vis = this;
 
     const { labelClass, barClass, countryKey } = vis.getClassesOfBarElems(event);
@@ -525,7 +534,7 @@ class BarChart {
 
   /**
    * Purpose: Returns the classes of the bar that triggered the event and its label
-   * @param {Event} event : native JS event (i.e. 'mouseover'/'mouseleave')
+   * @param {Event} event : native JS event (i.e. 'mouseenter'/'mouseleave')
    * @returns {Object} = {labelClass: <string>, barClass: <string>}
    */
   getClassesOfBarElems(event) {
@@ -563,6 +572,75 @@ class BarChart {
     // Dispatch dispatchEvent
     const country = vis.constants.countries[countryKey];
     dispatcher.call(dispatcherEvents.BAR_UNHOVER, vis, country);
+  }
+
+  /**
+   * Purpose: Creates a horizontal line to separate neg and positive y-values 
+   */
+  appendSeparatorLine() {
+    let vis = this;
+
+    vis.chartArea.append('line')
+      .attr('class', 'separator')
+      .style('stroke', 'black')
+      .style('stroke-width', 2)
+      .attr('x1', 0)
+      .attr('x2', vis.width)
+      .style('visibility', 'hidden');
+  }
+
+  /**
+   * Purpose: Updates y1 and y2 positioning of separator line
+   */
+  updateSeparatorLine() {
+    let vis = this;
+    let separator = vis.chartArea.selectAll('.separator');
+    separator
+      .attr('y1', vis.getYPosition({ avg: 0 })) //so that the line passes through the y 0
+      .attr('y2', vis.getYPosition({ avg: 0 })) //so that the line passes through the y 0
+  }
+
+  /**
+   * Purpose: updates domain of yScale
+   */
+  updateYScaleDomains() {
+    let vis = this;
+    let [min, max] = d3.extent(vis.averages);
+    min = min > 0 ? 0 : min;
+
+    vis.yScale.domain([min, max]);
+  }
+
+  /**
+   * Purpose: Displays horizontal separator of neg and pos y-values
+   */
+  showSeparatorLine() {
+    let vis = this;
+
+    vis.chartArea.selectAll('.separator')
+      .style('visibility', 'visible');
+  }
+
+  /**
+   * Purpose: Hides horizontal separator of neg and pos y-values
+   */
+  hideSeparatorLine() {
+    let vis = this;
+
+    vis.chartArea.selectAll('.separator')
+      .style('visibility', 'hidden');
+  }
+
+  /**
+   * Purpose: Returns true if given averages array has a negative average
+   * @param {Array} averages : Array of aggregated data (i.e. {key: <string>, avg: <Number>})
+   * @returns {Boolean} : true if minimum given array has a negative avg
+   */
+  hasNegMin(averages) {
+    let vis = this;
+
+    averages = averages ? averages : vis.getAllAverages();
+    return d3.min(averages) < 0;
   }
 
 }
