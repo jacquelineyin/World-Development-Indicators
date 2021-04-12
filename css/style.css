@@ -11,10 +11,6 @@ html {
   height: 100%;
 }
 
-#viz {
-  will-change: transform;
-}
-
 /** Chart Positioning */
 #parent-container {
   margin: 15px;
