@@ -39,6 +39,7 @@
     display: inline-block;
     font-size: 0.7rem;
     margin-right: 5px;
+    margin-bottom: 5px;
     padding: 2px 5px;
     width: max-content;
     border-radius: 25px;
@@ -106,6 +107,7 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
   #warning-container {
     font-size: 0.8rem;
     visibility: hidden;
+    min-height: 22px;
     width: 100%;
     background-color: #fcf8e3;
     border-color: #faebcc;
@@ -120,6 +122,7 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
   }
   
   #warning-container .close-button {
+    padding-top: 3px;
     padding-right: 25px;
     font-weight: bold;
     float: right;
