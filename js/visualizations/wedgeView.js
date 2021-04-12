@@ -93,10 +93,12 @@ class WedgeView {
             .attr('display', true)
             .style('top', `${event.clientY}px`)
             .style('left', `${event.clientX}px`)
-            .html(`<i>${this.indicators[i]}</i><br>
-                  World maximum: ${Number(max.toFixed(0)).toLocaleString()}<br>
-                  World average: ${Number(worldAvg.toFixed(0)).toLocaleString()}<br>
-                  ${this.selected.area.country}'s average: ${Number(countryAvg.toFixed(0)).toLocaleString()}<br>`);
+            .html(`<strong>${this.indicators[i]}</strong>
+                <ul>
+                  <li>World maximum: ${Number(max.toFixed(0)).toLocaleString()}</li>
+                  <li>World average: ${Number(worldAvg.toFixed(0)).toLocaleString()}</li>
+                  <li>${this.selected.area.country}'s average: ${Number(countryAvg.toFixed(0)).toLocaleString()}</li>
+                </ul>`);
         })
         .on('mouseout', event => { 
           d3.select('#tooltip')
