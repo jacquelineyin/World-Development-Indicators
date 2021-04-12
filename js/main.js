@@ -14,40 +14,40 @@ const parseTime = d3.timeParse("%Y");
 
 // Initialize dispatcher that is used to orchestrate events
 const dispatcher = d3.dispatch(
-    dispatcherEvents.FILTER_YEAR,
-    dispatcherEvents.CHANGE_INDICATOR, 
-    dispatcherEvents.SELECT_FOCUS_AREA,
-    dispatcherEvents.SELECT_COMPARISON_ITEM,
-    dispatcherEvents.DELETE_COMPARISON_ITEM,
-    dispatcherEvents.BAR_HOVER,
-    dispatcherEvents.BAR_UNHOVER,
-    dispatcherEvents.ERROR_TOO_MANY_COMPARISONS
-  );
+  dispatcherEvents.FILTER_YEAR,
+  dispatcherEvents.CHANGE_INDICATOR,
+  dispatcherEvents.SELECT_FOCUS_AREA,
+  dispatcherEvents.SELECT_COMPARISON_ITEM,
+  dispatcherEvents.DELETE_COMPARISON_ITEM,
+  dispatcherEvents.BAR_HOVER,
+  dispatcherEvents.BAR_UNHOVER,
+  dispatcherEvents.ERROR_TOO_MANY_COMPARISONS
+);
 
 selected.setDispatcher(dispatcher, dispatcherEvents);
 
 const focusedAreaWidget = new FocusAreaWidget(
-  selected, 
-  {  
-    regionMapper, 
+  selected,
+  {
+    regionMapper,
     countries,
     regions,
     dispatcherEvents
   },
   dispatcher,
-  );
+);
 
-  const comparisonWidget = new ComparisonWidget(
-    selected,
-    { 
-      regionMapper, 
-      countries, 
-      regions, 
-      dispatcherEvents,
-      warningType 
-    },
-    dispatcher,
-  );
+const comparisonWidget = new ComparisonWidget(
+  selected,
+  {
+    regionMapper,
+    countries,
+    regions,
+    dispatcherEvents,
+    warningType
+  },
+  dispatcher,
+);
 
 /**
  * Load data from CSV file asynchronously and render charts
@@ -71,10 +71,27 @@ d3.csv('data/Dataset.csv').then(_data => {
 
   //Initialize views
   // Load in GeoJSON data and initialize map view
-  d3.json("./data/countries.geojson").then(geoJsonData => { 
-    map = new GeoMap(data, geoJsonData, selected);
+  // d3.json("./data/countries.geojson").then(geoJsonData => { 
+  //   map = new GeoMap(data, geoJsonData, selected);
+  //   map.updateVis();
+  // });
+
+  d3.json("data/countries.json").then(countries => {
+    // console.log(countries);
+    map = new GeoMapNew({
+      parentElement: "#map"
+    }, data, countries, selected);
     map.updateVis();
   });
+
+  // d3.json("https://unpkg.com/world-atlas@1/world/110m.json").then(world => {
+  //   console.log(world);
+  //   // let countriesT = world.object.countries;
+  //   map = new GeoMapNew({
+  //     parentElement: "#map"
+  //   }, data, world, selected);
+  //   map.updateVis();
+  // });
 
   // Initialize the wedge view
   wedgeView = new WedgeView(data, selected, dispatcher, dispatcherEvents);
@@ -90,8 +107,8 @@ d3.csv('data/Dataset.csv').then(_data => {
   }, data, selected);
 
   // Initialize line chart
-  lineChart = new LineChart({ 
-    parentElement: '#linechart' ,
+  lineChart = new LineChart({
+    parentElement: '#linechart',
     colour: {
       selectedArea: colourPalette.getFocusedAreaColour(),
       otherAreas: colourPalette.getNonFocusedAreaColour()
@@ -110,7 +127,7 @@ d3.csv('data/Dataset.csv').then(_data => {
 
 dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
   selected.selectedYears = selectedYears;
-  selected.setTimeInterval(selectedYears[0], selectedYears[selectedYears.length-1]);
+  selected.setTimeInterval(selectedYears[0], selectedYears[selectedYears.length - 1]);
 
   map.updateVis();
   wedgeView.updateVis();
@@ -126,12 +143,12 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
-}); 
+});
 
 dispatcher.on(dispatcherEvents.CHANGE_INDICATOR, newlySelectedIndicator => {
   selected.indicator = indicators[newlySelectedIndicator];
   comparisonWidget.updateComparisonSection();
-  
+
   map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
@@ -176,7 +193,7 @@ dispatcher.on(dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, () => {
  * @param {string} type = 'region' if setting region, 'country' if setting country
  * @param {string} value is a capitalized (first letter only) country or region name
  */
- let updateSelectedArea = (type, value) => {
+let updateSelectedArea = (type, value) => {
   if (type === 'country') {
     selected.setArea({ country: value });
   } else if (type === 'region') {
@@ -190,14 +207,14 @@ dispatcher.on(dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, () => {
  * @param {string} _region = name of region that's selected
  */
 let handleSelectRegion = (_region) => {
-    selected.setArea({ region: _region });
-    
-    // Update dropdown to display only countries of that region
-    focusedAreaWidget.createSelectCountryDropdown();
+  selected.setArea({ region: _region });
 
-    // Update selected country to the default of updated dropdown
-    let selectElem = document.getElementById('country-selector');
-    selected.setArea({ country: selectElem.value });
+  // Update dropdown to display only countries of that region
+  focusedAreaWidget.createSelectCountryDropdown();
+
+  // Update selected country to the default of updated dropdown
+  let selectElem = document.getElementById('country-selector');
+  selected.setArea({ country: selectElem.value });
 }
 
 /**
@@ -205,9 +222,14 @@ let handleSelectRegion = (_region) => {
  */
 let setTestSelectedItems = () => {
   // test value timeInterval
-  const defaultYears = [...new Set(data.map(d => d.Year))].slice(0,6);
+  const defaultYears = [...new Set(data.map(d => d.Year))].slice(0, 6);
   selected.selectedYears = defaultYears;
-  selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
+  selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length - 1] };
+
+  selected.addComparisonArea(countries.JAPAN);
+  selected.addComparisonArea(countries.CHINA);
+  selected.addComparisonArea(countries.BRAZIL);
+  selected.addComparisonArea(countries.PERU);
 
   // test value indicator
   selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
