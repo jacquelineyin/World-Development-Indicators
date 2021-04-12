@@ -67,17 +67,17 @@ class GeoMapNew {
     updateVis() {
         let vis = this;
 
-        let countryCodesOfSelected = 
+        vis.countryCodesOfSelected = 
             vis.constants.countryCodeMapper.getCountryNumCodes(vis.selected.allSelectedAreas);
         
         // Prepare data
-        vis.selectedCountries = vis.countries.features.filter(d => countryCodesOfSelected.includes(parseInt(d.id)));
+        vis.selectedCountries = vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(parseInt(d.id)));
 
         //Set map bounds
         let selectedGJsonLayer = L.geoJson(vis.selectedCountries);
         vis.map.fitBounds(selectedGJsonLayer.getBounds());
 
-        
+
         vis.renderVis();
     }
 
@@ -86,10 +86,11 @@ class GeoMapNew {
 
         // Function to place svg based on zoom
         const onZoom = () =>{ 
-            vis.chart.selectAll("path").attr('d', vis.geoPath)
+            vis.chart.selectAll(".map-country").attr('d', vis.geoPath);
+            vis.chart.selectAll(".map-selected-country").attr('d', vis.geoPath)
         };
         
-        const countriesPaths = vis.chart.selectAll("path");
+        const countriesPaths = vis.chart.selectAll(".map-country");
         countriesPaths
             .data(vis.countries.features)
         .join("path")
@@ -98,11 +99,37 @@ class GeoMapNew {
             .attr("d", vis.geoPath)
             .attr("fill", "lightblue")
             .attr("fill-opacity", 0.5)
-            .attr("stroke", "white");
+            .attr("stroke", d => {return vis.getBorderColour(d)});
+
+        const selectedCountriesPaths = vis.chart.selectAll(".map-selected-country");
+        selectedCountriesPaths
+            .data(vis.selectedCountries, d => d.id)
+        .join("path")
+            .attr("class", "map-selected-country")
+            .attr("cursor", "default")
+            .attr("d", vis.geoPath)
+            .attr("fill", "none")
+            .attr("stroke", d => {return vis.getBorderColour(d)});
 
         // reset whenever map is moved
         vis.map.on('zoomend', onZoom);
 
+    }
+
+    getBorderColour(data) {
+        let vis = this;
+        const { countryCodeMapper, colourPalette } = vis.constants;
+        let id = parseInt(data.id);
+        let focusCountryCode 
+            = countryCodeMapper.getCountryNumCode(vis.selected.area.country);
+
+        if (id === focusCountryCode) {
+            return colourPalette.getFocusedAreaColour();
+        } else if (vis.countryCodesOfSelected.includes(id)) {
+            return colourPalette.getComparisonAreaColour();
+        } else {
+            return "white";
+        }
     }
     
 
