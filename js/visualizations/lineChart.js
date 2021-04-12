@@ -13,8 +13,9 @@ class LineChart {
         selectedArea: 'blue',
         otherAreas: d3.schemeCategory10,
       },
-      circle: { radius: 3 },
-      containerWidth: _config.containerWidth || 2100,
+      circle: { radius: 4 },
+      line: { strokeWidth: 1.5 },
+      containerWidth: _config.containerWidth || 2200,
       containerHeight: _config.containerHeight || 800,
       margin: _config.margin || { top: 50, right: 350, bottom: 110, left: 120 }
     }
@@ -210,7 +211,8 @@ class LineChart {
       .join('path')
       .attr('class', d => `line line-${vis.constants.countries.getKey(d.countryName)}`)
       .attr('d', d => vis.line(d.values))
-      .style('stroke', d => vis.getColour(d));
+      .style('stroke', d => vis.getColour(d))
+      .style('stroke-width', vis.config.line.strokeWidth);
 
     // Add data points(dots) on line
     vis.circles.selectAll('.circle-group')
@@ -275,7 +277,7 @@ class LineChart {
       .attr('class', 'mouseCircle');
 
     mplCircleEnter.merge(mplCircle)
-      .attr('r', 7)
+      .attr('r', vis.config.circle.radius * 2.5)
       .style('stroke', d => vis.getColour(d))
       .style('fill', 'none')
       .style('stroke-width', '1px')
@@ -498,7 +500,7 @@ class LineChart {
   deEmphasizeInactiveElems() {
     let vis = this;
 
-    let opacityOfInactive = 0.3;
+    let opacityOfInactive = 0.25;
 
     const inactiveLines = vis.getInactiveElems('.line', 'active-line');
     inactiveLines.attr('opacity', opacityOfInactive);
@@ -519,12 +521,12 @@ class LineChart {
 
     //Emphasize elems
     activeCircles
-      .attr('r', vis.config.circle.radius * 1.5)
+      .attr('r', vis.config.circle.radius * 1.2)
       .attr('opacity', 1);
 
     activeLine
       .attr('opacity', 1)
-      .style('stroke-width', 3);
+      .style('stroke-width', vis.config.line.strokeWidth * 2);
   }
 
   /**
@@ -536,7 +538,7 @@ class LineChart {
     const lines = vis.countries.selectAll('.line');
     lines
       .attr('opacity', 1)
-      .style('stroke-width', 1);
+      .style('stroke-width', vis.config.line.strokeWidth);
 
     const circles = vis.circles.selectAll('.circle');
     circles
