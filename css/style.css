@@ -11,6 +11,10 @@ html {
   height: 100%;
 }
 
+#landing, #viz {
+  will-change: transform;
+}
+
 /** Chart Positioning */
 #parent-container {
   margin: 15px;
@@ -96,5 +100,9 @@ html {
   outline: none;
 }
 
+*:focus {
+  outline: 0;
+  outline: none;
+  }
 
 
