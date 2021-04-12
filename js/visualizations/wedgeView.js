@@ -93,7 +93,8 @@ class WedgeView {
             .attr('display', true)
             .style('top', `${event.clientY}px`)
             .style('left', `${event.clientX}px`)
-            .html(`<strong>${this.indicators[i]}</strong>
+            .html(`<strong>${this.indicators[i]}</strong><br>
+                  <i>${d3.min(this.selected.selectedYears)}-${d3.max(this.selected.selectedYears)}</i>
                 <ul>
                   <li>World maximum: ${Number(max.toFixed(0)).toLocaleString()}</li>
                   <li>World average: ${Number(worldAvg.toFixed(0)).toLocaleString()}</li>
