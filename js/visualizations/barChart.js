@@ -12,7 +12,7 @@ class BarChart {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 1000,
       containerHeight: _config.containerHeight || 400,
-      margin: _config.margin || { top: 50, right: 320, bottom: 70, left: 50 },
+      margin: _config.margin || { top: 50, right: 290, bottom: 70, left: 60 },
       colour: _config.colour || { selectedCountry: 'blue', comparisonCountry: 'green' },
       legend: _config.legend ||
       {
@@ -85,7 +85,7 @@ class BarChart {
     vis.yValue = d => d.avg;
 
     // Update axis titles
-    vis.renderAxisTitles('Countries/Regions', vis.selected.indicator);
+    vis.renderAxisTitles(vis.selected.indicator);
     
     // Update Scale domains
     vis.updateYScaleDomains();
@@ -224,23 +224,11 @@ class BarChart {
 
   /**
    * Purpose: Renders x- and y-axis titles dynamically using enter-update-exit pattern
-   * @param {string} xAxisTitle 
    * @param {string} yAxisTitle 
    */
-  renderAxisTitles(xAxisTitle, yAxisTitle) {
+  renderAxisTitles(yAxisTitle) {
     let vis = this;
     let newYAxisTitle = `Average ${yAxisTitle} from ${vis.selected.timeInterval.min}-${vis.selected.timeInterval.max}`;
-
-    // Append x-axis title to svg
-    vis.chartArea.selectAll('.barchart-x-axis-title')
-          .data([xAxisTitle])
-        .join('text')
-          .attr('class', 'axis-title barchart-x-axis-title')
-          .attr('y', vis.height + 25)
-          .attr('x', vis.width)
-          .attr('dy', '.71em')
-          .style('text-anchor', 'end')
-          .text(xAxisTitle);
 
     if (yAxisTitle) {
       // Append y-axis title to svg
