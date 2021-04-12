@@ -141,6 +141,9 @@ class BarChart {
     // a reversed range, and a larger domain to accomodate negaive values.
     vis.yScaleNeg = d3.scaleLinear()
       .range([vis.height, 0]);
+
+    vis.yScale = d3.scaleLinear()
+      .range([vis.height, 0]);
   }
 
   /**
@@ -623,21 +626,6 @@ class BarChart {
     separator
       .attr('y1', vis.getYPosition({ avg: 0 })) //so that the line passes through the y 0
       .attr('y2', vis.getYPosition({ avg: 0 })) //so that the line passes through the y 0
-  }
-
-  /**
-   * Purpose: Updates the yScale's domain and range 
-   *          depending on whether data has negative vals
-   */
-  updateYAxisScale() {
-    let vis = this;
-    let averages = vis.getAllAverages();
-    let [min, max] = d3.extent(averages);
-
-    min = min > 0 ? 0 : min;
-
-    const range = vis.domainHasNeg ? [vis.height - vis.yScalePos(min), 0] : [vis.height, 0];
-    vis.yScaleNeg.domain([min, max]).range(range);
   }
 
   /**
