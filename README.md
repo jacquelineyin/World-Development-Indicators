@@ -157,6 +157,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 ## External Resources
 ### Data Sources
 - See [Dataset: Sources](#data-sources)
+- [World Map Topojson](https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json)
 
 ### Referenced Material
 ##### Data Processing
@@ -171,6 +172,8 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [Leaflet: GeoJSON layer documentation](https://leafletjs.com/reference-1.7.1.html#geojson)
 - [Stack Exchange: Create FeatureCollection from GeoJSON...](https://gis.stackexchange.com/questions/300331/create-featurecollection-from-geojson-containing-list-of-features)
 - [Stack Exchange: Getting bounds of layer group in leaflet](https://gis.stackexchange.com/questions/180678/how-do-i-get-the-bounds-of-a-layergroup-in-leaflet/180680)
+- [Github: Horizontal Lines in World](https://github.com/topojson/topojson/issues/242#issuecomment-327823284)
+- [Observable: Intro to leaflet+d3 + interactivity](https://observablehq.com/@sfu-iat355/intro-to-leaflet-d3-interactivity)
 
 ##### Year slider
 - [D3 brushing linking](https://codesandbox.io/s/github/UBC-InfoVis/2021-436V-examples/tree/master/d3-brushing-linking)
