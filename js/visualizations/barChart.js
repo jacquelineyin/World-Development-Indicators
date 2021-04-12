@@ -88,10 +88,13 @@ class BarChart {
 
     // Update axis titles
     vis.renderAxisTitles('Countries/Regions', vis.selected.indicator);
-
+    
     // Update Scale domains
     vis.updateYScaleDomains();
     vis.xScale.domain(vis.selected.allSelectedAreas);
+
+    // Update separator line
+    vis.updateSeparatorLine();
 
     vis.renderVis();
   }
@@ -420,6 +423,11 @@ class BarChart {
     bars.exit().remove();
   }
 
+  /**
+   * Purpose: Returns a y-position for a given <d> object
+   * @param {Object} d = {key: <string>, avg: <Number>} 
+   * @returns {Integer} : y-position on scale for a given object
+   */
   getYPosition(d) {
     let vis = this;
 
@@ -591,6 +599,9 @@ class BarChart {
     dispatcher.call(dispatcherEvents.BAR_UNHOVER, vis, country);
   }
 
+  /**
+   * Purpose: Creates a horizontal line to separate neg and positive y-values 
+   */
   appendSeparatorLine() {
     let vis = this;
 
@@ -603,6 +614,9 @@ class BarChart {
       .style('visibility', 'hidden');
   }
 
+  /**
+   * Purpose: Updates y1 and y2 positioning of separator line
+   */
   updateSeparatorLine() {
     let vis = this;
     let separator = vis.chartArea.selectAll('.separator');
@@ -611,6 +625,10 @@ class BarChart {
       .attr('y2', vis.getYPosition({ avg: 0 })) //so that the line passes through the y 0
   }
 
+  /**
+   * Purpose: Updates the yScale's domain and range 
+   *          depending on whether data has negative vals
+   */
   updateYAxisScale() {
     let vis = this;
     let averages = vis.getAllAverages();
@@ -622,15 +640,19 @@ class BarChart {
     vis.yScaleNeg.domain([min, max]).range(range);
   }
 
+  /**
+   * Purpose: Displays horizontal separator of neg and pos y-values
+   */
   showSeparatorLine() {
     let vis = this;
 
     vis.chartArea.selectAll('.separator')
-      .attr('y1', vis.getYPosition({ avg: 0 })) //so that the line passes through the y 0
-      .attr('y2', vis.getYPosition({ avg: 0 })) //so that the line passes through the y 0
       .style('visibility', 'visible');
   }
 
+  /**
+   * Purpose: Hides horizontal separator of neg and pos y-values
+   */
   hideSeparatorLine() {
     let vis = this;
 
@@ -638,6 +660,11 @@ class BarChart {
       .style('visibility', 'hidden');
   }
 
+  /**
+   * Purpose: Returns true if given averages array has a negative average
+   * @param {Array} averages : Array of aggregated data (i.e. {key: <string>, avg: <Number>})
+   * @returns {Boolean} : true if minimum given array has a negative avg
+   */
   hasNegMin(averages) {
     let vis = this;
 
