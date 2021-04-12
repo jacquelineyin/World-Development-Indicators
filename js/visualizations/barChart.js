@@ -99,14 +99,6 @@ class BarChart {
     vis.renderVis();
   }
 
-  updateYScaleDomains() {
-    let vis = this;
-    const [min, max] = d3.extent(vis.averages);
-
-    vis.yScalePos.domain([0, max]);
-    vis.yScaleNeg.domain([min, max]);
-  }
-
   renderVis() {
     let vis = this;
     // Bind data to visual elements, update axes
@@ -133,15 +125,6 @@ class BarChart {
       .paddingInner(0.2)
       .paddingOuter(0.1);
 
-    // Handles pos values
-    vis.yScalePos = d3.scaleLinear()
-      .range([vis.height, 0]);
-
-    // If has neg vals, we need a different scale for drawing the y-axis. It needs
-    // a reversed range, and a larger domain to accomodate negaive values.
-    vis.yScaleNeg = d3.scaleLinear()
-      .range([vis.height, 0]);
-
     vis.yScale = d3.scaleLinear()
       .range([vis.height, 0]);
   }
@@ -158,13 +141,7 @@ class BarChart {
     vis.xAxis = d3.axisBottom(vis.xScale)
       .tickSizeOuter([0]);
 
-    vis.yAxisPos = d3.axisLeft(vis.yScalePos)
-      .tickSize(-vis.width)
-      .tickSizeOuter([0])
-      .tickPadding(10)
-      .tickFormat(format);
-
-    vis.yAxisNeg = d3.axisLeft(vis.yScaleNeg)
+    vis.yAxis = d3.axisLeft(vis.yScale)
       .tickSize(-vis.width)
       .tickSizeOuter([0])
       .tickPadding(10)
@@ -227,8 +204,7 @@ class BarChart {
         .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset -= vis.config.legend.yPadding)
         .attr('width', vis.config.legend.colourBox.width)
         .attr('height', vis.config.legend.colourBox.height)
-        // .style('fill', d => vis.getColourOfLegendBoxes(d));
-        .style('fill', d => vis.getBarColour({key: d}));
+        .style('fill', d => vis.getColourOfLegendBoxes(d));
   }
 
   /**
@@ -306,14 +282,13 @@ class BarChart {
    */
   renderAxisGroups() {
     let vis = this;
-    let yAxis = vis.domainHasNeg ? vis.yAxisNeg : vis.yAxisPos;
 
     vis.xAxisG
       .call(vis.xAxis)
       .attr('transform', `translate(0 ,${vis.height})`);
 
     vis.yAxisG
-      .call(yAxis);
+      .call(vis.yAxis);
   }
 
   /**
@@ -354,7 +329,6 @@ class BarChart {
    */
   renderBarElems() {
     let vis = this;
-    // Bind data to visual elements
 
     // Create group
     const { barG, barGEnter } = vis.createBarGroup();
@@ -436,9 +410,8 @@ class BarChart {
 
     const val = vis.yValue(d);
     const isValNeg = val < 0;
-    const yScale = vis.domainHasNeg ? vis.yScaleNeg : vis.yScalePos;
 
-    let yPos = vis.domainHasNeg && isValNeg ? yScale(0) : yScale(val);
+    let yPos = vis.domainHasNeg && isValNeg ? vis.yScale(0) : vis.yScale(val);
     return yPos;
   }
 
@@ -506,15 +479,13 @@ class BarChart {
    */
   getBarHeight(data) {
     let vis = this;
+    const val = vis.yValue(data);
     let height;
 
-    const yScale = vis.domainHasNeg ? vis.yScaleNeg : vis.yScalePos;
-    const val = vis.yValue(data);
-
     if (vis.domainHasNeg) {
-      height = val < 0 ? vis.height - yScale(0) : yScale(0) - yScale(val);
+      height = val < 0 ? vis.height - vis.yScale(0) : vis.yScale(0) - vis.yScale(val);
     } else {
-      height = yScale(0) - yScale(val);
+      height = vis.yScale(0) - vis.yScale(val);
       height = height ? height : 0;      
     }
     return height;
@@ -626,6 +597,17 @@ class BarChart {
     separator
       .attr('y1', vis.getYPosition({ avg: 0 })) //so that the line passes through the y 0
       .attr('y2', vis.getYPosition({ avg: 0 })) //so that the line passes through the y 0
+  }
+
+  /**
+   * Purpose: updates domain of yScale
+   */
+  updateYScaleDomains() {
+    let vis = this;
+    let [min, max] = d3.extent(vis.averages);
+    min = min > 0 ? 0 : min;
+
+    vis.yScale.domain([min, max]);
   }
 
   /**
