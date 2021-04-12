@@ -6,8 +6,12 @@ class GeoMapNew {
             containerHeight: _config.containerHeight || 400,
             margin: _config.margin || { top: 0, right: 0, bottom: 0, left: 0 },
             zoom: { min: 1, },
-            defaultCoords: [36.1408, 5.3536]
-        }
+            defaultCoords: [36.1408, 5.3536],
+            defaultBorder: {
+                colour: "white",
+                strokeWidth: 1,
+            }
+        };
         this.data = _data;
         this.countries = _countries;
         this.selected = _selected;
@@ -67,16 +71,36 @@ class GeoMapNew {
     updateVis() {
         let vis = this;
 
-        vis.countryCodesOfSelected = 
+        vis.countryCodes = vis.constants.countryCodeMapper.getAllAlpha3s();
+        console.log(vis.allAlpha3s);
+        vis.countryCodesOfSelected =
             vis.constants.countryCodeMapper.getCountryNumCodes(vis.selected.allSelectedAreas);
-        
+        vis.alpha3CodesOfSelected = 
+            vis.constants.countryCodeMapper.getCountryAlpha3s(vis.selected.allSelectedAreas);
         // Prepare data
         vis.selectedCountries = vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(parseInt(d.id)));
+        // Filter data by selected years and selected indicator
+        const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
 
-        //Set map bounds
+        // Aggregate data by country and calculate the mean
+        vis.groupedData = d3.rollup(filteredData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
+        console.log(vis.groupedData);
+
+        // Remove countries for which we do not have a corresponding vector tile, e.g. "WLD"
+        for (let countryCode of vis.groupedData.keys()) {
+            if (!vis.countryCodes.includes(countryCode)) {
+                vis.groupedData.delete(countryCode);
+            }
+        }
+
+        console.log(vis.groupedData.values());
+
+        // Set map bounds
         let selectedGJsonLayer = L.geoJson(vis.selectedCountries);
         vis.map.fitBounds(selectedGJsonLayer.getBounds());
 
+        // Update domains
+        vis.indicatorScale.domain(d3.extent(vis.groupedData.values()))
 
         vis.renderVis();
     }
@@ -85,31 +109,31 @@ class GeoMapNew {
         let vis = this;
 
         // Function to place svg based on zoom
-        const onZoom = () =>{ 
+        const onZoom = () => {
             vis.chart.selectAll(".map-country").attr('d', vis.geoPath);
             vis.chart.selectAll(".map-selected-country").attr('d', vis.geoPath)
         };
-        
+
         const countriesPaths = vis.chart.selectAll(".map-country");
         countriesPaths
             .data(vis.countries.features)
-        .join("path")
+            .join("path")
             .attr("class", "map-country")
             .attr("cursor", "default")
             .attr("d", vis.geoPath)
-            .attr("fill", "lightblue")
+            .attr("fill", d => vis.getFillColour(d))
             .attr("fill-opacity", 0.5)
-            .attr("stroke", d => {return vis.getBorderColour(d)});
+            .attr("stroke", d => vis.getBorderColour(d));
 
         const selectedCountriesPaths = vis.chart.selectAll(".map-selected-country");
         selectedCountriesPaths
             .data(vis.selectedCountries, d => d.id)
-        .join("path")
+            .join("path")
             .attr("class", "map-selected-country")
             .attr("cursor", "default")
             .attr("d", vis.geoPath)
             .attr("fill", "none")
-            .attr("stroke", d => {return vis.getBorderColour(d)});
+            .attr("stroke", d => vis.getBorderColour(d));
 
         // reset whenever map is moved
         vis.map.on('zoomend', onZoom);
@@ -120,7 +144,7 @@ class GeoMapNew {
         let vis = this;
         const { countryCodeMapper, colourPalette } = vis.constants;
         let id = parseInt(data.id);
-        let focusCountryCode 
+        let focusCountryCode
             = countryCodeMapper.getCountryNumCode(vis.selected.area.country);
 
         if (id === focusCountryCode) {
@@ -128,9 +152,29 @@ class GeoMapNew {
         } else if (vis.countryCodesOfSelected.includes(id)) {
             return colourPalette.getComparisonAreaColour();
         } else {
-            return "white";
+            return vis.config.defaultBorder.colour;
         }
     }
-    
+
+    getFillColour(data) {
+        let vis = this;
+        
+        let id = parseInt(data.id);
+        let alpha3 = vis.constants.countryCodeMapper.convertToAlpha3(id);
+        console.log(vis.groupedData.get(alpha3))
+        let num = vis.indicatorScale(vis.groupedData.get(alpha3));
+        console.log(num);
+        return vis.getTileColor(num);
+    }
+
+    getTileColor(d) {
+        return d > 0.8 ? '#08519c' :
+               d > 0.6 ? '#3182bd' :
+               d > 0.4 ? '#6baed6' :
+               d > 0.2 ? '#bdd7e7' :
+              isNaN(d) ? '#808080' :
+                         '#eff3ff';
+      }
+
 
 }

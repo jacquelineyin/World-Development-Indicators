@@ -880,4 +880,37 @@ class CountryCodeMapper {
         }
         return codes;
     }
+
+    convertToAlpha3(numCode) {
+        const codes = Object.values(this);
+        for (let codeObj of codes) {
+            let { countryCode, alpha_3} = codeObj;
+            if (countryCode === numCode) {
+                return alpha_3;
+            }
+        }
+        return false;
+    }
+
+
+    convertToNumCode(alpha3) {
+        const codes = Object.values(this);
+        for (let codeObj of codes) {
+            let { countryCode, alpha_3} = codeObj;
+            if (alpha_3 === alpha3) {
+                return countryCode;
+            }
+        }
+        return false;
+    }
+
+    getAllAlpha3s() {
+        let alpha3s = [];
+        const codes = Object.values(this);
+        for (let codeObj of codes) {
+            let { alpha_3 } = codeObj;
+            if (alpha_3) alpha3s.push(alpha_3);
+        }
+        return alpha3s;
+    }
 }
