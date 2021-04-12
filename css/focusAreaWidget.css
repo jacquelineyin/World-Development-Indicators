@@ -6,7 +6,7 @@
   }
   
   #country-selector-container {
-    font-size: 0.8em;
+    font-size: 0.8rem;
   }
   
   #country-selector {
@@ -15,18 +15,24 @@
   
   #region-selector-container {
     width: 100%;
-    font-size: 0.8em;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
     display: flex;
     flex-wrap: wrap;
   }
   
+  .radio-button {
+    vertical-align: bottom;
+  }
+
   .radio-option {
     margin-right: 15px;
   }
   
   .radio-label {
     margin-left: 5px;
-    vertical-align: middle;
+    font-size: 0.7rem;
+    vertical-align: text-bottom;
   }
 
    /* -------------------  Bigger Screens -----------------------*/

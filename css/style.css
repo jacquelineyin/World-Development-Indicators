@@ -5,14 +5,19 @@
   flex-flow: column;
 }
 
+#project-title {
+  margin-top: 0px;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
 #chart-container {
   display: flex;
   flex-flow: row wrap;
 }
 
 #left-col {
-  float: left;
-  width: 5%;
+  margin-right: 2%;
 }
 
 #middle-col {
@@ -21,9 +26,8 @@
 }
 
 #right-col {
-  float: left;
-  width: 40%;
-  margin-left: 50px;
+  width: 48%;
+  margin-left: 4%;
 }
 
 .col {
