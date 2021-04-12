@@ -29,6 +29,13 @@
   opacity: 0.7;
 }
 
+/** To make the svg layer interactive 
+* Credit: https://observablehq.com/d/22ecd58979b322d1
+*/
+.leaflet-overlay-pane svg path{
+  pointer-events: auto;
+}
+
 /**--------------- Bigger Screens -----------------**/
 @media only screen and (min-width: 1440px) {
   #map {
