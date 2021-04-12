@@ -451,7 +451,9 @@ class BarChart {
 
     let yPos = vis.getYPosition(d) + 15;
 
-    if (yPos > vis.height) {
+    if (vis.domainHasNeg && isNaN(d.avg)) {
+      yPos = vis.getYPosition({avg: 0}) - (bottomPaddingOffset * 2)
+    } else if (yPos > vis.height) {
       yPos = vis.getYPosition(d) - bottomPaddingOffset;
     }
 
