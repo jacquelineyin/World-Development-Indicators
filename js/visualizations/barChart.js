@@ -21,8 +21,8 @@ class BarChart {
         yPadding: 25,
         colourBox: { width: 12, height: 12 },
         labelText: {
-          SELECTED_COUNTRY: 'Selected Country',
-          OTHER_COUNTRIES: 'Other Countries'
+          SELECTED_COUNTRY: 'SelectedCountry',
+          OTHER_COUNTRIES: 'OtherCountries'
         }
       },
       tooltip: _config.tooltip || { padding: 15 },
@@ -197,7 +197,7 @@ class BarChart {
     vis.legend.selectAll('.legend-box')
         .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
       .join('rect')
-        .attr('class', 'legend-box')
+        .attr('class', d => `legend-box legend-box-${d}`)
         .attr('x', 0)
         .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset -= vis.config.legend.yPadding)
         .attr('width', vis.config.legend.colourBox.width)
@@ -216,7 +216,7 @@ class BarChart {
     vis.legend.selectAll('.box-label')
         .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
       .join('text')
-        .attr('class', 'box-label')
+        .attr('class', d => `box-label box-label-${d}`)
         .attr('x', () => vis.config.legend.colourBox.width + 10)
         .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
         .text(d => d);
