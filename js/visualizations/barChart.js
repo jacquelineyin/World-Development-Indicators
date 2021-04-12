@@ -53,8 +53,6 @@ class BarChart {
 
     vis.chart = vis.chartArea.append('g');
 
-    // vis.aggregatedData = vis.aggregateAverages(vis.selected);
-
     // Initialize scales, axes, static elements, etc.
     vis.initScales();
     vis.initAxes();
