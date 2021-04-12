@@ -17,7 +17,7 @@ class LineChart {
       line: { strokeWidth: 1.5 },
       containerWidth: _config.containerWidth || 2200,
       containerHeight: _config.containerHeight || 800,
-      margin: _config.margin || { top: 50, right: 350, bottom: 110, left: 120 }
+      margin: _config.margin || { top: 50, right: 500, bottom: 110, left: 120 }
     }
     this.selected = _selectedItems;
     this.data = _data;
@@ -106,7 +106,7 @@ class LineChart {
     vis.yearValue = vis.svg.append('text')
       .attr('class', 'yearValue')
       .attr('y', 20)
-      .attr('x', vis.width + 250)
+      .attr('x', vis.width + 325)
       .attr('dy', '.71em');
 
     vis.mouseG = vis.lines.append('g')
@@ -353,9 +353,9 @@ class LineChart {
                     formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
 
                 d3.select('.values').selectAll('.value')
-                  .attr('x', vis.width + 200)
+                  .attr('x', vis.width + 205)
                   .attr('y', (d, i) => {
-                    return (i * 20) + 5
+                    return (i * 30) + 35
                   })
                   .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
                     d.countryName + ': ' + formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(d.values[idx].value)).toFixed(2))
@@ -367,9 +367,9 @@ class LineChart {
                     formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
 
                 d3.select('.values').selectAll('.value')
-                  .attr('x', vis.width + 200)
+                  .attr('x', vis.width + 205)
                   .attr('y', (d, i) => {
-                    return (i * 20) + 5
+                    return (i * 30) + 35
                   })
                   .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
                     d.countryName + ': ' + formatNumbers(vis.yScalePos.invert(vis.yScalePos(d.values[idx].value)).toFixed(2))
