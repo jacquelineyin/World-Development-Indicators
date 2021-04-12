@@ -122,16 +122,20 @@ class GeoMapNew {
             .attr("d", vis.geoPath)
             .attr("fill", "lightblue")
             .attr("fill-opacity", 0.5)
-            .attr("stroke", "black");
+            .attr("stroke", "white");
 
         // // Function to place svg based on zoom
-        let onZoom = () =>{ 
-            console.log("zoomed")
-            vis.chart.selectAll("path").attr('d', vis.geoPath)}
+        const onZoom = () =>{ 
+            vis.chart.selectAll("path").attr('d', vis.geoPath)
+        };
+
         // initialize positioning
-        onZoom()
+        onZoom();
+
         // reset whenever map is moved
         vis.map.on('zoomend', onZoom);
 
     }
+    
+
 }
