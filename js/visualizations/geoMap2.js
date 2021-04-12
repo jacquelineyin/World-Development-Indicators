@@ -42,13 +42,6 @@ class GeoMapNew {
         vis.indicatorScale = d3.scaleLinear()
             .range([0, 1]);
 
-
-        // Calculate inner chart size. Margin specifies the space around the actual chart.
-        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
-        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
-
-        // Define size of SVG drawing area
-
         vis.overlay = d3.select(vis.map.getPanes().overlayPane);
         vis.svg = vis.overlay.select('svg')
             .attr("pointer-events", "auto");
@@ -68,22 +61,36 @@ class GeoMapNew {
         vis.projection = d3.geoTransform({ point: projectPoint })
         // creates geopath from projected points (SVG)
         vis.geoPath = d3.geoPath().projection(vis.projection);
-        // vis.geoPath = d3.geoPath().projection(vis.config.projection);
 
     }
 
     updateVis() {
         let vis = this;
 
+        let countryCodesOfSelected = 
+            vis.constants.countryCodeMapper.getCountryNumCodes(vis.selected.allSelectedAreas);
+        
+        // Prepare data
+        vis.selectedCountries = vis.countries.features.filter(d => countryCodesOfSelected.includes(parseInt(d.id)));
+
+        //Set map bounds
+        let selectedGJsonLayer = L.geoJson(vis.selectedCountries);
+        vis.map.fitBounds(selectedGJsonLayer.getBounds());
+
+        
         vis.renderVis();
     }
 
     renderVis() {
         let vis = this;
 
-        let countries = vis.chart.selectAll("path");
-
-        countries
+        // Function to place svg based on zoom
+        const onZoom = () =>{ 
+            vis.chart.selectAll("path").attr('d', vis.geoPath)
+        };
+        
+        const countriesPaths = vis.chart.selectAll("path");
+        countriesPaths
             .data(vis.countries.features)
         .join("path")
             .attr("class", "map-country")
@@ -92,14 +99,6 @@ class GeoMapNew {
             .attr("fill", "lightblue")
             .attr("fill-opacity", 0.5)
             .attr("stroke", "white");
-
-        // // Function to place svg based on zoom
-        const onZoom = () =>{ 
-            vis.chart.selectAll("path").attr('d', vis.geoPath)
-        };
-
-        // initialize positioning
-        onZoom();
 
         // reset whenever map is moved
         vis.map.on('zoomend', onZoom);
