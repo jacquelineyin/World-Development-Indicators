@@ -1,12 +1,20 @@
+#comparison-title {
+  margin-top: 0px;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+}
+
 #comparison-input {
-    font-size: 0.8em;
+    font-size: 0.8rem;
     width: 200px;
 }
 
 #comparison-submit-button {
     margin-left: 10px;
-    font-size: 0.9em;
-    width: 6em;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 0.8rem;
+    width: 5rem;
     border-radius: 5px;
     border: thin solid black;
 }
@@ -29,9 +37,9 @@
 
 .tag {
     display: inline-block;
-    font-size: 0.8em;
+    font-size: 0.7rem;
     margin-right: 5px;
-    padding: 0 5px;
+    padding: 2px 5px;
     width: max-content;
     border-radius: 25px;
     background-color: #9EE6D6;
@@ -96,7 +104,7 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
   /** Warning/ Alert Box 
   Implementation Credit: https://www.w3schools.com/howto/howto_js_alert.asp*/
   #warning-container {
-    font-size: 0.8em;
+    font-size: 0.8rem;
     visibility: hidden;
     width: 100%;
     background-color: #fcf8e3;
