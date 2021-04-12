@@ -63,7 +63,7 @@ div[selected="true"] .c-arc[num="0"] {
 }
 
 /**--------------- Bigger Screens -----------------**/
-@media only screen and (min-width: 1440px) {
+@media only screen and (min-width: 1450px) {
   #demographics {
     width: 45%;
     margin-right: 25px;
@@ -72,5 +72,17 @@ div[selected="true"] .c-arc[num="0"] {
   #economic {
     width: 45%;
     margin-right: 0px;
+  }
+
+  #wedges strong {
+    font-size: 1.25em;
+    margin-bottom: 10px;
+  }
+
+  .indicator-container {
+    font-size: 1em;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
   }
 }
