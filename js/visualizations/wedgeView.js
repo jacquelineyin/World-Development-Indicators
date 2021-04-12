@@ -1,13 +1,17 @@
 class WedgeView {
 
-    constructor(_data, _selected, _dispatcher, _dispatcherEvents) {
+    constructor(_data, _selected, _dispatcher, _dispatcherEvents, _constants) {
       this.data = _data;
       this.dispatcher = _dispatcher;
       this.dispatcherEvents = _dispatcherEvents;
       this.indicators = new Indicators();
-      this.countryCodeMapper = new CountryCodeMapper();
       this.populationData = _data.filter(d => d.IndicatorName == this.indicators.POPULATION_TOTAL);
       this.selected = _selected;
+      this.constants = _constants || {
+        regionMapper: new RegionMapper(),
+        regions: new Regions(),
+        countryCodeMapper: new CountryCodeMapper()
+      };
       this.initVis();
     }
   
@@ -15,6 +19,10 @@ class WedgeView {
     // Bind event listeners to each table cell
     initVis() {
       let vis = this; 
+
+      const { regionMapper, regions, countryCodeMapper } = vis.constants;
+      const allCountryNames = regionMapper.getCountriesOfRegion(regions.WORLD);
+      vis.alpha3OfAllCountries = countryCodeMapper.getCountryAlpha3s(allCountryNames);
 
       this.wedgeWidth = 50;
       this.wedgeHeight = 50;
@@ -57,7 +65,9 @@ class WedgeView {
     // Prepare data, render
     updateVis() {
       // Filter the data to the range of selected years
-      const filteredDataAllCountries = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && Object.values(this.countryCodeMapper).includes(d.CountryCode));
+      const codesOfSelectedCountries = "";
+      const filteredDataAllCountries = this.data.filter(d => {
+        return this.selected.selectedYears.includes(d.Year) && this.alpha3OfAllCountries.includes(d.CountryCode)});
 
       // Each wedge (indicator) needs three pieces of data from the subset of data within the range of selected years
       // 1. maximum value for that indicator (maxDataMap)
