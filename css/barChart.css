@@ -89,7 +89,7 @@
   }
 
   .legend-box-SelectedCountry {
-    transform: translate(0px, -10px);
+    transform: translate(0px, 0px);
   }
 
   .box-label {
@@ -97,10 +97,10 @@
   }
 
   .box-label-SelectedCountry {
-    transform: translate(10px, 0px);
+    transform: translate(-3px, 0px);
   }
 
   .box-label-OtherCountries {
-    transform: translate(10px, 10px);
+    transform: translate(-3px, 0px);
   }
 }
