@@ -480,12 +480,13 @@ class BarChart {
   getBarHeight(data) {
     let vis = this;
     const val = vis.yValue(data);
+    const max = d3.max(vis.averages);
     let height;
 
     if (vis.domainHasNeg) {
       height = val < 0 ? vis.height - vis.yScale(0) : vis.yScale(0) - vis.yScale(val);
     } else {
-      height = vis.yScale(0) - vis.yScale(val);
+      height = max === 0 ? vis.height - vis.yScale(0) : vis.yScale(0) - vis.yScale(val);
     }
 
     height = height ? height : 0;      
