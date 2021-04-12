@@ -46,6 +46,7 @@
   
     #country-selector-container {
       font-size: 0.8em;
+      align-self: center;
     }
   
     #region-selector-container {
@@ -53,6 +54,8 @@
       margin-left: 20px;
       font-size: 0.8em;
       display: flex;
+      align-self: center;
+      margin-bottom: 0px;
     }
   
     .radio-option {
