@@ -501,10 +501,10 @@ class BarChart {
     const val = vis.yValue(data);
 
     if (vis.domainHasNeg) {
-      height = val < 0 ? vis.height - yScale(0) : yScale(0);
+      height = val < 0 ? vis.height - yScale(0) : yScale(0) - yScale(val);
     } else {
-      height = vis.height - yScale(val);
-      height = height ? height : 0;
+      height = yScale(0) - yScale(val);
+      height = height ? height : 0;      
     }
     return height;
   }
