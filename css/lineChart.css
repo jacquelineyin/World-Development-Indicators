@@ -52,6 +52,10 @@ g.axis.x-axis.linechart g.tick > text {
   #linechart .axis text {
     font-size: 3em;
   }
+
+  .mouse-text {
+    font-size: 3em;
+  }
 }
 
 @media only screen and (min-width: 1750px) {
@@ -65,8 +69,5 @@ g.axis.x-axis.linechart g.tick > text {
 
   .mouse-text {
     font-size: 2.5em;
-    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
-      1px 1px 0 #fff;
-    -webkit-font-smoothing: antialiased;
   }
 }
