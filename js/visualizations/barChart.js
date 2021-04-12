@@ -192,14 +192,14 @@ class BarChart {
   renderLegendColourBoxes() {
     let vis = this;
     const { SELECTED_COUNTRY, OTHER_COUNTRIES } = vis.config.legend.labelText;
-    let labelYOffset = 0;
+    let labelYOffset = -14;
 
     vis.legend.selectAll('.legend-box')
         .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
       .join('rect')
         .attr('class', d => `legend-box legend-box-${d}`)
         .attr('x', 0)
-        .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset -= vis.config.legend.yPadding)
+        .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
         .attr('width', vis.config.legend.colourBox.width)
         .attr('height', vis.config.legend.colourBox.height)
         .style('fill', d => vis.getColourOfLegendBoxes(d));
@@ -211,7 +211,7 @@ class BarChart {
   renderLegendElemLabels() {
     let vis = this;
     const { SELECTED_COUNTRY, OTHER_COUNTRIES } = vis.config.legend.labelText;
-    let labelYOffset = 0 - 14;
+    let labelYOffset = -4;
 
     vis.legend.selectAll('.box-label')
         .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
@@ -256,10 +256,10 @@ class BarChart {
 
     switch (d) {
       case SELECTED_COUNTRY:
-        return colour.comparisonCountry;
+        return colour.selectedCountry;
       case OTHER_COUNTRIES:
       default:
-        return colour.selectedCountry;
+        return colour.comparisonCountry;
     }
   }
 
