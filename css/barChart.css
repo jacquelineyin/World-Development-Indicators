@@ -2,26 +2,39 @@
 
 /** Axes */
 .x-axis-barchart line {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .y-axis-barchart line {
-    stroke: grey;
-    opacity: 0.7;
+  stroke: grey;
+  opacity: 0.7;
 }
 
 #barchart .axis-title {
-    font-size: 1.3rem;
+  font-size: 1.3rem;
 }
 
 #barchart .axis text {
-    font-size: 2em;
+  font-size: 2em;
 }
 
- /* -------------------  Bigger Screens -----------------------*/
- @media only screen and (min-width: 1300px){
+/* -------------------  Bigger Screens -----------------------*/
+@media only screen and (min-width: 1300px) and (max-width: 1749) {
+  #barchart .axis-title {
+    font-size: 1.7em;
+  }
+
+  #barchart .axis text {
+    font-size: 1.3em;
+  }
+}
+
+@media only screen and (min-width: 1750px) {
     #barchart .axis-title {
-        font-size: 1.7em;
+      font-size: 1.7em;
     }
   
+    #barchart .axis text {
+      font-size: 0.8rem;
+    }
   }
