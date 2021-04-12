@@ -86,6 +86,24 @@ class WedgeView {
         const countryAvg = this.selectedCountryDataMap.get(this.indicators[i]);
         const worldAvg = this.worldAverageDataMap.get(this.indicators[i]);
 
+        if (max && countryAvg && worldAvg) {
+        // Bind event listener for tooltip to each wedge
+        d3.select('#' + i).on('mouseover', event => { 
+          d3.select('#tooltip')
+            .attr('display', true)
+            .style('top', `${event.clientY}px`)
+            .style('left', `${event.clientX}px`)
+            .html(`<i>${this.indicators[i]}</i><br>
+                  World maximum: ${Number(max.toFixed(0)).toLocaleString()}<br>
+                  World average: ${Number(worldAvg.toFixed(0)).toLocaleString()}<br>
+                  ${this.selected.area.country}'s average: ${Number(countryAvg.toFixed(0)).toLocaleString()}<br>`);
+        })
+        .on('mouseout', event => { 
+          d3.select('#tooltip')
+            .attr('display', false);
+        });
+      }
+
         // Country
         if (max && countryAvg) {
           const countryData = [countryAvg, (max - countryAvg)];
