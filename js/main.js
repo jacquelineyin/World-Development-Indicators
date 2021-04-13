@@ -77,7 +77,12 @@ d3.csv('data/Dataset.csv').then(_data => {
   // });
 
   d3.json("data/countries.json").then(countries => {
-    // console.log(countries);
+
+    countries.features.forEach(d => {
+      // Convert string to int;
+      d.id = parseInt(d.id);
+    });
+
     map = new GeoMapNew({
       parentElement: "#map"
     }, data, countries, selected);

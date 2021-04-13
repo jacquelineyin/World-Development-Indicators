@@ -73,12 +73,13 @@ class GeoMapNew {
     updateVis() {
         let vis = this;
 
+        // Prepare data
         vis.countryCodesOfSelected =
             vis.constants.countryCodeMapper.getCountryNumCodes(vis.selected.allSelectedAreas);
         vis.alpha3CodesOfSelected = 
             vis.constants.countryCodeMapper.getCountryAlpha3s(vis.selected.allSelectedAreas);
-        // Prepare data
-        vis.selectedCountries = vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(parseInt(d.id)));
+        
+        vis.selectedCountries = vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(d.id));
         
         // Filter data by selected years and selected indicator
         const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
@@ -129,10 +130,7 @@ class GeoMapNew {
         selectedCountriesPaths
             .data(vis.selectedCountries, d => d.id)
             .join("path")
-            // .attr("class", d => `map-selected-country map-selected-country-${d.id}`)
-            .attr("class", d => { 
-                let id = parseInt(d.id);
-                return `map-selected-country map-selected-country-${id}`})
+            .attr("class", d => `map-selected-country map-selected-country-${d.id}`)
             .attr("cursor", "default")
             .attr("d", vis.geoPath)
             .attr("fill", "none")
@@ -147,13 +145,13 @@ class GeoMapNew {
     getBorderColour(data) {
         let vis = this;
         const { countryCodeMapper, colourPalette } = vis.constants;
-        let id = parseInt(data.id);
+
         let focusCountryCode
             = countryCodeMapper.getCountryNumCode(vis.selected.area.country);
 
-        if (id === focusCountryCode) {
+        if (data.id === focusCountryCode) {
             return colourPalette.getFocusedAreaColour();
-        } else if (vis.countryCodesOfSelected.includes(id)) {
+        } else if (vis.countryCodesOfSelected.includes(data.id)) {
             return colourPalette.getComparisonAreaColour();
         } else {
             return vis.config.defaultBorder.colour;
@@ -163,8 +161,7 @@ class GeoMapNew {
     getFillColour(data) {
         let vis = this;
         
-        let id = parseInt(data.id);
-        let alpha3 = vis.constants.countryCodeMapper.convertToAlpha3(id);
+        let alpha3 = vis.constants.countryCodeMapper.convertToAlpha3(data.id);
         let num = vis.indicatorScale(vis.groupedData.get(alpha3));
 
         return vis.getTileColor(num);
@@ -173,9 +170,7 @@ class GeoMapNew {
     getStrokeWidth(data) {
         let vis = this;
 
-        let id = parseInt(data.id);
-
-        if (vis.countryCodesOfSelected.includes(id)) {
+        if (vis.countryCodesOfSelected.includes(data.id)) {
             return vis.config.defaultBorder.strokeWidth * 2;
         } else {
             return vis.config.defaultBorder.strokeWidth;
