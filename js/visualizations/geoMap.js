@@ -41,7 +41,6 @@ class GeoMap {
         // https://leafletjs.com/examples/choropleth/
         vis.initLegendContainer();
 
-
         // Initialize svg to add to map
         vis.initVisSvg();
 
@@ -68,12 +67,20 @@ class GeoMap {
         vis.updateMapBounds();
 
         // Update domains
-        let [min, max] = d3.extent(vis.groupedData.values());
-        min = min > 0 ? 0 : min;
-        max = max === 0 && max === min ? 1 : max;
-        vis.indicatorScale.domain([min, max])
+        vis.updateDomain();
 
         vis.renderVis();
+    }
+
+    updateDomain() {
+        let vis = this;
+
+        let [min, max] = d3.extent(vis.groupedData.values());
+        
+        // Set max to 1 for better scaling if max === min === 0
+        max = max === 0 && max === min ? 1 : max;
+
+        vis.indicatorScale.domain([min, max]);
     }
 
     updateMapBounds() {
