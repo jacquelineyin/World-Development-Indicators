@@ -56,26 +56,19 @@ d3.csv('data/Dataset.csv').then(_data => {
   data = _data;
 
   data.forEach(d => {
-    /* TODO */
     d.year = parseTime(d.Year);
     d.value = d.Value !== 'NULL' ? +d.Value : null;
     d.Value = d.Value !== 'NULL' ? +d.Value : null;
   });
 
-  //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
-  setTestSelectedItems();
+  // Set default selected items
+  setDefaultSelectedItems();
 
   // Initialize select country/region for focused area
   focusedAreaWidget.createSelectFocusArea();
   comparisonWidget.updateComparisonSection();
 
-  // Initialize views
-  // Load in GeoJSON data and initialize map view
-  // d3.json("./data/countries.geojson").then(geoJsonData => { 
-  //   map = new GeoMap(data, geoJsonData, selected);
-  //   map.updateVis();
-  // });
-
+  // Initialize map view
   d3.json("data/countries.json").then(countries => {
 
     countries.features.forEach(d => {
@@ -83,12 +76,11 @@ d3.csv('data/Dataset.csv').then(_data => {
       d.id = parseInt(d.id);
     });
 
-    map = new GeoMapNew({
+    map = new GeoMap({
       parentElement: "#map"
     }, data, countries, selected);
     map.updateVis();
   });
-
 
 
   // Initialize the wedge view
@@ -216,20 +208,15 @@ let handleSelectRegion = (_region) => {
 }
 
 /**
- * Purpose: Creates a mock "selected" state for testing purposes
+ * Purpose: Sets default state for program
  */
-let setTestSelectedItems = () => {
-  // test value timeInterval
+let setDefaultSelectedItems = () => {
+  // set default timeInterval
   const defaultYears = [...new Set(data.map(d => d.Year))].slice(30,51);
   selected.selectedYears = defaultYears;
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length - 1] };
 
-  selected.addComparisonArea(countries.JAPAN);
-  selected.addComparisonArea(countries.CHINA);
-  selected.addComparisonArea(countries.BRAZIL);
-  selected.addComparisonArea(countries.PERU);
-
-  // test value indicator
+  // default indicator
   selected.setIndicator(indicators.POPULATION_TOTAL);
 }
 
