@@ -44,6 +44,34 @@ class GeoMapNew {
         // Initialize svg to add to map
         L.svg({ clickable: true }).addTo(vis.map)// we have to make the svg layer clickable
 
+        // Legend
+        // https://leafletjs.com/examples/choropleth/
+        vis.legendContainer = L.control({ position: 'bottomleft' });
+
+        vis.legendContainer.onAdd = function () {
+            const div = L.DomUtil.create('div', 'info-legend-container');
+            const svg = d3.select(div).append('svg');
+            vis.legend = svg.append('g').attr('class', 'legend');
+            const legendBackground = vis.legend.append('rect');
+            legendBackground
+                .attr('class', 'legend-background')
+                .attr('width', '100%')
+                .attr('height', '100%')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr("rx", 6)
+                .attr("ry", 6)
+                .attr('fill', 'white')
+                .attr('fill-opacity', 0.5);
+
+            return div;
+        };
+
+        vis.legendContainer.addTo(vis.map);
+
+
+
+
         // Initialize indicator scale
         vis.indicatorScale = d3.scaleLinear()
             .range([0, 1]);
@@ -74,7 +102,7 @@ class GeoMapNew {
         let vis = this;
 
         // If a legend exists, remove to re-render on update
-        if (this.legend) {
+        if (this.legendContainer) {
             d3.select('.info.legend.leaflet-control').remove();
         }
 
@@ -120,31 +148,6 @@ class GeoMapNew {
             vis.chart.selectAll(".map-selected-country").attr('d', vis.geoPath)
         };
 
-        // Legend
-        // https://leafletjs.com/examples/choropleth/
-        vis.legend = L.control({ position: 'bottomleft' });
-
-        vis.legend.onAdd = function () {
-
-            const div = L.DomUtil.create('div', 'info legend');
-            const bins = [1, 0.8, 0.6, 0.4, 0.2, NaN];
-
-            div.innerHTML += `${vis.selected.indicator}<br>`;
-
-            // Loop through bins, adding a legend entry for each
-            for (let i = 0; i < bins.length; i++) {
-                if (bins[i]) {
-                    div.innerHTML +=
-                        '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i> ' + Number(vis.indicatorScale.invert(bins[i])).toFixed(0).toLocaleString() + '<br>';
-                } else {
-                    div.innerHTML += '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i>No data<br>';
-                }
-            }
-
-            return div;
-        };
-
-        vis.legend.addTo(vis.map);
 
 
 
@@ -172,6 +175,8 @@ class GeoMapNew {
 
         // reset whenever map is moved
         vis.map.on('zoomend', onZoom);
+
+        vis.renderLegend();
 
     }
 
@@ -241,6 +246,60 @@ class GeoMapNew {
                     d > 0.2 ? '#bdd7e7' :
                         isNaN(d) ? '#808080' :
                             '#eff3ff';
+    }
+
+    renderLegend() {
+        let vis = this;
+        const bins = [1, 0.8, 0.6, 0.4, 0.2, NaN];
+        const boxLength = 12;
+        const leftMargin = 10;
+        // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
+        // const format = (strInput) => d3.format('.2~s')(strInput).replace(/G/, 'B');
+        let round = (val) => val > 100 ? Math.round(val) : val.toFixed(2);
+        let format = (val) => val >= 0 ? d3.format(',')(round(val)) : round(val);
+
+        vis.legend.selectAll('.title-container')
+            .data([vis.selected.indicator])
+            .join('foreignObject')
+            .attr('class', 'title-container')
+            .attr('width', '90%')
+            .attr('height', 20)
+            .attr('x', leftMargin)
+            .attr('y', 0)
+            .html(d => `<div class='title'>${d}</div>`);
+
+        const legendBoxes = vis.legend.selectAll('.bin');
+        legendBoxes
+            .data(bins)
+            .join('rect')
+            .attr('class', 'bin info-legend-bins')
+            .attr('width', boxLength)
+            .attr('height', boxLength)
+            .attr('x', leftMargin)
+            .attr('y', (d, i) => { return (i * boxLength) + 20 })
+            .attr('fill', d => vis.getTileColor(d))
+            .attr('opacity', 0.7);
+
+        const legendLabels = vis.legend.selectAll('.label');
+        legendLabels
+            .data(bins)
+            .join('text')
+            .attr('class', 'label')
+            .attr('font-size', `${boxLength - 1}px`)
+            .attr('x', leftMargin + boxLength + 5)
+            .attr('y', (d, i) => { return (i * boxLength) + 30 })
+            .text(d => {
+                if( isNaN(d)) {
+                    return d;
+                } else {
+                    // let rounded = Number(vis.indicatorScale.invert(d)).toFixed(0);
+                    // let test = vis.indicatorScale.invert(d);
+                    // d3.format('.2~s')(test.toString());
+                    let formatted = format(vis.indicatorScale.invert(d));
+                    return formatted;
+                }
+            })
+
     }
 
 
