@@ -85,9 +85,10 @@ class YearSlider {
     vis.yAxisG.call(vis.yAxis);
 
     // Update the brush and define a default position
+    const defaultBrushSelection = [vis.yScale(new Date('1990-01-01')), vis.yScale(new Date('2010-01-01'))];
     vis.brushG
         .call(vis.brush)
-        .call(vis.brush.move, [0, 62]);
+        .call(vis.brush.move, defaultBrushSelection);
   }
 
   /**
