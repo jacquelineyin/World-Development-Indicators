@@ -132,7 +132,10 @@ class GeoMapNew {
 
         // Set map bounds
         let selectedGJsonLayer = L.geoJson(vis.selectedCountries);
-        vis.map.fitBounds(selectedGJsonLayer.getBounds());
+        // console.log(selectedGJsonLayer);
+        // console.log(selectedGJsonLayer.getLayers(), selectedGJsonLayer._Layers);
+
+        selectedGJsonLayer.getLayers().length > 0 ? vis.map.fitBounds(selectedGJsonLayer.getBounds()) : null;
 
         // Update domains
         let [min, max] = d3.extent(vis.groupedData.values());
@@ -291,21 +294,22 @@ class GeoMapNew {
             .attr('font-size', `${boxLength - 1}px`)
             .attr('x', leftMargin + boxLength + 5)
             .attr('y', (d, i) => { return (i * boxLength) + 30 })
-            .text(d => isNaN(d) ? d : format(vis.indicatorScale.invert(d)));
+            .text(d => isNaN(d) ? 'N/A' : format(vis.indicatorScale.invert(d)));
     }
 
     handleMouseEnter(e) {
         let vis = this;
 
         const classes = e.target.classList;
-        const countryCode = parseInt(classes[1].split('-')[2]);
-        let classOfInterest = vis.countryCodesOfSelected.includes(countryCode) ? 'map-selected-country-' : 'map-country-';
-        classOfInterest += countryCode;
-        d3.selectAll(`.${classOfInterest}`)
-            .attr("stroke", "black");
+        const countryCode = classes[1] ? parseInt(classes[1].split('-')[2]) : false;
 
+        // if (!isNaN(countryCode)) {
 
-        if (!isNaN(countryCode)) {
+            let classOfInterest = vis.countryCodesOfSelected.includes(countryCode) ? 'map-selected-country-' : 'map-country-';
+            classOfInterest += countryCode;
+            d3.selectAll(`.${classOfInterest}`)
+                .attr("stroke", "black");
+
             const { countryCodeMapper, countries } = vis.constants;
 
             const { indicator, timeInterval } = vis.selected;
@@ -314,27 +318,33 @@ class GeoMapNew {
             average = average ? vis.format(average) : 'N/A'
             let key = countryCodeMapper.getKey(countryCode);
             const countryName = countries[key];
-
-            d3.select('#tooltip')
-                .attr('display', true)
-                .style('top', `${e.clientY}px`)
-                .style('left', `${e.clientX}px`)
-                .html(`<strong>${countryName}</strong><br>
-                  <i>${timeInterval.min}-${timeInterval.max}</i><br>
-                    ${'Average ' + indicator + ':'}<br>
-                    ${'   ' + average}`);
-        }
+            console.log(countryName, key);
+            let test = vis.countries.features.filter(d => d.id === countryCode);
+            test = test[0] ? test[0].properties.name : null;
+            
+            if (countryName || test) {
+                d3.select('#tooltip')
+                    .attr('display', true)
+                    .style('top', `${e.clientY}px`)
+                    .style('left', `${e.clientX}px`)
+                    .html(`<strong>${countryName ? countryName : test}</strong><br>
+                      <i>${timeInterval.min}-${timeInterval.max}</i><br>
+                        ${'Average ' + indicator + ':'}<br>
+                        ${'   ' + average}`);
+            }
+        // }
     }
 
     handleMouseLeave(e) {
         let vis = this;
         // TODO
         const classes = e.target.classList;
-        let countryCode = parseInt(classes[1].split('-')[2]);
-        let classOfInterest = vis.countryCodesOfSelected.includes(countryCode) ? 'map-selected-country-' : 'map-country-';
-        classOfInterest += countryCode;
-
+        let countryCode = classes[1] ? parseInt(classes[1].split('-')[2]) : null ;
+        
         if (!isNaN(countryCode)) {
+            let classOfInterest = vis.countryCodesOfSelected.includes(countryCode) ? 'map-selected-country-' : 'map-country-';
+            classOfInterest += countryCode;
+
             d3.select('#tooltip')
                 .attr('display', false);
 
