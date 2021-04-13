@@ -313,7 +313,6 @@ class GeoMapNew {
             let average = vis.groupedData.get(alpha3);
             average = average ? vis.format(average) : 'N/A'
             let key = countryCodeMapper.getKey(countryCode);
-            // console.log(key);
             const countryName = countries[key];
 
             d3.select('#tooltip')
@@ -334,7 +333,6 @@ class GeoMapNew {
         let countryCode = parseInt(classes[1].split('-')[2]);
         let classOfInterest = vis.countryCodesOfSelected.includes(countryCode) ? 'map-selected-country-' : 'map-country-';
         classOfInterest += countryCode;
-        // console.log(countryCode, isNaN(countryCode));
 
         if (!isNaN(countryCode)) {
             d3.select('#tooltip')
