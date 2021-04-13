@@ -1,4 +1,12 @@
 class GeoMap {
+    /**
+     * Class constructor with initial configuration
+     * @param {Object} _config : object holding configuration settings
+     * @param {Array} _data : given data array
+     * @param {Object} _countries : given geoJson (converted from topoJson) of all countries in world
+     * @param {Selected} _selected : Selected class object holding selectedItem values
+     * @param {Object} _constants : Object holding constants
+     */
     constructor(_config, _data, _countries, _selected, _constants) {
         this.config = {
             parentElement: _config.parentElement,
