@@ -1,16 +1,49 @@
 body {
   position: relative;
   height: 100%;
+  overflow: hidden;
+  background: rgba(255, 248, 230, 0.5);
 }
 
 html {
   margin: 0;
   padding: 0;
   height: 100%;
+  overflow: hidden;
+}
+
+p {
+  font-size: 14px;
 }
 
 #landing, #viz {
   will-change: transform;
+  position: relative;
+}
+
+#landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#viz {
+  overflow-y: auto;              
+  height: 100%; 
+  background: white;
+}
+
+#next-btn {
+  border-radius: 37px;
+  width: 140px;
+  height: 55px;
+  font-size: 17px;
+}
+
+#next-btn:hover, #next-btn:focus {
+  background-color: blue;
+  color: white;
 }
 
 /** Chart Positioning */
@@ -84,11 +117,6 @@ html {
 /** Other */
 .material-icons {
   font-size: 15px;
-}
-
-.scroll {
-  min-height: 100vh;
-  position: relative;
 }
 
 #backBtn {
