@@ -354,6 +354,8 @@ class LineChart {
             // Find nearest data point
             const idx = bisect(d.values, xDate);
             const item = d.values[idx];
+            const circle = d3.select(this).selectAll('.mouseCircle');
+
             if (item) {
               const currentYear = item.Year;
 
@@ -367,7 +369,7 @@ class LineChart {
                 d3.select('.values').selectAll('.value')
                   .attr('x', vis.width + 45)
                   .attr('y', (d, i) => {
-                    return (i * 50) + 65
+                    return (i * 50) + 95
                   })
                   .attr('transform', () => {
                     if (currentYear >= vis.selected.selectedYears[Math.round((vis.selected.selectedYears.length - 1) / 2)]) {
@@ -388,7 +390,7 @@ class LineChart {
                 d3.select('.values').selectAll('.value')
                   .attr('x', vis.width + 45)
                   .attr('y', (d, i) => {
-                    return (i * 50) + 65
+                    return (i * 50) + 95
                   })
                   .attr('transform', () => {
                     if (currentYear >= vis.selected.selectedYears[Math.round((vis.selected.selectedYears.length - 1) / 2)]) {
@@ -419,7 +421,6 @@ class LineChart {
                   return data;
                 });
 
-              var circle = d3.select(this).selectAll('.mouseCircle');
               circle.attr('visibility', 'visible');
 
               // Check if indicator has a negative domain, switch scales if yes
@@ -430,11 +431,8 @@ class LineChart {
                   return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
                 }
               }
-
-              // No translate and circles hidden if values are null
-              circle.attr('visibility', 'hidden');
-              return 'translate(0,0)'
             }
+            // No translate and circles hidden if values are null
             circle.attr('visibility', 'hidden');
             return 'translate(0,0)'
           });
