@@ -157,7 +157,9 @@ class GeoMapNew {
             .attr("d", vis.geoPath)
             .attr("fill", d => vis.getFillColour(d))
             .attr("fill-opacity", 0.5)
-            .attr("stroke", "white");
+            .attr("stroke", "white")
+            .on('mouseenter', vis.handleMouseEnter)
+            .on('mouseleave', vis.handleMouseLeave);
 
         const selectedCountriesPaths = vis.chart.selectAll(".map-selected-country");
         selectedCountriesPaths
@@ -168,7 +170,9 @@ class GeoMapNew {
             .attr("d", vis.geoPath)
             .attr("fill", "none")
             .attr("stroke", d => vis.getBorderColour(d))
-            .attr("stroke-width", d => vis.getStrokeWidth(d));
+            .attr("stroke-width", d => vis.getStrokeWidth(d))
+            .on('mouseenter', vis.handleMouseEnter)
+            .on('mouseleave', vis.handleMouseLeave);
 
         // reset whenever map is moved
         vis.map.on('zoomend', onZoom);
@@ -297,8 +301,15 @@ class GeoMapNew {
                     let formatted = format(vis.indicatorScale.invert(d));
                     return formatted;
                 }
-            })
+            });
+    }
 
+    handleMouseEnter() {
+        // TODO
+    }
+
+    handleMouseLeave() {
+        // TODO
     }
 
 
