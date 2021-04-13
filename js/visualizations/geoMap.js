@@ -31,7 +31,7 @@ class GeoMap {
     initVis() {
         let vis = this;
 
-        // Set up initial constants
+        // Set up other initial constants
         vis.initOtherConstants();
 
         // Initialize map and retrieve raster layer
@@ -60,11 +60,6 @@ class GeoMap {
 
     updateVis() {
         let vis = this;
-
-        // If a legend exists, remove to re-render on update
-        if (this.legendContainer) {
-            d3.select('.info.legend.leaflet-control').remove();
-        }
 
         // Prepare data
         vis.countryCodesOfSelected =
