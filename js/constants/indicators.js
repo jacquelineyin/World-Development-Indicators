@@ -1,7 +1,6 @@
 /**
  * Class of indicators of interest
  * Stores constant strings to avoid typos and for better coding pratices
- * TODO: remove the indicators that we will not be using
  */
 class Indicators {
     constructor() {
@@ -30,8 +29,6 @@ class Indicators {
         this.EXPORTS_OF_GOODS_AND_SERVICES = "Exports of goods and services (current US$)",
         this.IMPORTS_OF_GOODS_AND_SERVICES = "Imports of goods and services (current US$)",
         this.GDP_PER_CAPITA = "GDP per capita (current US$)",
-        this.PERCENTAGE_OF_GDP_MERCHANDISE_TRADE = "Merchandise trade (% of GDP) (goods)",
-        this.PERCENTAGE_OF_GDP_TRADE = "Trade (% of GDP)",
         this.GNI = "GNI (current US$)",
         this.GROSS_NATIONAL_EXPENDITURE = "Gross national expenditure (current US$)",
         this.INFLATION_GDP_DEFLATOR_ANNUAL_PERCENTAGE = "Inflation, GDP deflator (annual %)",

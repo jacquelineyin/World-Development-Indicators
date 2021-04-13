@@ -22,14 +22,19 @@ html {
   flex-flow: column;
 }
 
+#project-title {
+  margin-top: 0px;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
 #chart-container {
   display: flex;
   flex-flow: row wrap;
 }
 
 #left-col {
-  float: left;
-  width: 5%;
+  margin-right: 2%;
 }
 
 #middle-col {
@@ -38,9 +43,8 @@ html {
 }
 
 #right-col {
-  float: left;
-  width: 40%;
-  margin-left: 50px;
+  width: 48%;
+  margin-left: 4%;
 }
 
 .col {
@@ -67,6 +71,16 @@ html {
 /** Tooltip */
 #tooltip { 
   position: absolute;
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255,255,255,1);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
+}
+
+#tooltip[display="false"] { 
+  display: none;
 }
 
 /** Other */
