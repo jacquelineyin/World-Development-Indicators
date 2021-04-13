@@ -136,19 +136,19 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [x] Link: Select Comparison --> Bar-chart, Line-chart
 - [x] Link: Wedges (Select Indicator) --> Bar-chart, Line-chart, Map
 - [x] Link: Year slider (Select Time Interval) --> Bar-chart, Line-chart, Wedges, Map
-##### **Todo**
-- [ ] Link: Select Country --> Map
-- [ ] Link: Bar-chart --> Line-chart
-- [ ] Widget: Bar-chart tooltip
-- [ ] Widget: Wedge tooltip
-- [ ] BugFix: Stacked rendering of Line-chart's y-axis title
-- [ ] UI: Warning message when adding over 4 comparison countries
-- [ ] UI: Warning when trying to add invalid country as comparison country
-- [ ] UI: Move year slider to left and change to vertical slider
+##### **Todo's from M2**
+- [x] Link: Select Country --> Map
+- [x] Link: Bar-chart --> Line-chart
+- [ ] ~~Widget: Bar-chart tooltip~~ (Changed to displaying value when hover on bar)
+- [x] Widget: Wedge tooltip
+- [x] BugFix: Stacked rendering of Line-chart's y-axis title
+- [x] UI: Warning message when adding over 4 comparison countries
+- [x] UI: Warning when trying to add invalid country as comparison country
+- [x] UI: Move year slider to left and change to vertical slider
 - [ ] Others
 
 ##### **Stretch Goals**
-- [ ] Link: Bar-chart --> Map 
+- [x] Link: Bar-chart --> Map 
 - [ ] Link: Wedge (ability to select more than one indicator?)
 - [ ] UI: Styling
 - [ ] Others
@@ -195,6 +195,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [D3-format](https://github.com/d3/d3-format#format)
 - [D3: Formatting tick value. To show B (Billion) instead of G (Giga)](https://stackoverflow.com/a/40774969)
 - [Viewbox](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox)
+- [Observable: Rounding 'rect' element borders](https://bl.ocks.org/mbostock/1424037)
 
 ##### Colour Palette
 - [Cooler.co](https://coolors.co/.) for choosing a colour palette
