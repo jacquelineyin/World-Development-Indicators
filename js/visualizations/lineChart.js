@@ -105,7 +105,7 @@ class LineChart {
     vis.yearValue = vis.svg.append('text')
       .attr('class', 'yearValue')
       .attr('y', 50)
-      .attr('x', vis.width + 345)
+      .attr('x', vis.width + 165)
       .attr('dy', '.71em');
 
     vis.mouseG = vis.lines.append('g')
@@ -365,13 +365,13 @@ class LineChart {
 
                 // Get values of comparing countries
                 d3.select('.values').selectAll('.value')
-                  .attr('x', vis.width + 225)
+                  .attr('x', vis.width + 45)
                   .attr('y', (d, i) => {
                     return (i * 50) + 65
                   })
                   .attr('transform', () => {
-                    if (currentYear === vis.selected.timeInterval.max) {
-                      return `translate(${-vis.width - 200},0)`
+                    if (currentYear >= vis.selected.selectedYears[Math.round((vis.selected.selectedYears.length - 1) / 2)]) {
+                      return `translate(${-vis.width - 30},0)`
                     }
                   })
                   .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
@@ -386,13 +386,13 @@ class LineChart {
 
                 // Get values of comparing countries
                 d3.select('.values').selectAll('.value')
-                  .attr('x', vis.width + 225)
+                  .attr('x', vis.width + 45)
                   .attr('y', (d, i) => {
                     return (i * 50) + 65
                   })
                   .attr('transform', () => {
-                    if (currentYear === vis.selected.timeInterval.max) {
-                      return `translate(${-vis.width - 200},0)`
+                    if (currentYear >= vis.selected.selectedYears[Math.round((vis.selected.selectedYears.length - 1) / 2)]) {
+                      return `translate(${-vis.width - 30},0)`
                     }
                   })
                   .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
@@ -404,8 +404,8 @@ class LineChart {
               if (currentYear) {
                 d3.select('.yearValue')
                   .attr('transform', () => {
-                    if (currentYear === vis.selected.timeInterval.max) {
-                      return `translate(${-vis.width - 200},0)`
+                    if (currentYear >= vis.selected.selectedYears[Math.round((vis.selected.selectedYears.length - 1) / 2)]) {
+                      return `translate(${-vis.width - 30},0)`
                     }
                   })
                   .text(currentYear);
