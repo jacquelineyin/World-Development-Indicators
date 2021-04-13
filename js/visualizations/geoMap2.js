@@ -152,7 +152,7 @@ class GeoMapNew {
         countriesPaths
             .data(vis.countries.features)
             .join("path")
-            .attr("class", "map-country")
+            .attr("class", d => `map-country map-country-${d.id}`)
             .attr("cursor", "default")
             .attr("d", vis.geoPath)
             .attr("fill", d => vis.getFillColour(d))
@@ -304,12 +304,14 @@ class GeoMapNew {
             });
     }
 
-    handleMouseEnter() {
+    handleMouseEnter(e) {
         // TODO
+        console.log(e.target);
     }
 
-    handleMouseLeave() {
+    handleMouseLeave(e) {
         // TODO
+        console.log(e.target);
     }
 
 
