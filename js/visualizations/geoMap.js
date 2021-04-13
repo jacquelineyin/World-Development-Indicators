@@ -95,6 +95,36 @@ class GeoMap {
 
     }
 
+    /**
+     * Purpose: Colours the border of a selected country black
+     * @param {string} country : Country's name in format given in ./constants/countries.js
+     */
+    emphasizeCountry(country) {
+        let vis = this;
+
+        const { countryCodeMapper } = vis.constants;
+        let countryCode = countryCodeMapper.getCountryNumCode(country);
+
+        const id = `.map-selected-country-${countryCode}`;
+        vis.chart.selectAll(id)
+            .attr("stroke", "black");
+    }
+
+    /**
+     * Purpose: Resets the border colour of a selected country
+     * @param {string} country : Country's name in format given in ./constants/countries.js
+     */
+    deEmphasizeCountry(country) {
+        let vis = this;
+
+        const { countryCodeMapper } = vis.constants;
+        let countryCode = countryCodeMapper.getCountryNumCode(country);
+
+        const id = `.map-selected-country-${countryCode}`;
+        vis.chart.selectAll(id)
+            .attr("stroke", vis.getBorderColour({ id: countryCode }));
+    }
+
 
     // ------------------------------ Helpers ---------------------------------- //
 
@@ -293,7 +323,7 @@ class GeoMap {
 
     /**
      * Purpose: Returns a border colour depending on selected state
-     * @param {Object} data : geoJson object or an object with id: <Integer> (countryCode)
+     * @param {Object} data : geoJson object or an object {id: <Integer>} (countryCode)
      * @returns {string} representing a hex colour
      */
     getBorderColour(data) {
@@ -312,6 +342,11 @@ class GeoMap {
         }
     }
 
+    /**
+     * Purpose: Returns a fill colour depending on country's indicator value
+     * @param {Object} data : geoJson object or an object {id: <Integer>} (countryCode)
+     * @returns {string} representing a hex colour
+     */
     getFillColour(data) {
         let vis = this;
 
@@ -321,6 +356,11 @@ class GeoMap {
         return vis.getTileColor(num);
     }
 
+    /**
+     * Purpose: Returns a stroke width depending on selected state
+     * @param {Object} data : geoJson object or an object {id: <Integer>} (countryCode)
+     * @returns {Number} : stroke width
+     */
     getStrokeWidth(data) {
         let vis = this;
 
@@ -331,35 +371,18 @@ class GeoMap {
         }
     }
 
-    emphasizeCountry(country) {
-        let vis = this;
-
-        const { countryCodeMapper } = vis.constants;
-        let countryCode = countryCodeMapper.getCountryNumCode(country);
-
-        const id = `.map-selected-country-${countryCode}`;
-        vis.chart.selectAll(id)
-            .attr("stroke", "black");
-    }
-
-    deEmphasizeCountry(country) {
-        let vis = this;
-
-        const { countryCodeMapper } = vis.constants;
-        let countryCode = countryCodeMapper.getCountryNumCode(country);
-
-        const id = `.map-selected-country-${countryCode}`;
-        vis.chart.selectAll(id)
-            .attr("stroke", vis.getBorderColour({ id: countryCode }));
-    }
-
+    /**
+     * Purpose: Returns a colour (from a linear gradient split into distinct bins) depending on country's value
+     * @param {Object} d : geoJson object or an object {id: <Integer>} (countryCode)
+     * @returns {string} representing hex colour
+     */
     getTileColor(d) {
-        return d > 0.8 ? '#08519c' :
-            d > 0.6 ? '#3182bd' :
+        return  d > 0.8 ? '#08519c' :
+                d > 0.6 ? '#3182bd' :
                 d > 0.4 ? '#6baed6' :
-                    d > 0.2 ? '#bdd7e7' :
-                        isNaN(d) ? '#808080' :
-                            '#eff3ff';
+                d > 0.2 ? '#bdd7e7' :
+                isNaN(d) ? '#808080' :
+                           '#eff3ff';
     }
 
     renderLegend() {
