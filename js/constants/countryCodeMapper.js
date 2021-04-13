@@ -881,10 +881,15 @@ class CountryCodeMapper {
         return codes;
     }
 
+    /**
+     * Purpose: Returns the equivalent alpha3 (3-letter) country code for given numeric country code
+     * @param {Integer} numCode : Numeric country code
+     * @returns {string} alpha3 / ISO_3 country code or false if no equivalent code was found
+     */
     convertToAlpha3(numCode) {
         const codes = Object.values(this);
         for (let codeObj of codes) {
-            let { countryCode, alpha_3} = codeObj;
+            let { countryCode, alpha_3 } = codeObj;
             if (countryCode === numCode) {
                 return alpha_3;
             }
@@ -892,11 +897,15 @@ class CountryCodeMapper {
         return false;
     }
 
-
+    /**
+     * Purpose: Returns the equivalent numeric country code for given alpha3 country code
+     * @param {string} alpha3 : alpha3 / ISO_3 (3-lettered) country code
+     * @returns {Integer} numeric country code or false if no equivalent country code was found
+     */
     convertToNumCode(alpha3) {
         const codes = Object.values(this);
         for (let codeObj of codes) {
-            let { countryCode, alpha_3} = codeObj;
+            let { countryCode, alpha_3 } = codeObj;
             if (alpha_3 === alpha3) {
                 return countryCode;
             }
@@ -904,6 +913,10 @@ class CountryCodeMapper {
         return false;
     }
 
+    /**
+     * Purpose: Returns an array of all alpha_3 / ISO_3 country codes in dataset
+     * @returns {Array} of Strings 
+     */
     getAllAlpha3s() {
         let alpha3s = [];
         const codes = Object.values(this);
@@ -914,6 +927,11 @@ class CountryCodeMapper {
         return alpha3s;
     }
 
+    /**
+     * Purpose: Returns key of object containing given numeric country code
+     * @param {Integer} _countryCode : Numeric country code
+     * @returns {string} : matching key in this class or false if none found
+     */
     getKey(_countryCode) {
         const entries = Object.entries(this);
         for (let entry of entries) {
@@ -925,6 +943,19 @@ class CountryCodeMapper {
                 return key;
             }
         }
-        return false; 
+        return false;
+    }
+
+    /**
+     * Purpose: Returns an object containing all info for the country of given countryCode
+     * @param {Integer} countryCode : Numeric country code
+     * @returns {Object} : { countryName, key, countryCode, alpha_3 }
+     */
+    getAllInfoOfCountry(countryCode) {
+        const alpha_3 = this.convertToAlpha3(countryCode);
+        const key = this.getKey(countryCode);
+        const countryName = this.countries[key];
+
+        return { countryName, key, countryCode, alpha_3 };
     }
 }
