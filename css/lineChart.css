@@ -56,6 +56,8 @@ g.axis.x-axis.linechart g.tick > text {
 .values,
 .yearValue {
   font-size: 3em;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+  -webkit-font-smoothing: antialiased;
 }
 
 #linechart .box-label {

@@ -14,6 +14,7 @@ html {
 
 p {
   font-size: 14px;
+  text-align: center;
 }
 
 #landing, #viz {
@@ -26,6 +27,9 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 0;
+  padding: 0;
+  align-items: center;
 }
 
 #viz {
@@ -42,7 +46,7 @@ p {
 }
 
 #next-btn:hover, #next-btn:focus {
-  background-color: blue;
+  background-color: #ec3030;
   color: white;
 }
 
