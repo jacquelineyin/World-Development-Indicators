@@ -21,6 +21,8 @@ const dispatcher = d3.dispatch(
   dispatcherEvents.DELETE_COMPARISON_ITEM,
   dispatcherEvents.BAR_HOVER,
   dispatcherEvents.BAR_UNHOVER,
+  dispatcherEvents.MAP_ITEM_HOVER,
+  dispatcherEvents.MAP_ITEM_UNHOVER,
   dispatcherEvents.ERROR_TOO_MANY_COMPARISONS
 );
 
@@ -78,7 +80,7 @@ d3.csv('data/Dataset.csv').then(_data => {
 
     map = new GeoMap({
       parentElement: "#map"
-    }, data, countries, selected);
+    }, data, countries, selected, dispatcher, dispatcherEvents);
     map.updateVis();
   });
 
@@ -169,6 +171,16 @@ dispatcher.on(dispatcherEvents.BAR_HOVER, countryName => {
 
 dispatcher.on(dispatcherEvents.BAR_UNHOVER, countryName => {
   map.deEmphasizeCountry(countryName);
+  lineChart.deEmphasizeLine(countryName);
+})
+
+dispatcher.on(dispatcherEvents.MAP_ITEM_HOVER, countryName => {
+  // TODO
+  lineChart.emphasizeLine(countryName);
+})
+
+dispatcher.on(dispatcherEvents.MAP_ITEM_UNHOVER, countryName => {
+  // TODO
   lineChart.deEmphasizeLine(countryName);
 })
 

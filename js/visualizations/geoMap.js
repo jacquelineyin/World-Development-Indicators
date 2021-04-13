@@ -5,9 +5,11 @@ class GeoMap {
      * @param {Array} _data : given data array
      * @param {Object} _countries : given geoJson (converted from topoJson) of all countries in world
      * @param {Selected} _selected : Selected class object holding selectedItem values
+     * @param {Object} _dispatcher : d3 dispatcher
+     * @param {DispatcherEvents} _dispatcherEvents
      * @param {Object} _constants : Object holding constants
      */
-    constructor(_config, _data, _countries, _selected, _constants) {
+    constructor(_config, _data, _countries, _selected, _dispatcher, _dispatcherEvents, _constants) {
         this.config = {
             parentElement: _config.parentElement,
             zoom: { min: 1, },
@@ -20,6 +22,8 @@ class GeoMap {
         this.data = _data;
         this.countries = _countries;
         this.selected = _selected;
+        this.dispatcher = _dispatcher;
+        this.dispatcherEvents = _dispatcherEvents;
         this.constants = _constants || {
             countryCodeMapper: new CountryCodeMapper(),
             countries: new Countries(),
@@ -472,8 +476,15 @@ class GeoMap {
         const countryCode = classes[1] ? parseInt(classes[1].split('-')[2]) : false;
 
         if (!isNaN(countryCode)) {
+            const { countryCodeMapper } = vis.constants;
+            let { alpha_3, countryName } = countryCodeMapper.getAllInfoOfCountry(countryCode);
+
             vis.setBorderColourOfCountry(countryCode);
-            vis.showTooltip(e, countryCode);
+            vis.showTooltip(e, countryCode, alpha_3, countryName);
+
+            if (countryName && vis.selected.allSelectedAreas.includes(countryName)) {
+                vis.dispatcher.call(dispatcherEvents.MAP_ITEM_HOVER, e, countryName);
+            }
         }
     }
 
@@ -495,6 +506,14 @@ class GeoMap {
 
             // Reset border colour
             vis.setBorderColourOfCountry(countryCode, vis.getBorderColour);
+
+            const { countryCodeMapper } = vis.constants;
+            let { countryName } = countryCodeMapper.getAllInfoOfCountry(countryCode);
+
+            if (countryName && vis.selected.allSelectedAreas.includes(countryName)) {
+                vis.dispatcher.call(dispatcherEvents.MAP_ITEM_UNHOVER, e, countryName);
+            }
+
         }
     }
 
@@ -502,12 +521,12 @@ class GeoMap {
      * Purpose: Updates and displays tooltip with info of country of given countryCode
      * @param {Event} e : native JS event (i.e. 'mouseenter')
      * @param {Integer} countryCode : numeric country code
+     * @param {string} alpha_3 : 3-letter ISO_3 country code
+     * @param {string} countryName : name of country in format consistent with ./constants/countries.js
      */
-    showTooltip(e, countryCode) {
+    showTooltip(e, countryCode, alpha_3, countryName) {
         let vis = this;
-        const { countryCodeMapper } = vis.constants;
         const { indicator, timeInterval } = vis.selected;
-        let { alpha_3, countryName } = countryCodeMapper.getAllInfoOfCountry(countryCode);
 
         // Format average
         let average = vis.groupedData.get(alpha_3);
