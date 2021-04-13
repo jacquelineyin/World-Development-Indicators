@@ -62,12 +62,40 @@ class GeoMap {
         let vis = this;
 
         // Prepare data
+        vis.updateData();
+
+        // Set map bounds
+        vis.updateMapBounds();
+
+        // Update domains
+        let [min, max] = d3.extent(vis.groupedData.values());
+        min = min > 0 ? 0 : min;
+        max = max === 0 && max === min ? 1 : max;
+        vis.indicatorScale.domain([min, max])
+
+        vis.renderVis();
+    }
+
+    updateMapBounds() {
+        let vis = this;
+
+        const selectedGJsonLayer = L.geoJson(vis.selectedCountries);
+
+        selectedGJsonLayer.getLayers().length > 0 ?
+            vis.map.fitBounds(selectedGJsonLayer.getBounds()) :
+            vis.map.setView(vis.config.defaultCoords, 1);
+    }
+
+    updateData() {
+        let vis = this;
+
         vis.countryCodesOfSelected =
             vis.constants.countryCodeMapper.getCountryNumCodes(vis.selected.allSelectedAreas);
         vis.alpha3CodesOfSelected =
             vis.constants.countryCodeMapper.getCountryAlpha3s(vis.selected.allSelectedAreas);
+        vis.selectedCountries =
+            vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(d.id));
 
-        vis.selectedCountries = vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(d.id));
 
         // Filter data by selected years and selected indicator
         const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
@@ -81,18 +109,6 @@ class GeoMap {
                 vis.groupedData.delete(countryCode);
             }
         }
-
-        // Set map bounds
-        let selectedGJsonLayer = L.geoJson(vis.selectedCountries);
-        selectedGJsonLayer.getLayers().length > 0 ? vis.map.fitBounds(selectedGJsonLayer.getBounds()) : null;
-
-        // Update domains
-        let [min, max] = d3.extent(vis.groupedData.values());
-        min = min > 0 ? 0 : min;
-        max = max === 0 && max === min ? 1 : max;
-        vis.indicatorScale.domain([min, max])
-
-        vis.renderVis();
     }
 
     renderVis() {
@@ -141,7 +157,7 @@ class GeoMap {
 
     initGeoPathGenerator() {
         let vis = this;
-        
+
         const projectPoint = function (x, y) {
             const point = vis.map.latLngToLayerPoint(new L.LatLng(y, x));
             this.stream.point(point.x, point.y);
