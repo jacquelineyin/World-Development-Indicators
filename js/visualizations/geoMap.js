@@ -2,9 +2,6 @@ class GeoMap {
     constructor(_config, _data, _countries, _selected, _constants) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 600,
-            containerHeight: _config.containerHeight || 400,
-            margin: _config.margin || { top: 0, right: 0, bottom: 0, left: 0 },
             zoom: { min: 1, },
             defaultCoords: [36.1408, 5.3536],
             defaultBorder: {
@@ -84,7 +81,6 @@ class GeoMap {
             .attr('pointer-events', 'auto');
 
         // Append group element that will contain our actual chart 
-        // and position it according to the given margin config
         vis.chart = vis.svg.append('g')
             .attr('class', 'leaflet-zoom-hide');
 
