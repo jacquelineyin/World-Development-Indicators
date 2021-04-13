@@ -134,6 +134,7 @@ class GeoMapNew {
         // Update domains
         let [min, max] = d3.extent(vis.groupedData.values());
         min = min > 0 ? 0 : min;
+        max = max === 0 && max === min ? 1 : max;
         vis.indicatorScale.domain([min, max])
 
         vis.renderVis();
@@ -257,9 +258,7 @@ class GeoMapNew {
         const boxLength = 12;
         const leftMargin = 10;
         // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
-        // const format = (strInput) => d3.format('.2~s')(strInput).replace(/G/, 'B');
-        let round = (val) => val > 100 ? Math.round(val) : val.toFixed(2);
-        let format = (val) => val >= 0 ? d3.format(',')(round(val)) : round(val);
+        const format = (strInput) => d3.format('.2~s')(strInput).replace(/G/, 'B');
 
         vis.legend.selectAll('.title-container')
             .data([vis.selected.indicator])
@@ -291,27 +290,15 @@ class GeoMapNew {
             .attr('font-size', `${boxLength - 1}px`)
             .attr('x', leftMargin + boxLength + 5)
             .attr('y', (d, i) => { return (i * boxLength) + 30 })
-            .text(d => {
-                if( isNaN(d)) {
-                    return d;
-                } else {
-                    // let rounded = Number(vis.indicatorScale.invert(d)).toFixed(0);
-                    // let test = vis.indicatorScale.invert(d);
-                    // d3.format('.2~s')(test.toString());
-                    let formatted = format(vis.indicatorScale.invert(d));
-                    return formatted;
-                }
-            });
+            .text(d => isNaN(d) ? d : format(vis.indicatorScale.invert(d)));
     }
 
     handleMouseEnter(e) {
         // TODO
-        console.log(e.target);
     }
 
     handleMouseLeave(e) {
         // TODO
-        console.log(e.target);
     }
 
 
