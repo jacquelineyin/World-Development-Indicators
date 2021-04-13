@@ -385,13 +385,70 @@ class GeoMap {
                            '#eff3ff';
     }
 
+    /**
+     * Purpose: Renders legend elems
+     */
     renderLegend() {
         let vis = this;
         const bins = [1, 0.8, 0.6, 0.4, 0.2, NaN];
         const boxLength = 12;
         const leftMargin = 10;
+
+        vis.renderLegendTitle(leftMargin);
+
+        vis.renderLegendColourBoxes(bins, boxLength, leftMargin);
+
+        vis.renderLegendLabels(bins, boxLength, leftMargin);
+    }
+
+    /**
+     * Purpose: Renders legend label for each tile bin
+    */
+    renderLegendLabels(bins, boxLength, leftMargin) {
+        let vis = this;
+
         // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
         const format = (strInput) => d3.format('.2~s')(strInput).replace(/G/, 'B');
+
+        const legendLabels = vis.legend.selectAll('.label');
+        legendLabels
+            .data(bins)
+            .join('text')
+            .attr('class', 'label')
+            .attr('font-size', `${boxLength - 1}px`)
+            .attr('x', leftMargin + boxLength + 5)
+            .attr('y', (d, i) => { return (i * boxLength) + 30; })
+            .text(d => isNaN(d) ? 'N/A' : format(vis.indicatorScale.invert(d)));
+    }
+
+    /**
+     * Purpose: Renders legend colour boxes
+     * @param {Array} bins : Array of legend items (i.e. scale bins)
+     * @param {Number} boxLength : length of legend box width/length
+     * @param {Number} leftMargin : padding of legend items from left side
+     */
+    renderLegendColourBoxes(bins, boxLength, leftMargin) {
+        let vis = this;
+
+        const legendBoxes = vis.legend.selectAll('.bin');
+        legendBoxes
+            .data(bins)
+            .join('rect')
+            .attr('class', 'bin info-legend-bins')
+            .attr('width', boxLength)
+            .attr('height', boxLength)
+            .attr('x', leftMargin)
+            .attr('y', (d, i) => { return (i * boxLength) + 20; })
+            .attr('fill', d => vis.getTileColor(d))
+            .attr('opacity', 0.7);
+    }
+
+    /**
+     * Purpose: Renders legend title (i.e. Currently selected indicator)
+     * @param {Number} leftMargin : padding of legend items from left side
+     */
+    renderLegendTitle(leftMargin) {
+        let vis = this;
 
         vis.legend.selectAll('.title-container')
             .data([vis.selected.indicator])
@@ -402,30 +459,12 @@ class GeoMap {
             .attr('x', leftMargin)
             .attr('y', 0)
             .html(d => `<div class='title'>${d}</div>`);
-
-        const legendBoxes = vis.legend.selectAll('.bin');
-        legendBoxes
-            .data(bins)
-            .join('rect')
-            .attr('class', 'bin info-legend-bins')
-            .attr('width', boxLength)
-            .attr('height', boxLength)
-            .attr('x', leftMargin)
-            .attr('y', (d, i) => { return (i * boxLength) + 20 })
-            .attr('fill', d => vis.getTileColor(d))
-            .attr('opacity', 0.7);
-
-        const legendLabels = vis.legend.selectAll('.label');
-        legendLabels
-            .data(bins)
-            .join('text')
-            .attr('class', 'label')
-            .attr('font-size', `${boxLength - 1}px`)
-            .attr('x', leftMargin + boxLength + 5)
-            .attr('y', (d, i) => { return (i * boxLength) + 30 })
-            .text(d => isNaN(d) ? 'N/A' : format(vis.indicatorScale.invert(d)));
     }
 
+    /**
+     * Purpose: handles mouseenter event
+     * @param {Event} e : native JS event (i.e. 'mouseenter')
+     */
     handleMouseEnter(e) {
         let vis = this;
 
@@ -460,6 +499,10 @@ class GeoMap {
         }
     }
 
+    /**
+     * Purpose: Handles mouseleave event
+     * @param {Event} e : native JS event (i.e. 'mouseleave')
+     */
     handleMouseLeave(e) {
         let vis = this;
 
