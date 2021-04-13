@@ -350,6 +350,7 @@ class BarChart {
       .attr('y', (d) => vis.getYPosOfBarLabel(d))
       .attr('display', d => isNaN(d.avg) ? 'block' : 'none')
       .attr('text-anchor', 'middle')
+      .attr('pointer-events', 'none')
       .text(d => isNaN(d.avg) ? 'N/A' : format(d.avg));
 
     // Exit
