@@ -1,18 +1,53 @@
 body {
   position: relative;
-  overflow: hidden;
   height: 100%;
+  overflow: hidden;
+  background: rgba(255, 248, 230, 0.5);
 }
 
 html {
-  overflow: hidden;
   margin: 0;
   padding: 0;
   height: 100%;
+  overflow: hidden;
+}
+
+p {
+  font-size: 14px;
+  text-align: center;
 }
 
 #landing, #viz {
   will-change: transform;
+  position: relative;
+}
+
+#landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+#viz {
+  overflow-y: auto;              
+  height: 100%; 
+  background: white;
+}
+
+#next-btn {
+  border-radius: 37px;
+  width: 140px;
+  height: 55px;
+  font-size: 17px;
+}
+
+#next-btn:hover, #next-btn:focus {
+  background-color: #ec3030;
+  color: white;
 }
 
 /** Chart Positioning */
@@ -25,7 +60,7 @@ html {
 #project-title {
   margin-top: 0px;
   margin-bottom: 15px;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 
 #chart-container {
@@ -87,11 +122,6 @@ html {
 /** Other */
 .material-icons {
   font-size: 15px;
-}
-
-.scroll {
-  min-height: 100vh;
-  position: relative;
 }
 
 #backBtn {

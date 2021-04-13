@@ -12,7 +12,7 @@ g.axis.y-axis.slider g.tick > text {
 }
 .y-axis text {
   font-size: 13px;
-  fill: #6b6b6b;
+  fill: black;
 }
 
 .y-axis .domain {
