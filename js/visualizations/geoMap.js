@@ -31,77 +31,30 @@ class GeoMap {
     initVis() {
         let vis = this;
 
-        vis.countryCodes = vis.constants.countryCodeMapper.getAllAlpha3s();
-        // Round averages and format them with commas for thousands
-        let round = (val) => val > 100 ? Math.round(val) : val.toFixed(2);
-        vis.format = (val) => val >= 0 ? d3.format(',')(round(val)) : round(val);
+        // Set up initial constants
+        vis.initOtherConstants();
 
         // Initialize map and retrieve raster layer
-        vis.map = L.map('map', {
-            minZoom: vis.config.zoom.min,
-        }).setView(vis.config.defaultCoords, 2);
-
-        L.Icon.Default.imagePath = "images/";
-        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            zoomOffset: -1,
-            tileSize: 512,
-            attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            accessToken: 'sk.eyJ1IjoiYnJldHRwYXN1bGEiLCJhIjoiY2ttaThjenpqMGVyMDJzcmh6d2w5anQ2aiJ9.x43UBzwi3iRfsZSSb5ubIQ'
-        }).addTo(vis.map);
-
-        // Initialize svg to add to map
-        L.svg({ clickable: true }).addTo(vis.map)// we have to make the svg layer clickable
+        vis.initLeafletMap();
 
         // Legend
         // https://leafletjs.com/examples/choropleth/
-        vis.legendContainer = L.control({ position: 'bottomleft' });
-
-        vis.legendContainer.onAdd = function () {
-            const div = L.DomUtil.create('div', 'info-legend-container');
-            const svg = d3.select(div).append('svg');
-            vis.legend = svg.append('g').attr('class', 'legend');
-            const legendBackground = vis.legend.append('rect');
-            legendBackground
-                .attr('class', 'legend-background')
-                .attr('width', '100%')
-                .attr('height', '100%')
-                .attr('x', 0)
-                .attr('y', 0)
-                .attr('rx', 6)
-                .attr('ry', 6)
-                .attr('fill', 'white')
-                .attr('fill-opacity', 0.5);
-
-            return div;
-        };
-
-        vis.legendContainer.addTo(vis.map);
+        vis.initLegendContainer();
 
 
-
-
-        // Initialize indicator scale
-        vis.indicatorScale = d3.scaleLinear()
-            .range([0, 1]);
-
-        vis.overlay = d3.select(vis.map.getPanes().overlayPane);
-        vis.svg = vis.overlay.select('svg')
-            .attr('pointer-events', 'auto');
+        // Initialize svg to add to map
+        vis.initVisSvg();
 
         // Append group element that will contain our actual chart 
         vis.chart = vis.svg.append('g')
             .attr('class', 'leaflet-zoom-hide');
 
-        // Use Leaflets projection API for drawing svg path (creates a stream of projected points)
-        const projectPoint = function (x, y) {
-            const point = vis.map.latLngToLayerPoint(new L.LatLng(y, x))
-            this.stream.point(point.x, point.y);
-        }
+        // Initialize scale
+        vis.indicatorScale = d3.scaleLinear()
+            .range([0, 1]);
 
-        // Use d3's custom geo transform method to implement the above
-        vis.projection = d3.geoTransform({ point: projectPoint })
-        // creates geopath from projected points (SVG)
-        vis.geoPath = d3.geoPath().projection(vis.projection);
+        // Use Leaflets projection API for drawing svg path (creates a stream of projected points)
+        vis.initGeoPathGenerator();
 
     }
 
@@ -190,6 +143,86 @@ class GeoMap {
     }
 
     // ------------------------------ Helpers ---------------------------------- //
+
+    initGeoPathGenerator() {
+        let vis = this;
+        
+        const projectPoint = function (x, y) {
+            const point = vis.map.latLngToLayerPoint(new L.LatLng(y, x));
+            this.stream.point(point.x, point.y);
+        };
+
+        // Use d3's custom geo transform method to implement the above
+        vis.projection = d3.geoTransform({ point: projectPoint });
+        // creates geopath from projected points (SVG)
+        vis.geoPath = d3.geoPath().projection(vis.projection);
+    }
+
+    initVisSvg() {
+        let vis = this;
+
+        L.svg({ clickable: true }).addTo(vis.map);
+
+        vis.overlay = d3.select(vis.map.getPanes().overlayPane);
+
+        // Set svg as being able to be interacted with
+        vis.svg = vis.overlay.select('svg')
+            .attr('pointer-events', 'auto');
+    }
+
+    initLegendContainer() {
+        let vis = this;
+
+        vis.legendContainer = L.control({ position: 'bottomleft' });
+
+        vis.legendContainer.onAdd = function () {
+            const div = L.DomUtil.create('div', 'info-legend-container');
+            const svg = d3.select(div).append('svg');
+            vis.legend = svg.append('g').attr('class', 'legend');
+            const legendBackground = vis.legend.append('rect');
+            legendBackground
+                .attr('class', 'legend-background')
+                .attr('width', '100%')
+                .attr('height', '100%')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('rx', 6)
+                .attr('ry', 6)
+                .attr('fill', 'white')
+                .attr('fill-opacity', 0.5);
+
+            return div;
+        };
+
+        vis.legendContainer.addTo(vis.map);
+    }
+
+    initLeafletMap() {
+        let vis = this;
+
+        vis.map = L.map('map', {
+            minZoom: vis.config.zoom.min,
+        }).setView(vis.config.defaultCoords, 2);
+
+        L.Icon.Default.imagePath = "images/";
+        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            zoomOffset: -1,
+            tileSize: 512,
+            attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            accessToken: 'sk.eyJ1IjoiYnJldHRwYXN1bGEiLCJhIjoiY2ttaThjenpqMGVyMDJzcmh6d2w5anQ2aiJ9.x43UBzwi3iRfsZSSb5ubIQ'
+        }).addTo(vis.map);
+    }
+
+    initOtherConstants() {
+        let vis = this;
+
+        vis.countryCodes = vis.constants.countryCodeMapper.getAllAlpha3s();
+
+        // Round averages and format them with commas for thousands
+        let round = (val) => val > 100 ? Math.round(val) : val.toFixed(2);
+        vis.format = (val) => val >= 0 ? d3.format(',')(round(val)) : round(val);
+    }
+
 
     getBorderColour(data) {
         let vis = this;
