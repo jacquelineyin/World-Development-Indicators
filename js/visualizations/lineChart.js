@@ -40,6 +40,7 @@ class LineChart {
     vis.xScale = d3.scaleTime()
       .range([0, vis.width]);
 
+    // yScalePos for positive domains, yScaleNeg for negative domains
     vis.yScalePos = d3.scaleLinear()
       .range([vis.height, 0]);
 
@@ -47,7 +48,6 @@ class LineChart {
       .range([vis.height, 0]);
 
     // Initialize axes
-
     // Replace the 'G' (Giga) SI-prefix of d3 with 'B' to stand for 'Billion' when formatting
     let format = (strInput) => d3.format('.2~s')(strInput).replace(/G/, 'B');
 
@@ -57,6 +57,7 @@ class LineChart {
       .tickPadding(10)
       .tickFormat(d3.timeFormat('%Y'));
 
+    // yAxisPos for positive domains, yAxisNeg for negative domains
     vis.yAxisPos = d3.axisLeft(vis.yScalePos)
       .tickSize(-vis.width - 20)
       .tickSizeOuter(0)
@@ -86,14 +87,12 @@ class LineChart {
     vis.yAxisG = vis.chart.append('g')
       .attr('class', 'axis y-axis');
 
-    // We need to make sure that the tracking area is on top of other chart elements
     vis.lines = vis.chart.append('g')
       .attr('class', 'lines');
 
     vis.countries = vis.lines.append('g')
       .attr('class', 'countries');
 
-    // Need to fix redrawing
     vis.circles = vis.lines.append('g')
       .attr('class', 'circles')
 
@@ -124,9 +123,11 @@ class LineChart {
     const filteredSelectedData = vis.data.filter(d => d.IndicatorName === selectedIndicator
       && selectedCountries.includes(d.CountryName) && selectedYears.includes(d.Year));
     vis.negativeDomains = ['Net official development assistance and official aid received (current US$)', 'Inflation, GDP deflator (annual %)'];
-    // group data by country
+    
+    // Group data by country
     const countryGroups = d3.groups(filteredSelectedData, d => d.CountryName);
-    // re-arrange data
+    
+    // Re-arrange data
     vis.formattedData = [];
 
     countryGroups.forEach(g => {
@@ -161,6 +162,8 @@ class LineChart {
     // Set the scale input domains
     vis.colorScale.domain(vis.selected.allSelectedAreas);
     vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
+
+    // yScalePos for positive domains, yScaleNeg for negative domains
     vis.yScalePos.domain([0, d3.max(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value)]);
     vis.yScaleNeg.domain(d3.extent(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value));
 
@@ -170,6 +173,7 @@ class LineChart {
   renderVis() {
     let vis = this;
 
+    // Dynamic y-axis title
     vis.chart.selectAll('.y-axis-title')
       .data([vis.selected.indicator])
       .join('text')
@@ -180,6 +184,7 @@ class LineChart {
       .style('font-weight', 'bold')
       .text('Total ' + vis.selected.indicator);
 
+    // Create legend color boxes
     vis.legend.selectAll('.legend-box')
       .data(vis.selected.allSelectedAreas, d => d)
       .join('rect')
@@ -192,6 +197,7 @@ class LineChart {
       .attr('height', 10)
       .style('fill', d => vis.getColourForLegend(d));
 
+    // Create country labels for colored boxes
     vis.legend.selectAll('.box-label')
       .data(vis.selected.allSelectedAreas, d => d)
       .join('text')
@@ -200,6 +206,7 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 65)
       .text(d => d);
 
+    // Values for comparing countries
     vis.values.selectAll('text')
       .data(vis.formattedData, d => d.values)
       .join('text')
@@ -275,7 +282,8 @@ class LineChart {
 
     const mplCircleEnter = mplCircle.enter().append('circle')
       .attr('class', 'mouseCircle');
-
+    
+    // Create data value tracking circle for mouse line
     mplCircleEnter.merge(mplCircle)
       .attr('r', vis.config.circle.radius * 2.5)
       .style('stroke', d => vis.getColour(d))
@@ -296,21 +304,20 @@ class LineChart {
 
     mplText.exit().remove();
 
-
-
-    // append a rect to catch mouse movements on canvas
+    // Append a rect to catch mouse movements on canvas
     const rect = mouseG.merge(mouseGEnter).selectAll('.rect-overlay')
       .data(d => [d], d => d);
 
     const rectEnter = rect.enter().append('rect')
       .attr('class', 'rect-overlay');
-
+    
+    // Hide mouse line, text and circles on mouse leave, show on mouse enter
     rectEnter.merge(rect)
-      .attr('width', vis.width) // can't catch mouse events on a g element
+      .attr('width', vis.width)
       .attr('height', vis.height)
       .attr('fill', 'none')
       .attr('pointer-events', 'all')
-      .on('mouseleave', () => { // on mouse out hide line, circles and text
+      .on('mouseleave', () => {
         d3.select('.mouse-line')
           .style('display', 'none');
         d3.selectAll('.mouse-per-line circle')
@@ -322,7 +329,7 @@ class LineChart {
         d3.select('.yearValue')
           .style('display', 'none');
       })
-      .on('mouseenter', () => { // on mouse in show line, circles and text
+      .on('mouseenter', () => {
         d3.select('.mouse-line')
           .style('display', 'block');
         d3.selectAll('.mouse-per-line circle')
@@ -334,24 +341,29 @@ class LineChart {
         d3.select('.yearValue')
           .style('display', 'block');
       })
-      .on('mousemove', function (event) { // mouse moving over canvas
+      .on('mousemove', function (event) {
         const mouse = d3.pointer(event, this)[0];
         const formatNumbers = d3.format(',');
 
         d3.selectAll('.mouse-per-line')
           .attr('transform', function (d, i) {
+            // Get date that corresponds to current mouse x-coordinate
             const xDate = vis.xScale.invert(mouse);
             const bisect = d3.bisector(d => d.year).left;
+
+            // Find nearest data point
             const idx = bisect(d.values, xDate);
             const item = d.values[idx];
             if (item) {
               const currentYear = item.Year;
 
               if (vis.negativeDomains.includes(vis.selected.indicator)) {
+                // Get value of data value tracking circles on mouse line
                 d3.select(this).select('text')
                   .text(d => item.value !== null || item.value === 0 ?
                     formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(item.value)).toFixed(2)) : null);
-
+                
+                // Get values of comparing countries
                 d3.select('.values').selectAll('.value')
                   .attr('x', vis.width + 205)
                   .attr('y', (d, i) => {
@@ -362,10 +374,12 @@ class LineChart {
                     : d.countryName + ': N/A');
 
               } else {
+                // Get value of data value tracking circles on mouse line
                 d3.select(this).select('text')
                   .text(d => item.value !== null || item.value === 0 ?
                     formatNumbers(vis.yScalePos.invert(vis.yScalePos(item.value)).toFixed(2)) : null);
 
+                // Get values of comparing countries
                 d3.select('.values').selectAll('.value')
                   .attr('x', vis.width + 205)
                   .attr('y', (d, i) => {
@@ -376,11 +390,13 @@ class LineChart {
                     : d.countryName + ': N/A');
               }
 
+              // Get current year of mouseover
               if (currentYear) {
                 d3.select('.yearValue')
                   .text(currentYear);
               }
 
+              // Draws mouse line
               vis.svg.select('.mouse-line')
                 .attr('d', function () {
                   var data = 'M' + vis.xScale(item.year) + ',' + vis.height;
@@ -390,7 +406,8 @@ class LineChart {
 
               let circle = d3.select(this).selectAll('.mouseCircle');
               circle.attr('visibility', 'visible');
-
+              
+              // Check if indicator has a negative domain, switch scales if yes
               if (item.value !== null || item.value === 0) {
                 if (vis.negativeDomains.includes(vis.selected.indicator)) {
                   return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
@@ -398,6 +415,8 @@ class LineChart {
                   return `translate(${vis.xScale(item.year)},${vis.yScalePos(item.value)})`;
                 }
               }
+
+              // No translate and circles hidden if values are null
               circle.attr('visibility', 'hidden');
               return 'translate(0,0)'
             }
@@ -406,7 +425,7 @@ class LineChart {
 
     rect.exit().remove();
 
-    // Update the axes
+    // Update the axes depending on domain
     vis.xAxisG.call(vis.xAxis.ticks(d3.timeYear));
     if (vis.negativeDomains.includes(vis.selected.indicator)) {
       vis.yAxisG.call(vis.yAxisNeg)

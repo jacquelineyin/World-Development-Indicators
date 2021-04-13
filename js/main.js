@@ -220,7 +220,7 @@ let handleSelectRegion = (_region) => {
  */
 let setTestSelectedItems = () => {
   // test value timeInterval
-  const defaultYears = [...new Set(data.map(d => d.Year))].slice(0, 6);
+  const defaultYears = [...new Set(data.map(d => d.Year))].slice(30,51);
   selected.selectedYears = defaultYears;
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length - 1] };
 
@@ -230,6 +230,6 @@ let setTestSelectedItems = () => {
   selected.addComparisonArea(countries.PERU);
 
   // test value indicator
-  selected.setIndicator(indicators.MOBILE_CELLULAR_SUBSCRIPTIONS);
+  selected.setIndicator(indicators.POPULATION_TOTAL);
 }
 
