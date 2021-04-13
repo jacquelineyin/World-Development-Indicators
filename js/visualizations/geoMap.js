@@ -98,6 +98,9 @@ class GeoMap {
 
     // ------------------------------ Helpers ---------------------------------- //
 
+    /**
+     * Purpose: Creates a d3 geographic path generator
+     */
     initGeoPathGenerator() {
         let vis = this;
 
@@ -112,6 +115,9 @@ class GeoMap {
         vis.geoPath = d3.geoPath().projection(vis.projection);
     }
 
+    /**
+     * Purpose: Initializes an svg for the map visualization and attaches it to leaflet map
+     */
     initVisSvg() {
         let vis = this;
 
@@ -124,6 +130,9 @@ class GeoMap {
             .attr('pointer-events', 'auto');
     }
 
+    /**
+     * Purpose: Initializes legend background svg and attaches it to leaflet control layer
+     */
     initLegendContainer() {
         let vis = this;
 
@@ -151,6 +160,9 @@ class GeoMap {
         vis.legendContainer.addTo(vis.map);
     }
 
+    /**
+     * Purpose: Initializes a leaflet map to which we attach an svg for d3
+     */
     initLeafletMap() {
         let vis = this;
 
@@ -167,6 +179,9 @@ class GeoMap {
         }).addTo(vis.map);
     }
 
+    /**
+     * Purpose: Initializes class constants not given in config (i.e. 'countryCodes' of all countries)
+     */
     initOtherConstants() {
         let vis = this;
 
@@ -177,7 +192,9 @@ class GeoMap {
         vis.format = (val) => val >= 0 ? d3.format(',')(round(val)) : round(val);
     }
 
-    
+    /**
+     * Purpose: Updates scale domain
+     */
     updateDomain() {
         let vis = this;
 
@@ -189,6 +206,11 @@ class GeoMap {
         vis.indicatorScale.domain([min, max]);
     }
 
+    /**
+     * Purpose: Updates map bounds. 
+     *          If no valid geoJsonLayer for selected countries is available (due to no geoInfo),
+     *          resets view to default coordinates
+     */
     updateMapBounds() {
         let vis = this;
 
@@ -199,6 +221,9 @@ class GeoMap {
             vis.map.setView(vis.config.defaultCoords, 1);
     }
 
+    /**
+     * Purpose: Updates all data used in map vis
+     */
     updateData() {
         let vis = this;
 
@@ -224,40 +249,53 @@ class GeoMap {
         }
     }
 
+    /**
+     * Purpose: Renders geoPath of selected countries
+     *          This is rendered after all countries are rendered
+     *          This allows us to prevent occlusion of shared borders
+     */
     renderSelectedCountries() {
         let vis = this;
 
         const selectedCountriesPaths = vis.chart.selectAll(".map-selected-country");
         selectedCountriesPaths
-            .data(vis.selectedCountries, d => d.id)
+                .data(vis.selectedCountries, d => d.id)
             .join("path")
-            .attr("class", d => d.id ? `map-selected-country map-selected-country-${d.id}` : 'map-selected-country')
-            .attr("cursor", "default")
-            .attr("d", vis.geoPath)
-            .attr("fill", "none")
-            .attr("stroke", d => vis.getBorderColour(d))
-            .attr("stroke-width", d => vis.getStrokeWidth(d))
-            .on('mouseenter', d => vis.handleMouseEnter(d))
-            .on('mouseleave', d => vis.handleMouseLeave(d));
+                .attr("class", d => d.id ? `map-selected-country map-selected-country-${d.id}` : 'map-selected-country')
+                .attr("cursor", "default")
+                .attr("d", vis.geoPath)
+                .attr("fill", "none")
+                .attr("stroke", d => vis.getBorderColour(d))
+                .attr("stroke-width", d => vis.getStrokeWidth(d))
+                .on('mouseenter', d => vis.handleMouseEnter(d))
+                .on('mouseleave', d => vis.handleMouseLeave(d));
     }
 
+    /**
+     * Purpose: Renders geoPath of all countries, colouring the borders white
+     */
     renderAllCountriesWithWhiteBorder() {
         let vis = this;
 
         const countriesPaths = vis.chart.selectAll(".map-country");
         countriesPaths
-            .data(vis.countries.features)
+                .data(vis.countries.features)
             .join("path")
-            .attr("class", d => d.id ? `map-country map-country-${d.id}` : 'map-country')
-            .attr("cursor", "default")
-            .attr("d", vis.geoPath)
-            .attr("fill", d => vis.getFillColour(d))
-            .attr("fill-opacity", 0.5)
-            .attr("stroke", "white")
-            .on('mouseenter', d => vis.handleMouseEnter(d))
-            .on('mouseleave', d => vis.handleMouseLeave(d));
+                .attr("class", d => d.id ? `map-country map-country-${d.id}` : 'map-country')
+                .attr("cursor", "default")
+                .attr("d", vis.geoPath)
+                .attr("fill", d => vis.getFillColour(d))
+                .attr("fill-opacity", 0.5)
+                .attr("stroke", "white")
+                .on('mouseenter', d => vis.handleMouseEnter(d))
+                .on('mouseleave', d => vis.handleMouseLeave(d));
     }
 
+    /**
+     * Purpose: Returns a border colour depending on selected state
+     * @param {Object} data : geoJson object or an object with id: <Integer> (countryCode)
+     * @returns {string} representing a hex colour
+     */
     getBorderColour(data) {
         let vis = this;
         const { countryCodeMapper, colourPalette } = vis.constants;
