@@ -8,7 +8,7 @@ class GeoMapNew {
             zoom: { min: 1, },
             defaultCoords: [36.1408, 5.3536],
             defaultBorder: {
-                colour: "white",
+                colour: 'white',
                 strokeWidth: 1,
             }
         };
@@ -59,8 +59,8 @@ class GeoMapNew {
                 .attr('height', '100%')
                 .attr('x', 0)
                 .attr('y', 0)
-                .attr("rx", 6)
-                .attr("ry", 6)
+                .attr('rx', 6)
+                .attr('ry', 6)
                 .attr('fill', 'white')
                 .attr('fill-opacity', 0.5);
 
@@ -78,12 +78,12 @@ class GeoMapNew {
 
         vis.overlay = d3.select(vis.map.getPanes().overlayPane);
         vis.svg = vis.overlay.select('svg')
-            .attr("pointer-events", "auto");
+            .attr('pointer-events', 'auto');
 
         // Append group element that will contain our actual chart 
         // and position it according to the given margin config
         vis.chart = vis.svg.append('g')
-            .attr("class", "leaflet-zoom-hide");
+            .attr('class', 'leaflet-zoom-hide');
 
         // Use Leaflets projection API for drawing svg path (creates a stream of projected points)
         const projectPoint = function (x, y) {
@@ -148,9 +148,6 @@ class GeoMapNew {
             vis.chart.selectAll(".map-selected-country").attr('d', vis.geoPath)
         };
 
-
-
-
         const countriesPaths = vis.chart.selectAll(".map-country");
         countriesPaths
             .data(vis.countries.features)
@@ -179,6 +176,8 @@ class GeoMapNew {
         vis.renderLegend();
 
     }
+
+    // ------------------------------ Helpers ---------------------------------- //
 
     getBorderColour(data) {
         let vis = this;
