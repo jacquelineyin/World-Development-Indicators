@@ -73,17 +73,22 @@ class GeoMapNew {
     updateVis() {
         let vis = this;
 
+        // If a legend exists, remove to re-render on update
+        if (this.legend) {
+            d3.select('.info.legend.leaflet-control').remove();
+        }
+
         // Prepare data
         vis.countryCodesOfSelected =
             vis.constants.countryCodeMapper.getCountryNumCodes(vis.selected.allSelectedAreas);
-        vis.alpha3CodesOfSelected = 
+        vis.alpha3CodesOfSelected =
             vis.constants.countryCodeMapper.getCountryAlpha3s(vis.selected.allSelectedAreas);
-        
+
         vis.selectedCountries = vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(d.id));
-        
+
         // Filter data by selected years and selected indicator
         const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
-        
+
         // Aggregate data by country and calculate the mean
         vis.groupedData = d3.rollup(filteredData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
 
@@ -114,6 +119,34 @@ class GeoMapNew {
             vis.chart.selectAll(".map-country").attr('d', vis.geoPath);
             vis.chart.selectAll(".map-selected-country").attr('d', vis.geoPath)
         };
+
+        // Legend
+        // https://leafletjs.com/examples/choropleth/
+        vis.legend = L.control({ position: 'bottomleft' });
+
+        vis.legend.onAdd = function () {
+
+            const div = L.DomUtil.create('div', 'info legend');
+            const bins = [1, 0.8, 0.6, 0.4, 0.2, NaN];
+
+            div.innerHTML += `${vis.selected.indicator}<br>`;
+
+            // Loop through bins, adding a legend entry for each
+            for (let i = 0; i < bins.length; i++) {
+                if (bins[i]) {
+                    div.innerHTML +=
+                        '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i> ' + Number(vis.indicatorScale.invert(bins[i])).toFixed(0).toLocaleString() + '<br>';
+                } else {
+                    div.innerHTML += '<i style="background:' + GeoMap.getTileColor(bins[i]) + '"></i>No data<br>';
+                }
+            }
+
+            return div;
+        };
+
+        vis.legend.addTo(vis.map);
+
+
 
         const countriesPaths = vis.chart.selectAll(".map-country");
         countriesPaths
@@ -160,7 +193,7 @@ class GeoMapNew {
 
     getFillColour(data) {
         let vis = this;
-        
+
         let alpha3 = vis.constants.countryCodeMapper.convertToAlpha3(data.id);
         let num = vis.indicatorScale(vis.groupedData.get(alpha3));
 
@@ -198,17 +231,17 @@ class GeoMapNew {
 
         const id = `.map-selected-country-${countryCode}`;
         vis.chart.selectAll(id)
-            .attr("stroke", vis.getBorderColour({id: countryCode}));
+            .attr("stroke", vis.getBorderColour({ id: countryCode }));
     }
 
     getTileColor(d) {
         return d > 0.8 ? '#08519c' :
-               d > 0.6 ? '#3182bd' :
-               d > 0.4 ? '#6baed6' :
-               d > 0.2 ? '#bdd7e7' :
-              isNaN(d) ? '#808080' :
-                         '#eff3ff';
-      }
+            d > 0.6 ? '#3182bd' :
+                d > 0.4 ? '#6baed6' :
+                    d > 0.2 ? '#bdd7e7' :
+                        isNaN(d) ? '#808080' :
+                            '#eff3ff';
+    }
 
 
 }
