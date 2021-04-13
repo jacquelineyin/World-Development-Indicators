@@ -210,6 +210,6 @@ let setTestSelectedItems = () => {
   selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
 
   // test value indicator
-  selected.setIndicator(indicators.POPULATION_TOTA);
+  selected.setIndicator(indicators.POPULATION_TOTAL);
 }
 

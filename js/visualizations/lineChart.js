@@ -205,7 +205,7 @@ class LineChart {
       .attr('y', vis.config.containerHeight - 65)
       .text(d => d);
 
-    // 
+    // Values for comparing countries
     vis.values.selectAll('text')
       .data(vis.formattedData, d => d.values)
       .join('text')
