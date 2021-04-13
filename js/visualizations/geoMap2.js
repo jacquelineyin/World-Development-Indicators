@@ -26,6 +26,8 @@ class GeoMapNew {
     initVis() {
         let vis = this;
 
+        vis.countryCodes = vis.constants.countryCodeMapper.getAllAlpha3s();
+
         // Initialize map and retrieve raster layer
         vis.map = L.map('map', {
             minZoom: vis.config.zoom.min,
@@ -71,36 +73,34 @@ class GeoMapNew {
     updateVis() {
         let vis = this;
 
-        vis.countryCodes = vis.constants.countryCodeMapper.getAllAlpha3s();
-        console.log(vis.allAlpha3s);
         vis.countryCodesOfSelected =
             vis.constants.countryCodeMapper.getCountryNumCodes(vis.selected.allSelectedAreas);
         vis.alpha3CodesOfSelected = 
             vis.constants.countryCodeMapper.getCountryAlpha3s(vis.selected.allSelectedAreas);
         // Prepare data
         vis.selectedCountries = vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(parseInt(d.id)));
+        
         // Filter data by selected years and selected indicator
         const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
-
+        
         // Aggregate data by country and calculate the mean
         vis.groupedData = d3.rollup(filteredData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
-        console.log(vis.groupedData);
 
         // Remove countries for which we do not have a corresponding vector tile, e.g. "WLD"
         for (let countryCode of vis.groupedData.keys()) {
-            if (!vis.countryCodes.includes(countryCode)) {
+            if (countryCode === "WLD") {
                 vis.groupedData.delete(countryCode);
             }
         }
-
-        console.log(vis.groupedData.values());
 
         // Set map bounds
         let selectedGJsonLayer = L.geoJson(vis.selectedCountries);
         vis.map.fitBounds(selectedGJsonLayer.getBounds());
 
         // Update domains
-        vis.indicatorScale.domain(d3.extent(vis.groupedData.values()))
+        let [min, max] = d3.extent(vis.groupedData.values());
+        min = min > 0 ? 0 : min;
+        vis.indicatorScale.domain([min, max])
 
         vis.renderVis();
     }
@@ -123,17 +123,21 @@ class GeoMapNew {
             .attr("d", vis.geoPath)
             .attr("fill", d => vis.getFillColour(d))
             .attr("fill-opacity", 0.5)
-            .attr("stroke", d => vis.getBorderColour(d));
+            .attr("stroke", "white");
 
         const selectedCountriesPaths = vis.chart.selectAll(".map-selected-country");
         selectedCountriesPaths
             .data(vis.selectedCountries, d => d.id)
             .join("path")
-            .attr("class", "map-selected-country")
+            // .attr("class", d => `map-selected-country map-selected-country-${d.id}`)
+            .attr("class", d => { 
+                let id = parseInt(d.id);
+                return `map-selected-country map-selected-country-${id}`})
             .attr("cursor", "default")
             .attr("d", vis.geoPath)
             .attr("fill", "none")
-            .attr("stroke", d => vis.getBorderColour(d));
+            .attr("stroke", d => vis.getBorderColour(d))
+            .attr("stroke-width", d => vis.getStrokeWidth(d));
 
         // reset whenever map is moved
         vis.map.on('zoomend', onZoom);
@@ -161,10 +165,45 @@ class GeoMapNew {
         
         let id = parseInt(data.id);
         let alpha3 = vis.constants.countryCodeMapper.convertToAlpha3(id);
-        console.log(vis.groupedData.get(alpha3))
         let num = vis.indicatorScale(vis.groupedData.get(alpha3));
-        console.log(num);
+
         return vis.getTileColor(num);
+    }
+
+    getStrokeWidth(data) {
+        let vis = this;
+
+        let id = parseInt(data.id);
+
+        if (vis.countryCodesOfSelected.includes(id)) {
+            return vis.config.defaultBorder.strokeWidth * 2;
+        } else {
+            return vis.config.defaultBorder.strokeWidth;
+        }
+    }
+
+    emphasizeCountry(country) {
+        let vis = this;
+
+        const { countryCodeMapper } = vis.constants;
+        let countryCode = countryCodeMapper.getCountryNumCode(country);
+        console.log(countryCode);
+
+        const id = `.map-selected-country-${countryCode}`;
+        vis.chart.selectAll(id)
+            .attr("stroke", "black");
+    }
+
+    deEmphasizeCountry(country) {
+        let vis = this;
+
+        const { countryCodeMapper } = vis.constants;
+        let countryCode = countryCodeMapper.getCountryNumCode(country);
+        console.log(countryCode);
+
+        const id = `.map-selected-country-${countryCode}`;
+        vis.chart.selectAll(id)
+            .attr("stroke", vis.getBorderColour({id: countryCode}));
     }
 
     getTileColor(d) {

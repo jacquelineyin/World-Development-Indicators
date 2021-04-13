@@ -69,7 +69,7 @@ d3.csv('data/Dataset.csv').then(_data => {
   focusedAreaWidget.createSelectFocusArea();
   comparisonWidget.updateComparisonSection();
 
-  //Initialize views
+  // Initialize views
   // Load in GeoJSON data and initialize map view
   // d3.json("./data/countries.geojson").then(geoJsonData => { 
   //   map = new GeoMap(data, geoJsonData, selected);
@@ -84,14 +84,7 @@ d3.csv('data/Dataset.csv').then(_data => {
     map.updateVis();
   });
 
-  // d3.json("https://unpkg.com/world-atlas@1/world/110m.json").then(world => {
-  //   console.log(world);
-  //   // let countriesT = world.object.countries;
-  //   map = new GeoMapNew({
-  //     parentElement: "#map"
-  //   }, data, world, selected);
-  //   map.updateVis();
-  // });
+
 
   // Initialize the wedge view
   wedgeView = new WedgeView(data, selected, dispatcher, dispatcherEvents);
@@ -174,11 +167,13 @@ dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
 
 dispatcher.on(dispatcherEvents.BAR_HOVER, countryName => {
   // TODO map
+  map.emphasizeCountry(countryName);
   lineChart.emphasizeLine(countryName);
 })
 
 dispatcher.on(dispatcherEvents.BAR_UNHOVER, countryName => {
   //TODO map
+  map.deEmphasizeCountry(countryName);
   lineChart.deEmphasizeLine(countryName);
 })
 
