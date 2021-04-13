@@ -27,6 +27,9 @@ class GeoMapNew {
         let vis = this;
 
         vis.countryCodes = vis.constants.countryCodeMapper.getAllAlpha3s();
+        // Round averages and format them with commas for thousands
+        let round = (val) => val > 100 ? Math.round(val) : val.toFixed(2);
+        vis.format = (val) => val >= 0 ? d3.format(',')(round(val)) : round(val);
 
         // Initialize map and retrieve raster layer
         vis.map = L.map('map', {
@@ -153,27 +156,27 @@ class GeoMapNew {
         countriesPaths
             .data(vis.countries.features)
             .join("path")
-            .attr("class", d => `map-country map-country-${d.id}`)
+            .attr("class", d => d.id ? `map-country map-country-${d.id}` : 'map-country')
             .attr("cursor", "default")
             .attr("d", vis.geoPath)
             .attr("fill", d => vis.getFillColour(d))
             .attr("fill-opacity", 0.5)
             .attr("stroke", "white")
-            .on('mouseenter', vis.handleMouseEnter)
-            .on('mouseleave', vis.handleMouseLeave);
+            .on('mouseenter', d => vis.handleMouseEnter(d))
+            .on('mouseleave', d => vis.handleMouseLeave(d));
 
         const selectedCountriesPaths = vis.chart.selectAll(".map-selected-country");
         selectedCountriesPaths
             .data(vis.selectedCountries, d => d.id)
             .join("path")
-            .attr("class", d => `map-selected-country map-selected-country-${d.id}`)
+            .attr("class", d => d.id ? `map-selected-country map-selected-country-${d.id}` : 'map-selected-country')
             .attr("cursor", "default")
             .attr("d", vis.geoPath)
             .attr("fill", "none")
             .attr("stroke", d => vis.getBorderColour(d))
             .attr("stroke-width", d => vis.getStrokeWidth(d))
-            .on('mouseenter', vis.handleMouseEnter)
-            .on('mouseleave', vis.handleMouseLeave);
+            .on('mouseenter', d => vis.handleMouseEnter(d))
+            .on('mouseleave', d => vis.handleMouseLeave(d));
 
         // reset whenever map is moved
         vis.map.on('zoomend', onZoom);
@@ -224,7 +227,6 @@ class GeoMapNew {
 
         const { countryCodeMapper } = vis.constants;
         let countryCode = countryCodeMapper.getCountryNumCode(country);
-        console.log(countryCode);
 
         const id = `.map-selected-country-${countryCode}`;
         vis.chart.selectAll(id)
@@ -236,7 +238,6 @@ class GeoMapNew {
 
         const { countryCodeMapper } = vis.constants;
         let countryCode = countryCodeMapper.getCountryNumCode(country);
-        console.log(countryCode);
 
         const id = `.map-selected-country-${countryCode}`;
         vis.chart.selectAll(id)
@@ -294,11 +295,54 @@ class GeoMapNew {
     }
 
     handleMouseEnter(e) {
-        // TODO
+        let vis = this;
+
+        const classes = e.target.classList;
+        const countryCode = parseInt(classes[1].split('-')[2]);
+        let classOfInterest = vis.countryCodesOfSelected.includes(countryCode) ? 'map-selected-country-' : 'map-country-';
+        classOfInterest += countryCode;
+        d3.selectAll(`.${classOfInterest}`)
+            .attr("stroke", "black");
+
+
+        if (!isNaN(countryCode)) {
+            const { countryCodeMapper, countries } = vis.constants;
+
+            const { indicator, timeInterval } = vis.selected;
+            let alpha3 = countryCodeMapper.convertToAlpha3(countryCode);
+            let average = vis.groupedData.get(alpha3);
+            average = average ? vis.format(average) : 'N/A'
+            let key = countryCodeMapper.getKey(countryCode);
+            // console.log(key);
+            const countryName = countries[key];
+
+            d3.select('#tooltip')
+                .attr('display', true)
+                .style('top', `${e.clientY}px`)
+                .style('left', `${e.clientX}px`)
+                .html(`<strong>${countryName}</strong><br>
+                  <i>${timeInterval.min}-${timeInterval.max}</i><br>
+                    ${'Average ' + indicator + ':'}<br>
+                    ${'   ' + average}`);
+        }
     }
 
     handleMouseLeave(e) {
+        let vis = this;
         // TODO
+        const classes = e.target.classList;
+        let countryCode = parseInt(classes[1].split('-')[2]);
+        let classOfInterest = vis.countryCodesOfSelected.includes(countryCode) ? 'map-selected-country-' : 'map-country-';
+        classOfInterest += countryCode;
+        // console.log(countryCode, isNaN(countryCode));
+
+        if (!isNaN(countryCode)) {
+            d3.select('#tooltip')
+                .attr('display', false);
+
+            d3.selectAll(`.${classOfInterest}`)
+                .attr("stroke", () => vis.getBorderColour({ id: countryCode }));
+        }
     }
 
 

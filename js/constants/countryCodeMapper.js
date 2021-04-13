@@ -913,4 +913,18 @@ class CountryCodeMapper {
         }
         return alpha3s;
     }
+
+    getKey(_countryCode) {
+        const entries = Object.entries(this);
+        for (let entry of entries) {
+            let key = entry[0];
+            let codeObj = entry[1];
+            let { countryCode } = codeObj;
+
+            if (countryCode === _countryCode) {
+                return key;
+            }
+        }
+        return false; 
+    }
 }
