@@ -109,6 +109,30 @@ class BarChart {
     vis.domainHasNeg ? vis.showSeparatorLine() : vis.hideSeparatorLine();
   }
 
+  /**
+   * Purpose: Emphasizes bar of country by changing stroke colour to black
+   * @param {string} countryName : country name in format consistent with ./constants/countries.js
+   */
+  emphasizeBar(countryName) {
+    let vis = this;
+    const key = vis.constants.countries.getKey(countryName);
+    const barClass = `.bar-${key}`;
+
+    d3.selectAll(barClass).attr('stroke', 'black');
+  }
+
+  /**
+   * Purpose: Resets bar
+   * @param {string} countryName : country name in format consistent with ./constants/countries.js
+   */
+  deEmphasizeBar(countryName) {
+    let vis = this;
+    const key = vis.constants.countries.getKey(countryName);
+    const barClass = `.bar-${key}`;
+
+    d3.selectAll(barClass).attr('stroke', 'none');
+  }
+
   // ------------------------------------------ Helper functions ------------------------------------ //
 
   /**

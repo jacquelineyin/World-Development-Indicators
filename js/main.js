@@ -84,7 +84,6 @@ d3.csv('data/Dataset.csv').then(_data => {
     map.updateVis();
   });
 
-
   // Initialize the wedge view
   wedgeView = new WedgeView(data, selected, dispatcher, dispatcherEvents);
   wedgeView.updateVis();
@@ -175,12 +174,12 @@ dispatcher.on(dispatcherEvents.BAR_UNHOVER, countryName => {
 })
 
 dispatcher.on(dispatcherEvents.MAP_ITEM_HOVER, countryName => {
-  // TODO
+  barChart.emphasizeBar(countryName);
   lineChart.emphasizeLine(countryName);
 })
 
 dispatcher.on(dispatcherEvents.MAP_ITEM_UNHOVER, countryName => {
-  // TODO
+  barChart.deEmphasizeBar(countryName);
   lineChart.deEmphasizeLine(countryName);
 })
 
