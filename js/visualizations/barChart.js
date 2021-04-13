@@ -12,7 +12,7 @@ class BarChart {
       parentElement: _config.parentElement,
       containerWidth: _config.containerWidth || 1000,
       containerHeight: _config.containerHeight || 400,
-      margin: _config.margin || { top: 50, right: 320, bottom: 70, left: 50 },
+      margin: _config.margin || { top: 50, right: 290, bottom: 70, left: 60 },
       colour: _config.colour || { selectedCountry: 'blue', comparisonCountry: 'green' },
       legend: _config.legend ||
       {
@@ -21,8 +21,8 @@ class BarChart {
         yPadding: 25,
         colourBox: { width: 12, height: 12 },
         labelText: {
-          SELECTED_COUNTRY: 'Selected Country',
-          OTHER_COUNTRIES: 'Other Countries'
+          SELECTED_COUNTRY: 'SelectedCountry',
+          OTHER_COUNTRIES: 'OtherCountries'
         }
       },
       tooltip: _config.tooltip || { padding: 15 },
@@ -85,7 +85,7 @@ class BarChart {
     vis.yValue = d => d.avg;
 
     // Update axis titles
-    vis.renderAxisTitles('Countries/Regions', vis.selected.indicator);
+    vis.renderAxisTitles(vis.selected.indicator);
     
     // Update Scale domains
     vis.updateYScaleDomains();
@@ -192,14 +192,14 @@ class BarChart {
   renderLegendColourBoxes() {
     let vis = this;
     const { SELECTED_COUNTRY, OTHER_COUNTRIES } = vis.config.legend.labelText;
-    let labelYOffset = 0;
+    let labelYOffset = -14;
 
     vis.legend.selectAll('.legend-box')
         .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
       .join('rect')
-        .attr('class', 'legend-box')
+        .attr('class', d => `legend-box legend-box-${d}`)
         .attr('x', 0)
-        .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset -= vis.config.legend.yPadding)
+        .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
         .attr('width', vis.config.legend.colourBox.width)
         .attr('height', vis.config.legend.colourBox.height)
         .style('fill', d => vis.getColourOfLegendBoxes(d));
@@ -211,12 +211,12 @@ class BarChart {
   renderLegendElemLabels() {
     let vis = this;
     const { SELECTED_COUNTRY, OTHER_COUNTRIES } = vis.config.legend.labelText;
-    let labelYOffset = 0 - 14;
+    let labelYOffset = -4;
 
     vis.legend.selectAll('.box-label')
         .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
       .join('text')
-        .attr('class', 'box-label')
+        .attr('class', d => `box-label box-label-${d}`)
         .attr('x', () => vis.config.legend.colourBox.width + 10)
         .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
         .text(d => d);
@@ -224,23 +224,11 @@ class BarChart {
 
   /**
    * Purpose: Renders x- and y-axis titles dynamically using enter-update-exit pattern
-   * @param {string} xAxisTitle 
    * @param {string} yAxisTitle 
    */
-  renderAxisTitles(xAxisTitle, yAxisTitle) {
+  renderAxisTitles(yAxisTitle) {
     let vis = this;
     let newYAxisTitle = `Average ${yAxisTitle} from ${vis.selected.timeInterval.min}-${vis.selected.timeInterval.max}`;
-
-    // Append x-axis title to svg
-    vis.chartArea.selectAll('.barchart-x-axis-title')
-          .data([xAxisTitle])
-        .join('text')
-          .attr('class', 'axis-title barchart-x-axis-title')
-          .attr('y', vis.height + 25)
-          .attr('x', vis.width)
-          .attr('dy', '.71em')
-          .style('text-anchor', 'end')
-          .text(xAxisTitle);
 
     if (yAxisTitle) {
       // Append y-axis title to svg
@@ -268,10 +256,10 @@ class BarChart {
 
     switch (d) {
       case SELECTED_COUNTRY:
-        return colour.comparisonCountry;
+        return colour.selectedCountry;
       case OTHER_COUNTRIES:
       default:
-        return colour.selectedCountry;
+        return colour.comparisonCountry;
     }
   }
 

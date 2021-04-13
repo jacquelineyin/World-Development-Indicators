@@ -1,12 +1,20 @@
+#comparison-title {
+  margin-top: 0px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
 #comparison-input {
-    font-size: 0.8em;
+    font-size: 0.8rem;
     width: 200px;
 }
 
 #comparison-submit-button {
     margin-left: 10px;
-    font-size: 0.9em;
-    width: 6em;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 0.8rem;
+    width: 5rem;
     border-radius: 5px;
     border: thin solid black;
 }
@@ -29,9 +37,10 @@
 
 .tag {
     display: inline-block;
-    font-size: 0.8em;
+    font-size: 0.7rem;
     margin-right: 5px;
-    padding: 0 5px;
+    margin-bottom: 5px;
+    padding: 2px 5px;
     width: max-content;
     border-radius: 25px;
     background-color: #9EE6D6;
@@ -76,6 +85,7 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
     cursor: pointer;
     background-color: #fff;
     border-bottom: 1px solid #d4d4d4;
+    font-size: 1.5em;
   }
 
   .autocomplete-items div:hover {
@@ -96,8 +106,9 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
   /** Warning/ Alert Box 
   Implementation Credit: https://www.w3schools.com/howto/howto_js_alert.asp*/
   #warning-container {
-    font-size: 0.8em;
+    font-size: 0.8rem;
     visibility: hidden;
+    min-height: 22px;
     width: 100%;
     background-color: #fcf8e3;
     border-color: #faebcc;
@@ -112,6 +123,7 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
   }
   
   #warning-container .close-button {
+    padding-top: 3px;
     padding-right: 25px;
     font-weight: bold;
     float: right;
@@ -119,7 +131,11 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
 }
 
  /* -------------------  Bigger Screens -----------------------*/
- @media only screen and (min-width: 1300px){
+ @media only screen and (min-width: 1440px){
+  #comparison-title {
+    font-size: 1rem;
+  }
+
   #comparison-container {
     flex-direction: row;
     flex-wrap: nowrap;
@@ -130,6 +146,7 @@ Implementation Credit: https://www.w3schools.com/howto/howto_js_autocomplete.asp
   #warning-container {
     width: 50%;
     margin-bottom: 0px;
+    margin-left: 15px;
    }
 
 }
