@@ -166,13 +166,11 @@ dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
 })
 
 dispatcher.on(dispatcherEvents.BAR_HOVER, countryName => {
-  // TODO map
   map.emphasizeCountry(countryName);
   lineChart.emphasizeLine(countryName);
 })
 
 dispatcher.on(dispatcherEvents.BAR_UNHOVER, countryName => {
-  //TODO map
   map.deEmphasizeCountry(countryName);
   lineChart.deEmphasizeLine(countryName);
 })
