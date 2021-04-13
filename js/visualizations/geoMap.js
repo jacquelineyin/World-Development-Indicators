@@ -72,52 +72,6 @@ class GeoMap {
         vis.renderVis();
     }
 
-    updateDomain() {
-        let vis = this;
-
-        let [min, max] = d3.extent(vis.groupedData.values());
-        
-        // Set max to 1 for better scaling if max === min === 0
-        max = max === 0 && max === min ? 1 : max;
-
-        vis.indicatorScale.domain([min, max]);
-    }
-
-    updateMapBounds() {
-        let vis = this;
-
-        const selectedGJsonLayer = L.geoJson(vis.selectedCountries);
-
-        selectedGJsonLayer.getLayers().length > 0 ?
-            vis.map.fitBounds(selectedGJsonLayer.getBounds()) :
-            vis.map.setView(vis.config.defaultCoords, 1);
-    }
-
-    updateData() {
-        let vis = this;
-
-        vis.countryCodesOfSelected =
-            vis.constants.countryCodeMapper.getCountryNumCodes(vis.selected.allSelectedAreas);
-        vis.alpha3CodesOfSelected =
-            vis.constants.countryCodeMapper.getCountryAlpha3s(vis.selected.allSelectedAreas);
-        vis.selectedCountries =
-            vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(d.id));
-
-
-        // Filter data by selected years and selected indicator
-        const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
-
-        // Aggregate data by country and calculate the mean
-        vis.groupedData = d3.rollup(filteredData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
-
-        // Remove countries for which we do not have a corresponding vector tile, e.g. "WLD"
-        for (let countryCode of vis.groupedData.keys()) {
-            if (countryCode === "WLD") {
-                vis.groupedData.delete(countryCode);
-            }
-        }
-    }
-
     renderVis() {
         let vis = this;
 
@@ -126,39 +80,21 @@ class GeoMap {
             vis.chart.selectAll(".map-country").attr('d', vis.geoPath);
             vis.chart.selectAll(".map-selected-country").attr('d', vis.geoPath)
         };
+        
+        // Render legend
+        vis.renderLegend();
 
-        const countriesPaths = vis.chart.selectAll(".map-country");
-        countriesPaths
-            .data(vis.countries.features)
-            .join("path")
-            .attr("class", d => d.id ? `map-country map-country-${d.id}` : 'map-country')
-            .attr("cursor", "default")
-            .attr("d", vis.geoPath)
-            .attr("fill", d => vis.getFillColour(d))
-            .attr("fill-opacity", 0.5)
-            .attr("stroke", "white")
-            .on('mouseenter', d => vis.handleMouseEnter(d))
-            .on('mouseleave', d => vis.handleMouseLeave(d));
+        // Render all countries
+        vis.renderAllCountriesWithWhiteBorder();
 
-        const selectedCountriesPaths = vis.chart.selectAll(".map-selected-country");
-        selectedCountriesPaths
-            .data(vis.selectedCountries, d => d.id)
-            .join("path")
-            .attr("class", d => d.id ? `map-selected-country map-selected-country-${d.id}` : 'map-selected-country')
-            .attr("cursor", "default")
-            .attr("d", vis.geoPath)
-            .attr("fill", "none")
-            .attr("stroke", d => vis.getBorderColour(d))
-            .attr("stroke-width", d => vis.getStrokeWidth(d))
-            .on('mouseenter', d => vis.handleMouseEnter(d))
-            .on('mouseleave', d => vis.handleMouseLeave(d));
+        // Render selected countries again so that their borders are not occluded
+        vis.renderSelectedCountries();
 
         // reset whenever map is moved
         vis.map.on('zoomend', onZoom);
 
-        vis.renderLegend();
-
     }
+
 
     // ------------------------------ Helpers ---------------------------------- //
 
@@ -241,6 +177,86 @@ class GeoMap {
         vis.format = (val) => val >= 0 ? d3.format(',')(round(val)) : round(val);
     }
 
+    
+    updateDomain() {
+        let vis = this;
+
+        let [min, max] = d3.extent(vis.groupedData.values());
+        
+        // Set max to 1 for better scaling if max === min === 0
+        max = max === 0 && max === min ? 1 : max;
+
+        vis.indicatorScale.domain([min, max]);
+    }
+
+    updateMapBounds() {
+        let vis = this;
+
+        const selectedGJsonLayer = L.geoJson(vis.selectedCountries);
+
+        selectedGJsonLayer.getLayers().length > 0 ?
+            vis.map.fitBounds(selectedGJsonLayer.getBounds()) :
+            vis.map.setView(vis.config.defaultCoords, 1);
+    }
+
+    updateData() {
+        let vis = this;
+
+        vis.countryCodesOfSelected =
+            vis.constants.countryCodeMapper.getCountryNumCodes(vis.selected.allSelectedAreas);
+        vis.alpha3CodesOfSelected =
+            vis.constants.countryCodeMapper.getCountryAlpha3s(vis.selected.allSelectedAreas);
+        vis.selectedCountries =
+            vis.countries.features.filter(d => vis.countryCodesOfSelected.includes(d.id));
+
+
+        // Filter data by selected years and selected indicator
+        const filteredData = this.data.filter(d => this.selected.selectedYears.includes(d.Year) && d.IndicatorName == this.selected.indicator);
+
+        // Aggregate data by country and calculate the mean
+        vis.groupedData = d3.rollup(filteredData, v => d3.mean(v, i => i.Value), d => d.CountryCode);
+
+        // Remove countries for which we do not have a corresponding vector tile, e.g. "WLD"
+        for (let countryCode of vis.groupedData.keys()) {
+            if (countryCode === "WLD") {
+                vis.groupedData.delete(countryCode);
+            }
+        }
+    }
+
+    renderSelectedCountries() {
+        let vis = this;
+
+        const selectedCountriesPaths = vis.chart.selectAll(".map-selected-country");
+        selectedCountriesPaths
+            .data(vis.selectedCountries, d => d.id)
+            .join("path")
+            .attr("class", d => d.id ? `map-selected-country map-selected-country-${d.id}` : 'map-selected-country')
+            .attr("cursor", "default")
+            .attr("d", vis.geoPath)
+            .attr("fill", "none")
+            .attr("stroke", d => vis.getBorderColour(d))
+            .attr("stroke-width", d => vis.getStrokeWidth(d))
+            .on('mouseenter', d => vis.handleMouseEnter(d))
+            .on('mouseleave', d => vis.handleMouseLeave(d));
+    }
+
+    renderAllCountriesWithWhiteBorder() {
+        let vis = this;
+
+        const countriesPaths = vis.chart.selectAll(".map-country");
+        countriesPaths
+            .data(vis.countries.features)
+            .join("path")
+            .attr("class", d => d.id ? `map-country map-country-${d.id}` : 'map-country')
+            .attr("cursor", "default")
+            .attr("d", vis.geoPath)
+            .attr("fill", d => vis.getFillColour(d))
+            .attr("fill-opacity", 0.5)
+            .attr("stroke", "white")
+            .on('mouseenter', d => vis.handleMouseEnter(d))
+            .on('mouseleave', d => vis.handleMouseLeave(d));
+    }
 
     getBorderColour(data) {
         let vis = this;
