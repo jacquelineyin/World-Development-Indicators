@@ -42,7 +42,8 @@
 
 .info-legend-container {
   width: 55%;
-  height: 90%;
+  height: 60%;
+  margin-top: 15%;
 }
 
 .info-legend-container svg {
