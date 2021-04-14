@@ -43,6 +43,7 @@ p {
   width: 140px;
   height: 55px;
   font-size: 17px;
+  cursor: pointer;
 }
 
 #next-btn:hover, #next-btn:focus {

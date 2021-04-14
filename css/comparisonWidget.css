@@ -17,6 +17,7 @@
     width: 5rem;
     border-radius: 5px;
     border: thin solid black;
+    cursor: pointer;
 }
 
 #comparison-container {
