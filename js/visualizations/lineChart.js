@@ -104,7 +104,7 @@ class LineChart {
 
     vis.yearValue = vis.svg.append('text')
       .attr('class', 'yearValue')
-      .attr('y', 50)
+      .attr('y', 30)
       .attr('x', vis.width + 165)
       .attr('dy', '.71em');
 
@@ -416,7 +416,7 @@ class LineChart {
                 d3.select('.yearValue')
                   .attr('transform', () => {
                     if (currentYear >= vis.selected.selectedYears[Math.round((vis.selected.selectedYears.length - 1) / 2)]) {
-                      return `translate(${-vis.width - 30},0)`
+                      return `translate(${-vis.width - 30}, 5)`
                     }
                   })
                   .text(currentYear);
