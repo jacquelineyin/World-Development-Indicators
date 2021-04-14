@@ -620,7 +620,10 @@ class BarChart {
   updateYScaleDomains() {
     let vis = this;
     let [min, max] = d3.extent(vis.averages);
-    min = min > 0 ? 0 : min;
+
+    // Handle edge cases and when min is greater than 0
+    min = min > 0 || !min ? 0 : min;
+    max = max ? max : 0;
 
     vis.yScale.domain([min, max]);
   }
