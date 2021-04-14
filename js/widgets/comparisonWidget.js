@@ -54,7 +54,6 @@ class ComparisonWidget {
 
     /**
      * Purpose: Creates input section for comparison countries
-     * TODO: adjust to have text also include 'region' if region gets implemented
      */
     createInputSection() {
         let parent = document.getElementById('comparison-selector-container');
@@ -119,7 +118,6 @@ class ComparisonWidget {
 
     /**
      * Purpose: Adds comparison area to selected and updates view if valid input
-     * TODO: implement warning display
      * @param {Event} event : Native JS event
      */
     handleSubmitInput(event) {
