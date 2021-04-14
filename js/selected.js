@@ -31,7 +31,6 @@
 
     /**
      * Purpose: If given country/region is not already in the comparisonAreas list, add to list
-     *          TODO: will throw error if list is already full
      * Note: Will not add currently selected focused country/region to comparison list
      * @param {string} countryOrRegion = country or region that user has added as comparison countries/regions
      */
@@ -46,7 +45,6 @@
             // add to list
             this.comparisonAreas.push(countryOrRegion);
         } else if (isComparisonListFull) {
-            //TODO: Error handling - show warning label
             if (this.dispatcher && this.dispatcherEvents) {
                 this.dispatcher.call(this.dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, this);
             }
