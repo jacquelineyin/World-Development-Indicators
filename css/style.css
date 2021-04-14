@@ -33,7 +33,7 @@ p {
 }
 
 #viz {
-  overflow-y: auto;              
+  overflow-y: auto;
   height: 100%; 
   background: white;
 }
@@ -159,4 +159,11 @@ p {
 *:focus {
   outline: 0;
   outline: none;
+}
+
+/* -------------------  Bigger Screens -----------------------*/
+@media only screen and (min-width: 1750px) {
+  #viz {
+    overflow-y: hidden;
   }
+}
