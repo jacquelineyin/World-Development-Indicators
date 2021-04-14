@@ -86,7 +86,7 @@ class BarChart {
 
     // Update axis titles
     vis.renderAxisTitles(vis.selected.indicator);
-    
+
     // Update Scale domains
     vis.updateYScaleDomains();
     vis.xScale.domain(vis.selected.allSelectedAreas);
@@ -219,14 +219,14 @@ class BarChart {
     let labelYOffset = -14;
 
     vis.legend.selectAll('.legend-box')
-        .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
+      .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
       .join('rect')
-        .attr('class', d => `legend-box legend-box-${d}`)
-        .attr('x', 0)
-        .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
-        .attr('width', vis.config.legend.colourBox.width)
-        .attr('height', vis.config.legend.colourBox.height)
-        .style('fill', d => vis.getColourOfLegendBoxes(d));
+      .attr('class', d => `legend-box legend-box-${d}`)
+      .attr('x', 0)
+      .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
+      .attr('width', vis.config.legend.colourBox.width)
+      .attr('height', vis.config.legend.colourBox.height)
+      .style('fill', d => vis.getColourOfLegendBoxes(d));
   }
 
   /**
@@ -238,12 +238,12 @@ class BarChart {
     let labelYOffset = -4;
 
     vis.legend.selectAll('.box-label')
-        .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
+      .data([SELECTED_COUNTRY, OTHER_COUNTRIES])
       .join('text')
-        .attr('class', d => `box-label box-label-${d}`)
-        .attr('x', () => vis.config.legend.colourBox.width + 10)
-        .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
-        .text(d => d);
+      .attr('class', d => `box-label box-label-${d}`)
+      .attr('x', () => vis.config.legend.colourBox.width + 10)
+      .attr('y', (d, i) => i === 0 ? labelYOffset : labelYOffset += vis.config.legend.yPadding)
+      .text(d => d);
   }
 
   /**
@@ -257,14 +257,14 @@ class BarChart {
     if (yAxisTitle) {
       // Append y-axis title to svg
       vis.chartArea.selectAll('.barchart-y-axis-title')
-          .data([yAxisTitle])
+        .data([yAxisTitle])
         .join('text')
-          .attr('class', 'axis-title barchart-y-axis-title')
-          .attr('y', -vis.config.margin.top + 10)
-          .attr('x', -vis.config.margin.left)
-          .attr('dy', '.71em')
-          .style('text-anchor', 'start')
-          .text(newYAxisTitle);
+        .attr('class', 'axis-title barchart-y-axis-title')
+        .attr('y', -vis.config.margin.top + 10)
+        .attr('x', -vis.config.margin.left)
+        .attr('dy', '.71em')
+        .style('text-anchor', 'start')
+        .text(newYAxisTitle);
     }
   }
 
@@ -328,9 +328,11 @@ class BarChart {
     let vis = this;
 
     let dataOfInterest = vis.filterData(vis.data, selected);
-    let res = d3.rollups(dataOfInterest, v => d3.mean(v, d => d.Value), d => d.CountryName);
-    res = Array.from(res, ([key, avg]) => ({ key, avg }));
 
+    let aggregated = d3.rollups(dataOfInterest, v => d3.mean(v, d => d.Value), d => d.CountryName);
+    aggregated = Array.from(aggregated, ([key, avg]) => ({ key, avg }));
+
+    let res = vis.reAddMissingCountries(aggregated);
     return res;
   }
 
@@ -372,10 +374,10 @@ class BarChart {
     barTextEnter.merge(barText)
       .attr('x', (d) => vis.xScale(vis.xValue(d)) + (vis.xScale.bandwidth() / 2))
       .attr('y', (d) => vis.getYPosOfBarLabel(d))
-      .attr('display', d => isNaN(d.avg) ? 'block' : 'none')
+      .attr('display', d => !d.avg || isNaN(d.avg) ? 'block' : 'none')
       .attr('text-anchor', 'middle')
       .attr('pointer-events', 'none')
-      .text(d => isNaN(d.avg) ? 'N/A' : format(d.avg));
+      .text(d => !d.avg || isNaN(d.avg) ? 'N/A' : format(d.avg));
 
     // Exit
     barText.exit().remove();
@@ -391,7 +393,7 @@ class BarChart {
 
     // Bind data to selection
     const bars = barG.merge(barGEnter).selectAll('.bar')
-      .data(d =>[d], d => d.key);
+      .data(d => [d], d => d.key);
 
     // Enter
     const barsEnter = bars.enter().append('rect')
@@ -422,7 +424,7 @@ class BarChart {
     const val = vis.yValue(d);
     const isValNeg = val < 0;
 
-    let yPos = vis.domainHasNeg && isValNeg ? vis.yScale(0) : vis.yScale(val);
+    let yPos = !d || !d.avg || vis.domainHasNeg && isValNeg ? vis.yScale(0) : vis.yScale(val);
     return yPos;
   }
 
@@ -460,10 +462,18 @@ class BarChart {
     let vis = this;
     const bottomPaddingOffset = 5;
 
-    let yPos = vis.getYPosition(d) + 15;
+    let yPos;
+
+    if (!d.avg) {
+      yPos = vis.getYPosition(d) - bottomPaddingOffset * 2;
+      return yPos ? yPos : vis.height + bottomPaddingOffset * 2;
+    }
+    
+    // Else 
+    yPos = vis.getYPosition(d) + 15;
 
     if (vis.domainHasNeg && isNaN(d.avg)) {
-      yPos = vis.getYPosition({avg: 0}) - (bottomPaddingOffset * 2)
+      yPos = vis.getYPosition({ avg: 0 }) - (bottomPaddingOffset * 2)
     } else if (yPos > vis.height) {
       yPos = vis.getYPosition(d) - bottomPaddingOffset;
     }
@@ -479,7 +489,7 @@ class BarChart {
     let vis = this;
 
     let isSelectedArea = data.key === vis.selected.area.country
-                         || data.key === vis.selected.area.region;
+      || data.key === vis.selected.area.region;
 
     return isSelectedArea ?
       vis.config.colour.selectedCountry : vis.config.colour.comparisonCountry;
@@ -502,7 +512,7 @@ class BarChart {
       height = max === 0 ? vis.height - vis.yScale(0) : vis.yScale(0) - vis.yScale(val);
     }
 
-    height = height ? height : 0;      
+    height = height ? height : 0;
     return height;
   }
 
@@ -620,7 +630,10 @@ class BarChart {
   updateYScaleDomains() {
     let vis = this;
     let [min, max] = d3.extent(vis.averages);
-    min = min > 0 ? 0 : min;
+
+    // Handle edge cases and when min is greater than 0
+    min = min > 0 || !min ? 0 : min;
+    max = max ? max : 0;
 
     vis.yScale.domain([min, max]);
   }
@@ -656,5 +669,75 @@ class BarChart {
     averages = averages ? averages : vis.getAllAverages();
     return d3.min(averages) < 0;
   }
+
+  /**
+   * Purpose: Returns a new array of aggregated data for all selected countries
+   *          Array includes selected countries whose data is missing in dataset for this aggregation
+   * @param {Array} aggregated : array of aggregated data in format {key: <string>, avg: <Number>}
+   * @returns {Array} of aggregated data for all selected countries - including countries with missing data
+   */
+  reAddMissingCountries(aggregated) {
+    let vis = this;
+
+    const { allSelectedAreas } = vis.selected;
+    let isMissingData = aggregated.length < allSelectedAreas.length;
+
+    if (!isMissingData) {
+      return aggregated
+    }
+
+    let res = [];
+    let added = [];
+
+    // For each selected country
+    for (let i = 0; i < allSelectedAreas.length; i++) {
+      const selectedCountry = allSelectedAreas[i];
+
+      // Re-add matching data from aggregated array
+      vis.addMatchingData(aggregated, selectedCountry, added, res);
+
+      // If country is missing from aggregated, create new object with {key: selectedCountry, avg: null}
+      vis.addMissingData(added, selectedCountry, res);
+    }
+
+    return res;
+  }
+
+  /**
+   * Purpose: Creates an object {key: selectedCountry, avg: null} to add to resulting array
+   * @param {Array} added : array of strings (i.e. countries that have already been added to new array)
+   * @param {string} selectedCountry : name of a selected country
+   * @param {Array} res : array we're modifying
+   */
+  addMissingData(added, selectedCountry, res) {
+    if (!added.includes(selectedCountry)) {
+      // No match in aggregated array
+      const item = { key: selectedCountry, avg: null };
+      added.push(selectedCountry);
+      res.push(item);
+    }
+  }
+
+  /**
+   * Purpose: adds aggregated data of selected country into resulting array
+   * @param {Array} aggregated : array of aggregated data with missing data
+   * @param {string} selectedCountry : name of a selected country
+   * @param {Array} added : array of strings (i.e. countries that have already been added to new array)
+   * @param {Array} res : array we're modifying
+   */
+  addMatchingData(aggregated, selectedCountry, added, res) {
+    for (let j = 0; j < aggregated.length; j++) {
+      const aggregatedItem = aggregated[j];
+
+      const isAlreadyAdded = added.includes(selectedCountry);
+      const isMatch = selectedCountry === aggregatedItem.key;
+
+      if (isMatch && !isAlreadyAdded) {
+        added.push(selectedCountry);
+        res.push(aggregatedItem);
+      }
+    }
+  }
+
 
 }
