@@ -192,7 +192,7 @@ class LineChart {
       .attr('x', (d, i) => {
         return (i * 450) + 10;
       })
-      .attr('y', vis.config.containerHeight + 75)
+      .attr('y', vis.config.containerHeight - 30 )
       .attr('width', 20)
       .attr('height', 20)
       .style('fill', d => vis.getColourForLegend(d));
@@ -203,7 +203,7 @@ class LineChart {
       .join('text')
       .attr('class', 'box-label')
       .attr('x', (d, i) => (i * 450) + 45)
-      .attr('y', vis.config.containerHeight + 96)
+      .attr('y', vis.config.containerHeight - 10)
       .text(d => {
         if (d.length > 13) {
           return d.slice(0, 13) + '...';
