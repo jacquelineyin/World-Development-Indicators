@@ -36,19 +36,22 @@
     </div>
     <div id="viz">
         <h6 class="title" id="project-title">World Development Indicators</h6>
-        <div id="parent-container">    
+        <div id="parent-container">
             <div id="chart-container">
                 <div class="col" id="left-col">
                     <svg id="slider"></svg>
                 </div>
                 <div class="col" id="middle-col">
-                    <div class="select-container" id="select-focus">
-                        <div id="country-selector-container"></div>
-                        <div id="region-selector-container"></div>
+                    <div id="focus-area">
+                        <h6 class="sub-title">Focus Country</h6>
+                        <div class="select-container" id="select-focus">
+                            <div id="country-selector-container"></div>
+                            <div id="region-selector-container"></div>
+                        </div>
                     </div>
                     <div id="map"></div>
                     <div id="legend" class="wedge-group-container">
-                        <i>Legend</i>  
+                        <i>Legend</i>
                         <table>
                             <tr>
                                 <td id="leg-country-wedge" class="leg-wedge"></td>
@@ -62,7 +65,8 @@
                                 <td><text>World average, outer ring</text></td>
                                 <td></td>
                                 <td id="leg-selected-wedge" class="leg-wedge"></td>
-                                <td><text>Selected indicator (indicator name will also be <i><b>emphasized</b></i>)</text></td>
+                                <td><text>Selected indicator (indicator name will also be
+                                        <i><b>emphasized</b></i>)</text></td>
                             </tr>
                         </table>
                     </div>
@@ -95,7 +99,8 @@
                                     <text class="wedge-label">Age dependency ratio (% of working-age population)</text>
                                 </div>
                                 <div id="AGE_DEPENDENCY_RATIO_OLD" class="wedge-container">
-                                    <text class="wedge-label">Age dependency ratio, old (% of working-age population)</text>
+                                    <text class="wedge-label">Age dependency ratio, old (% of working-age
+                                        population)</text>
                                 </div>
                                 <div id="AGE_DEPENDENCY_RATIO_YOUNG" class="wedge-container">
                                     <text class="wedge-label">Age dependency ratio, young (% of working-age
@@ -198,14 +203,10 @@
                         <form id="tag-container" autocomplete="off"></form>
                     </div>
                     <svg id="barchart"></svg>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
                     <svg id="linechart"></svg>
-                </div>    
+                </div>
             </div>
-            <a href="#landing"><button id="backBtn">^</button></a>  
+            <a href="#landing"><button id="backBtn">^</button></a>
         </div>
         <div id="tooltip"></div>
     </div>
@@ -249,7 +250,7 @@
                         }
                     }
                 });
-            });
+        });
     </script>
     <script src="js/d3.v6.min.js"></script>
     <script src="js/leaflet.js"></script>

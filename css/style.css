@@ -104,6 +104,12 @@ p {
   clear: both;
 }
 
+h6.sub-title {
+  margin-bottom: 10px;
+  margin-top: 0px;
+  font-size: 1rem;
+}
+
 /** Axes */
 .axis-title {
     font-weight: bold;

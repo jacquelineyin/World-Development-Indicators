@@ -104,7 +104,7 @@ class LineChart {
 
     vis.yearValue = vis.svg.append('text')
       .attr('class', 'yearValue')
-      .attr('y', 50)
+      .attr('y', 30)
       .attr('x', vis.width + 165)
       .attr('dy', '.71em');
 
@@ -192,7 +192,7 @@ class LineChart {
       .attr('x', (d, i) => {
         return (i * 450) + 10;
       })
-      .attr('y', vis.config.containerHeight + 75)
+      .attr('y', vis.config.containerHeight - 30)
       .attr('width', 20)
       .attr('height', 20)
       .style('fill', d => vis.getColourForLegend(d));
@@ -203,7 +203,7 @@ class LineChart {
       .join('text')
       .attr('class', 'box-label')
       .attr('x', (d, i) => (i * 450) + 45)
-      .attr('y', vis.config.containerHeight + 96)
+      .attr('y', vis.config.containerHeight - 10)
       .text(d => {
         if (d.length > 13) {
           return d.slice(0, 13) + '...';
@@ -292,9 +292,10 @@ class LineChart {
     // Create data value tracking circle for mouse line
     mplCircleEnter.merge(mplCircle)
       .attr('r', vis.config.circle.radius * 2.5)
+      .attr('visibility', 'hidden')
       .style('stroke', d => vis.getColour(d))
       .style('fill', 'none')
-      .style('stroke-width', '1px')
+      .style('stroke-width', '2px')
       .style('display', 'none');
 
     mplCircle.exit().remove();
@@ -306,7 +307,7 @@ class LineChart {
       .attr('class', 'mouse-text');
 
     mplTextEnter.merge(mplText)
-      .attr('transform', `translate(10,3)`);
+      .attr('transform', `translate(20, 13)`);
 
     mplText.exit().remove();
 
@@ -415,7 +416,7 @@ class LineChart {
                 d3.select('.yearValue')
                   .attr('transform', () => {
                     if (currentYear >= vis.selected.selectedYears[Math.round((vis.selected.selectedYears.length - 1) / 2)]) {
-                      return `translate(${-vis.width - 30},0)`
+                      return `translate(${-vis.width - 30}, 5)`
                     }
                   })
                   .text(currentYear);
@@ -429,10 +430,12 @@ class LineChart {
                   return data;
                 });
 
-              circle.attr('visibility', 'visible');
-
               // Check if indicator has a negative domain, switch scales if yes
               if (item.value !== null || item.value === 0) {
+
+                // Display tracking circles
+                circle.attr('visibility', 'visible');
+
                 if (vis.negativeDomains.includes(vis.selected.indicator)) {
                   return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
                 } else {
@@ -440,9 +443,9 @@ class LineChart {
                 }
               }
             }
-            // No translate and circles hidden if values are null
+            // Don't translate and hide tracking circles if values are null
             circle.attr('visibility', 'hidden');
-            return 'translate(0,0)'
+            return 'translate(0,0)';
           });
       });
 

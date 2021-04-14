@@ -1,5 +1,9 @@
 /** Styles specific to barChart, which overrides common classes */
 
+#barchart {
+  margin-bottom: 25px;
+}
+
 /** Axes */
 .x-axis-barchart line {
   visibility: hidden;
