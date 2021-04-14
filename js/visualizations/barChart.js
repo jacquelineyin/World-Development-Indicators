@@ -584,9 +584,9 @@ class BarChart {
     const countryKey = classes[1].split('-')[1];
     const targetLabel = `.bar-label-${countryKey}`;
 
-    // Hide value of country
-    const label = vis.chart.selectAll(targetLabel);
-    label.attr('display', 'none');
+    // Hide value of country unless value is 'N/A'
+    const label = vis.chart.select(targetLabel);
+    label.text() === 'N/A' ? null : label.attr('display', 'none');
 
     // Remove stroke emphasis of any bar
     const bars = d3.selectAll('.bar');
