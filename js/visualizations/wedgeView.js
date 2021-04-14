@@ -67,7 +67,7 @@ class WedgeView {
       // Filter the data to the range of selected years
       const codesOfSelectedCountries = "";
       const filteredDataAllCountries = this.data.filter(d => {
-        return this.selected.selectedYears.includes(d.Year) && this.alpha3OfAllCountries.includes(d.CountryCode)});
+        return this.selected.selectedYears.includes(d.Year) && this.alpha3OfAllCountries.includes(d.CountryCode) && d.CountryCode != "WLD"});
 
       // Each wedge (indicator) needs three pieces of data from the subset of data within the range of selected years
       // 1. maximum value for that indicator (maxDataMap)
