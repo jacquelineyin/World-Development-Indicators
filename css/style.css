@@ -58,7 +58,7 @@ p {
 
 /** Chart Positioning */
 #parent-container {
-  margin: 30px 15px 50px 15px;
+  margin: 0px 15px 50px 15px;
   display: flex;
   flex-flow: column;
 }
