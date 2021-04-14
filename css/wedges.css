@@ -65,7 +65,7 @@ div[selected="true"] .c-arc[num="0"] {
 /**--------------- Bigger Screens -----------------**/
 @media only screen and (min-width: 1450px) {
   #demographics {
-    width: 45%;
+    width: 43%;
     margin-right: 25px;
   }
 

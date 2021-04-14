@@ -13,8 +13,8 @@ class LineChart {
         selectedArea: 'blue',
         otherAreas: d3.schemeCategory10,
       },
-      circle: { radius: 4 },
-      line: { strokeWidth: 1.5 },
+      circle: { radius: 4.5 },
+      line: { strokeWidth: 3 },
       containerWidth: _config.containerWidth || 2700,
       containerHeight: _config.containerHeight || 1200,
       margin: _config.margin || { top: 50, right: 500, bottom: 110, left: 120 }
@@ -555,7 +555,7 @@ class LineChart {
 
     //Emphasize elems
     activeCircles
-      .attr('r', vis.config.circle.radius * 1.2)
+      .attr('r', vis.config.circle.radius * 1.5)
       .attr('opacity', 1);
 
     activeLine
