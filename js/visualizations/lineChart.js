@@ -192,7 +192,7 @@ class LineChart {
       .attr('x', (d, i) => {
         return (i * 450) + 10;
       })
-      .attr('y', vis.config.containerHeight - 30 )
+      .attr('y', vis.config.containerHeight - 30)
       .attr('width', 20)
       .attr('height', 20)
       .style('fill', d => vis.getColourForLegend(d));
@@ -429,12 +429,13 @@ class LineChart {
                   return data;
                 });
 
-              // Displays tracking circles
-              const circle = d3.select(this).selectAll('.mouseCircle');
-              circle.attr('visibility', 'visible');
-
               // Check if indicator has a negative domain, switch scales if yes
               if (item.value !== null || item.value === 0) {
+
+                // Display tracking circles
+                const circle = d3.select(this).selectAll('.mouseCircle');
+                circle.attr('visibility', 'visible');
+
                 if (vis.negativeDomains.includes(vis.selected.indicator)) {
                   return `translate(${vis.xScale(item.year)},${vis.yScaleNeg(item.value)})`;
                 } else {
