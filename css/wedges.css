@@ -22,6 +22,7 @@ div[selected="true"] .c-arc[num="0"] {
 #wedges {
   display: flex;
   flex-wrap: wrap;
+  overflow: scroll;
 }
 
 .wedge-group-container {

@@ -58,7 +58,7 @@ p {
 
 /** Chart Positioning */
 #parent-container {
-  margin: 0px 15px 50px 15px;
+  margin: 15px;
   display: flex;
   flex-flow: column;
 }
@@ -132,8 +132,8 @@ p {
 
 #backBtn {
   position: absolute;
-  bottom: 12px;
-  right: 10px;
+  bottom: 3vh;
+  right: 3vh;
   height: 45px;
   width: 45px;
   border: 1px solid grey;
@@ -160,5 +160,3 @@ p {
   outline: 0;
   outline: none;
   }
-
-

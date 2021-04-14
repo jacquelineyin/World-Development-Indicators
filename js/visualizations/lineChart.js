@@ -190,7 +190,7 @@ class LineChart {
       .join('rect')
       .attr('class', 'legend-box')
       .attr('x', (d, i) => {
-        return (i * 250) + 10;
+        return (i * 450) + 10;
       })
       .attr('y', vis.config.containerHeight + 75)
       .attr('width', 20)
@@ -202,9 +202,15 @@ class LineChart {
       .data(vis.selected.allSelectedAreas, d => d)
       .join('text')
       .attr('class', 'box-label')
-      .attr('x', (d, i) => (i * 250) + 45)
+      .attr('x', (d, i) => (i * 450) + 45)
       .attr('y', vis.config.containerHeight + 96)
-      .text(d => d);
+      .text(d => {
+        if (d.length > 12) {
+          return d.slice(0, 12) + '...';
+        } else {
+          return d;
+        }
+        });
 
     // Values for comparing countries
     vis.values.selectAll('text')
