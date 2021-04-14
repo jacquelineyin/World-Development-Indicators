@@ -29,7 +29,7 @@ class BarChart {
     }
     this.data = _data;
     this.dispatcher = _dispatcher;
-    this.constants = _constants || { countries: new Countries() };
+    this.constants = _constants || { countries: new Countries(), inputSanitizer: new InputSanitizer() };
     this.selected = _selectedItems;
     this.initVis();
   }
@@ -81,15 +81,15 @@ class BarChart {
     vis.domainHasNeg = vis.hasNegMin(vis.averages);
 
     // Specificy accessor functions
-    vis.xValue = d => d.key;
+    vis.xValue = d => vis.constants.inputSanitizer.truncateCountryName(d.key);
     vis.yValue = d => d.avg;
 
     // Update axis titles
     vis.renderAxisTitles(vis.selected.indicator);
 
     // Update Scale domains
-    vis.updateYScaleDomains();
-    vis.xScale.domain(vis.selected.allSelectedAreas);
+    vis.updateYScaleDomain();
+    vis.updateXScaleDomain();
 
     // Update separator line
     vis.updateSeparatorLine();
@@ -627,7 +627,7 @@ class BarChart {
   /**
    * Purpose: updates domain of yScale
    */
-  updateYScaleDomains() {
+  updateYScaleDomain() {
     let vis = this;
     let [min, max] = d3.extent(vis.averages);
 
@@ -636,6 +636,24 @@ class BarChart {
     max = max ? max : 0;
 
     vis.yScale.domain([min, max]);
+  }
+
+  /**
+   * Purpose: updates domain of yScale and truncates country names
+   */
+  updateXScaleDomain() {
+    let vis = this;
+
+    const { inputSanitizer } = vis.constants;
+    const { allSelectedAreas } = vis.selected;
+    let truncatedCountryNames = [];
+
+    for (let selectedCountry of allSelectedAreas) {
+      let truncatedName = inputSanitizer.truncateCountryName(selectedCountry);
+      truncatedCountryNames.push(truncatedName);
+    }
+
+    vis.xScale.domain(truncatedCountryNames);
   }
 
   /**
