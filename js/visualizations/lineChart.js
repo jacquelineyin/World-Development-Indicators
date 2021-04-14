@@ -292,6 +292,7 @@ class LineChart {
     // Create data value tracking circle for mouse line
     mplCircleEnter.merge(mplCircle)
       .attr('r', vis.config.circle.radius * 2.5)
+      .attr('visibility', 'hidden')
       .style('stroke', d => vis.getColour(d))
       .style('fill', 'none')
       .style('stroke-width', '2px')
@@ -360,10 +361,6 @@ class LineChart {
             // Find nearest data point
             const idx = bisect(d.values, xDate);
             const item = d.values[idx];
-            const circle = d3.select(this).selectAll('.mouseCircle');
-            
-            // Hide circles
-            circle.attr('visibility', 'hidden');
 
             if (item) {
               const currentYear = item.Year;
@@ -433,6 +430,7 @@ class LineChart {
                 });
 
               // Displays tracking circles
+              const circle = d3.select(this).selectAll('.mouseCircle');
               circle.attr('visibility', 'visible');
 
               // Check if indicator has a negative domain, switch scales if yes
