@@ -361,6 +361,7 @@ class LineChart {
             // Find nearest data point
             const idx = bisect(d.values, xDate);
             const item = d.values[idx];
+            const circle = d3.select(this).selectAll('.mouseCircle');
 
             if (item) {
               const currentYear = item.Year;
@@ -433,7 +434,6 @@ class LineChart {
               if (item.value !== null || item.value === 0) {
 
                 // Display tracking circles
-                const circle = d3.select(this).selectAll('.mouseCircle');
                 circle.attr('visibility', 'visible');
 
                 if (vis.negativeDomains.includes(vis.selected.indicator)) {
@@ -443,7 +443,8 @@ class LineChart {
                 }
               }
             }
-            // Don't translate if values are null
+            // Don't translate and hide tracking circles if values are null
+            circle.attr('visibility', 'hidden');
             return 'translate(0,0)';
           });
       });
