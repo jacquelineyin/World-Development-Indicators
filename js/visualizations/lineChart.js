@@ -205,12 +205,12 @@ class LineChart {
       .attr('x', (d, i) => (i * 450) + 45)
       .attr('y', vis.config.containerHeight + 96)
       .text(d => {
-        if (d.length > 12) {
-          return d.slice(0, 12) + '...';
+        if (d.length > 13) {
+          return d.slice(0, 13) + '...';
         } else {
           return d;
         }
-        });
+      });
 
     // Values for comparing countries
     vis.values.selectAll('text')
@@ -383,7 +383,8 @@ class LineChart {
                     }
                   })
                   .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
-                    d.countryName + ': ' + formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(d.values[idx].value)).toFixed(2))
+                    (d.countryName.length > 13 ? d.countryName.slice(0, 13) + '...' : d.countryName) +
+                    ': ' + formatNumbers(vis.yScaleNeg.invert(vis.yScaleNeg(d.values[idx].value)).toFixed(2))
                     : d.countryName + ': N/A');
 
               } else {
@@ -404,7 +405,8 @@ class LineChart {
                     }
                   })
                   .text(d => d.values[idx].value !== null || d.values[idx].value === 0 ?
-                    d.countryName + ': ' + formatNumbers(vis.yScalePos.invert(vis.yScalePos(d.values[idx].value)).toFixed(2))
+                    (d.countryName.length > 13 ? d.countryName.slice(0, 13) + '...' : d.countryName) +
+                    ': ' + formatNumbers(vis.yScalePos.invert(vis.yScalePos(d.values[idx].value)).toFixed(2))
                     : d.countryName + ': N/A');
               }
 
