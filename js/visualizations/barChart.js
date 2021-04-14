@@ -372,10 +372,7 @@ class BarChart {
 
     // Enter + Update
     barTextEnter.merge(barText)
-      .attr('x', (d) => {
-        console.log(vis.xValue(d));
-        console.log(vis.xScale(vis.xValue(d)));
-        return vis.xScale(vis.xValue(d)) + (vis.xScale.bandwidth() / 2)})
+      .attr('x', (d) => vis.xScale(vis.xValue(d)) + (vis.xScale.bandwidth() / 2))
       .attr('y', (d) => vis.getYPosOfBarLabel(d))
       .attr('display', d => !d.avg || isNaN(d.avg) ? 'block' : 'none')
       .attr('text-anchor', 'middle')
