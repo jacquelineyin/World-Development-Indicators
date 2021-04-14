@@ -60,6 +60,50 @@ class WedgeView {
       this.worldArc = d3.arc()
         .innerRadius(15)
         .outerRadius(20);
+
+      // Legend
+      this.legendArc = d3.arc()
+        .innerRadius(2)
+        .outerRadius(5);
+
+      const legendData = [65, 35];
+
+      // Add svg drawing spaces for the legend wedges
+      d3.selectAll(".leg-wedge")
+        .append('svg')
+        .attr('width', 10)
+        .attr('height', 10)
+        .append('g')
+        .attr('transform', `translate(5, 5)`);
+
+      d3.select('#leg-country-wedge svg g')
+        .data(this.pie(legendData))
+        .append('path')
+        .attr('class', 'c-arc')
+        .attr('num', d => d.index)
+        .attr('d', this.legendArc);
+
+      d3.select('#leg-world-wedge svg g')
+        .data(this.pie(legendData))
+        .append('path')
+        .attr('class', 'w-arc')
+        .attr('num', d => d.index)
+        .attr('d', this.legendArc);
+
+      d3.select('#leg-full-wedge svg g')
+        .data(this.pie([100]))
+        .append('path')
+        .attr('class', 'w-arc')
+        .attr('num', d => d.index)
+        .attr('d', this.legendArc);
+
+      d3.select('#leg-selected-wedge svg g')
+        .data(this.pie(legendData))
+        .append('path')
+        .attr('class', 'c-arc')
+        .style('fill', 'green')
+        .attr('num', d => d.index)
+        .attr('d', this.legendArc);
     }
   
     // Prepare data, render
@@ -67,7 +111,7 @@ class WedgeView {
       // Filter the data to the range of selected years
       const codesOfSelectedCountries = "";
       const filteredDataAllCountries = this.data.filter(d => {
-        return this.selected.selectedYears.includes(d.Year) && this.alpha3OfAllCountries.includes(d.CountryCode)});
+        return this.selected.selectedYears.includes(d.Year) && this.alpha3OfAllCountries.includes(d.CountryCode) && d.CountryCode != "WLD"});
 
       // Each wedge (indicator) needs three pieces of data from the subset of data within the range of selected years
       // 1. maximum value for that indicator (maxDataMap)

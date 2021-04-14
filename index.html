@@ -47,10 +47,29 @@
                     </div>
                     <div id="map"></div>
                     <div id="wedges">
+                        <div id="legend" class="wedge-group-container">
+                            <i>Legend</i>  
+                            <table>
+                                <tr>
+                                    <td id="leg-country-wedge" class="leg-wedge"></td>
+                                    <td><text>Selected country's average, inner ring</text></td>
+                                    <td></td>
+                                    <td id="leg-full-wedge" class="leg-wedge"></td>
+                                    <td><text>A full circle is the maximum average value for that indicator</text></td>
+                                </tr>
+                                <tr>
+                                    <td id="leg-world-wedge" class="leg-wedge"></td>
+                                    <td><text>World average, outer ring</text></td>
+                                    <td></td>
+                                    <td id="leg-selected-wedge" class="leg-wedge"></td>
+                                    <td><text>Selected indicator (indicator name will also be <i><b>emphasized</b></i>)</text></td>
+                                </tr>
+                            </table>
+                        </div>
                         <div id="demographics" class="wedge-group-container">
                             <strong>Demographics</strong>
                             <div class="indicator-container">
-                                <div id="POPULATION_TOTAL" class="wedge-container">
+                                <div id="POPULATION_TOTAL" class="wedge-container" selected="true">
                                     <text class="wedge-label">Population, total (number of people)</text>
                                 </div>
                                 <div id="RURAL_POPULATION" class="wedge-container">
@@ -162,7 +181,7 @@
                         <div id="other" class="wedge-group-container">
                             <strong>Other</strong>
                             <div class="indicator-container">
-                                <div id="MOBILE_CELLULAR_SUBSCRIPTIONS" class="wedge-container" selected="true">
+                                <div id="MOBILE_CELLULAR_SUBSCRIPTIONS" class="wedge-container">
                                     <text class="wedge-label">Mobile cellular subscriptions</text>
                                 </div>
                             </div>
