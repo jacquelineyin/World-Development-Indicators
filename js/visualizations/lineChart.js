@@ -294,7 +294,7 @@ class LineChart {
       .attr('r', vis.config.circle.radius * 2.5)
       .style('stroke', d => vis.getColour(d))
       .style('fill', 'none')
-      .style('stroke-width', '1px')
+      .style('stroke-width', '2px')
       .style('display', 'none');
 
     mplCircle.exit().remove();
@@ -306,7 +306,7 @@ class LineChart {
       .attr('class', 'mouse-text');
 
     mplTextEnter.merge(mplText)
-      .attr('transform', `translate(10,3)`);
+      .attr('transform', `translate(20, 13)`);
 
     mplText.exit().remove();
 
@@ -361,6 +361,9 @@ class LineChart {
             const idx = bisect(d.values, xDate);
             const item = d.values[idx];
             const circle = d3.select(this).selectAll('.mouseCircle');
+            
+            // Hide circles
+            circle.attr('visibility', 'hidden');
 
             if (item) {
               const currentYear = item.Year;
@@ -429,6 +432,7 @@ class LineChart {
                   return data;
                 });
 
+              // Displays tracking circles
               circle.attr('visibility', 'visible');
 
               // Check if indicator has a negative domain, switch scales if yes
@@ -440,9 +444,8 @@ class LineChart {
                 }
               }
             }
-            // No translate and circles hidden if values are null
-            circle.attr('visibility', 'hidden');
-            return 'translate(0,0)'
+            // Don't translate if values are null
+            return 'translate(0,0)';
           });
       });
 
