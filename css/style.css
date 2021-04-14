@@ -38,6 +38,10 @@ p {
   background: white;
 }
 
+#intro-text {
+  margin: 40px 120px 40px 120px;
+}
+
 #next-btn {
   border-radius: 37px;
   width: 140px;
@@ -46,7 +50,7 @@ p {
 }
 
 #next-btn:hover, #next-btn:focus {
-  background-color: #ec3030;
+  background-color: #1b823a;
   color: white;
 }
 
