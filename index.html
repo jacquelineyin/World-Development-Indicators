@@ -20,7 +20,7 @@
 <body>
     <div id="landing">
         <h4 class="title" id="project-title">World Development Indicators</h4>
-        <p>
+        <p id="intro-text">
             Inequality is, sadly, pervasive throughout all domains of life - and countries are not exempt.
             Countries fall under the categories of “developed” vs “developing”, with “developed” countries
             seeking to expand their sphere of influence by donating and funding the development of those that
@@ -47,26 +47,26 @@
                         <div id="region-selector-container"></div>
                     </div>
                     <div id="map"></div>
+                    <div id="legend" class="wedge-group-container">
+                        <i>Legend</i>  
+                        <table>
+                            <tr>
+                                <td id="leg-country-wedge" class="leg-wedge"></td>
+                                <td><text>Selected country's average, inner ring</text></td>
+                                <td></td>
+                                <td id="leg-full-wedge" class="leg-wedge"></td>
+                                <td><text>A full circle is the maximum average value for that indicator</text></td>
+                            </tr>
+                            <tr>
+                                <td id="leg-world-wedge" class="leg-wedge"></td>
+                                <td><text>World average, outer ring</text></td>
+                                <td></td>
+                                <td id="leg-selected-wedge" class="leg-wedge"></td>
+                                <td><text>Selected indicator (indicator name will also be <i><b>emphasized</b></i>)</text></td>
+                            </tr>
+                        </table>
+                    </div>
                     <div id="wedges">
-                        <div id="legend" class="wedge-group-container">
-                            <i>Legend</i>  
-                            <table>
-                                <tr>
-                                    <td id="leg-country-wedge" class="leg-wedge"></td>
-                                    <td><text>Selected country's average, inner ring</text></td>
-                                    <td></td>
-                                    <td id="leg-full-wedge" class="leg-wedge"></td>
-                                    <td><text>A full circle is the maximum average value for that indicator</text></td>
-                                </tr>
-                                <tr>
-                                    <td id="leg-world-wedge" class="leg-wedge"></td>
-                                    <td><text>World average, outer ring</text></td>
-                                    <td></td>
-                                    <td id="leg-selected-wedge" class="leg-wedge"></td>
-                                    <td><text>Selected indicator (indicator name will also be <i><b>emphasized</b></i>)</text></td>
-                                </tr>
-                            </table>
-                        </div>
                         <div id="demographics" class="wedge-group-container">
                             <strong>Demographics</strong>
                             <div class="indicator-container">
@@ -198,6 +198,10 @@
                         <form id="tag-container" autocomplete="off"></form>
                     </div>
                     <svg id="barchart"></svg>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
                     <svg id="linechart"></svg>
                 </div>    
             </div>
