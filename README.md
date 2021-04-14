@@ -136,19 +136,19 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [x] Link: Select Comparison --> Bar-chart, Line-chart
 - [x] Link: Wedges (Select Indicator) --> Bar-chart, Line-chart, Map
 - [x] Link: Year slider (Select Time Interval) --> Bar-chart, Line-chart, Wedges, Map
-##### **Todo**
-- [ ] Link: Select Country --> Map
-- [ ] Link: Bar-chart --> Line-chart
-- [ ] Widget: Bar-chart tooltip
-- [ ] Widget: Wedge tooltip
-- [ ] BugFix: Stacked rendering of Line-chart's y-axis title
-- [ ] UI: Warning message when adding over 4 comparison countries
-- [ ] UI: Warning when trying to add invalid country as comparison country
-- [ ] UI: Move year slider to left and change to vertical slider
+##### **Todo's from M2**
+- [x] Link: Select Country --> Map
+- [x] Link: Bar-chart --> Line-chart
+- [ ] ~~Widget: Bar-chart tooltip~~ (Changed to displaying value when hover on bar)
+- [x] Widget: Wedge tooltip
+- [x] BugFix: Stacked rendering of Line-chart's y-axis title
+- [x] UI: Warning message when adding over 4 comparison countries
+- [x] UI: Warning when trying to add invalid country as comparison country
+- [x] UI: Move year slider to left and change to vertical slider
 - [ ] Others
 
 ##### **Stretch Goals**
-- [ ] Link: Bar-chart --> Map 
+- [x] Link: Bar-chart --> Map 
 - [ ] Link: Wedge (ability to select more than one indicator?)
 - [ ] UI: Styling
 - [ ] Others
@@ -157,6 +157,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 ## External Resources
 ### Data Sources
 - See [Dataset: Sources](#data-sources)
+- [World Map Topojson](https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json)
 
 ### Referenced Material
 ##### Data Processing
@@ -171,6 +172,8 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [Leaflet: GeoJSON layer documentation](https://leafletjs.com/reference-1.7.1.html#geojson)
 - [Stack Exchange: Create FeatureCollection from GeoJSON...](https://gis.stackexchange.com/questions/300331/create-featurecollection-from-geojson-containing-list-of-features)
 - [Stack Exchange: Getting bounds of layer group in leaflet](https://gis.stackexchange.com/questions/180678/how-do-i-get-the-bounds-of-a-layergroup-in-leaflet/180680)
+- [Github: Horizontal Lines in World](https://github.com/topojson/topojson/issues/242#issuecomment-327823284)
+- [Observable: Intro to leaflet+d3 + interactivity](https://observablehq.com/@sfu-iat355/intro-to-leaflet-d3-interactivity)
 
 ##### Year slider
 - [D3 brushing linking](https://codesandbox.io/s/github/UBC-InfoVis/2021-436V-examples/tree/master/d3-brushing-linking)
@@ -192,6 +195,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [D3-format](https://github.com/d3/d3-format#format)
 - [D3: Formatting tick value. To show B (Billion) instead of G (Giga)](https://stackoverflow.com/a/40774969)
 - [Viewbox](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/viewBox)
+- [Observable: Rounding 'rect' element borders](https://bl.ocks.org/mbostock/1424037)
 
 ##### Colour Palette
 - [Cooler.co](https://coolors.co/.) for choosing a colour palette

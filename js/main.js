@@ -14,40 +14,42 @@ const parseTime = d3.timeParse("%Y");
 
 // Initialize dispatcher that is used to orchestrate events
 const dispatcher = d3.dispatch(
-    dispatcherEvents.FILTER_YEAR,
-    dispatcherEvents.CHANGE_INDICATOR, 
-    dispatcherEvents.SELECT_FOCUS_AREA,
-    dispatcherEvents.SELECT_COMPARISON_ITEM,
-    dispatcherEvents.DELETE_COMPARISON_ITEM,
-    dispatcherEvents.BAR_HOVER,
-    dispatcherEvents.BAR_UNHOVER,
-    dispatcherEvents.ERROR_TOO_MANY_COMPARISONS
-  );
+  dispatcherEvents.FILTER_YEAR,
+  dispatcherEvents.CHANGE_INDICATOR,
+  dispatcherEvents.SELECT_FOCUS_AREA,
+  dispatcherEvents.SELECT_COMPARISON_ITEM,
+  dispatcherEvents.DELETE_COMPARISON_ITEM,
+  dispatcherEvents.BAR_HOVER,
+  dispatcherEvents.BAR_UNHOVER,
+  dispatcherEvents.MAP_ITEM_HOVER,
+  dispatcherEvents.MAP_ITEM_UNHOVER,
+  dispatcherEvents.ERROR_TOO_MANY_COMPARISONS
+);
 
 selected.setDispatcher(dispatcher, dispatcherEvents);
 
 const focusedAreaWidget = new FocusAreaWidget(
-  selected, 
-  {  
-    regionMapper, 
+  selected,
+  {
+    regionMapper,
     countries,
     regions,
     dispatcherEvents
   },
   dispatcher,
-  );
+);
 
-  const comparisonWidget = new ComparisonWidget(
-    selected,
-    { 
-      regionMapper, 
-      countries, 
-      regions, 
-      dispatcherEvents,
-      warningType 
-    },
-    dispatcher,
-  );
+const comparisonWidget = new ComparisonWidget(
+  selected,
+  {
+    regionMapper,
+    countries,
+    regions,
+    dispatcherEvents,
+    warningType
+  },
+  dispatcher,
+);
 
 /**
  * Load data from CSV file asynchronously and render charts
@@ -56,23 +58,29 @@ d3.csv('data/Dataset.csv').then(_data => {
   data = _data;
 
   data.forEach(d => {
-    /* TODO */
     d.year = parseTime(d.Year);
     d.value = d.Value !== 'NULL' ? +d.Value : null;
     d.Value = d.Value !== 'NULL' ? +d.Value : null;
   });
 
-  //TODO: Testing purposes only. Get rid of it after finishing implementation of selectionItems
-  setTestSelectedItems();
+  // Set default selected items
+  setDefaultSelectedItems();
 
   // Initialize select country/region for focused area
   focusedAreaWidget.createSelectFocusArea();
   comparisonWidget.updateComparisonSection();
 
-  //Initialize views
-  // Load in GeoJSON data and initialize map view
-  d3.json("./data/countries.geojson").then(geoJsonData => { 
-    map = new GeoMap(data, geoJsonData, selected);
+  // Initialize map view
+  d3.json("data/countries.json").then(countries => {
+
+    countries.features.forEach(d => {
+      // Convert string to int;
+      d.id = parseInt(d.id);
+    });
+
+    map = new GeoMap({
+      parentElement: "#map"
+    }, data, countries, selected, dispatcher, dispatcherEvents);
     map.updateVis();
   });
 
@@ -90,8 +98,8 @@ d3.csv('data/Dataset.csv').then(_data => {
   }, data, selected);
 
   // Initialize line chart
-  lineChart = new LineChart({ 
-    parentElement: '#linechart' ,
+  lineChart = new LineChart({
+    parentElement: '#linechart',
     colour: {
       selectedArea: colourPalette.getFocusedAreaColour(),
       otherAreas: colourPalette.getNonFocusedAreaColour()
@@ -110,7 +118,7 @@ d3.csv('data/Dataset.csv').then(_data => {
 
 dispatcher.on(dispatcherEvents.FILTER_YEAR, selectedYears => {
   selected.selectedYears = selectedYears;
-  selected.setTimeInterval(selectedYears[0], selectedYears[selectedYears.length-1]);
+  selected.setTimeInterval(selectedYears[0], selectedYears[selectedYears.length - 1]);
 
   map.updateVis();
   wedgeView.updateVis();
@@ -126,12 +134,12 @@ dispatcher.on(dispatcherEvents.SELECT_FOCUS_AREA, (type, value) => {
   map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
-}); 
+});
 
 dispatcher.on(dispatcherEvents.CHANGE_INDICATOR, newlySelectedIndicator => {
   selected.indicator = indicators[newlySelectedIndicator];
   comparisonWidget.updateComparisonSection();
-  
+
   map.updateVis();
   barChart.updateVis();
   lineChart.updateVis();
@@ -156,12 +164,22 @@ dispatcher.on(dispatcherEvents.DELETE_COMPARISON_ITEM, comparisonItem => {
 })
 
 dispatcher.on(dispatcherEvents.BAR_HOVER, countryName => {
-  // TODO map
+  map.emphasizeCountry(countryName);
   lineChart.emphasizeLine(countryName);
 })
 
 dispatcher.on(dispatcherEvents.BAR_UNHOVER, countryName => {
-  //TODO map
+  map.deEmphasizeCountry(countryName);
+  lineChart.deEmphasizeLine(countryName);
+})
+
+dispatcher.on(dispatcherEvents.MAP_ITEM_HOVER, countryName => {
+  barChart.emphasizeBar(countryName);
+  lineChart.emphasizeLine(countryName);
+})
+
+dispatcher.on(dispatcherEvents.MAP_ITEM_UNHOVER, countryName => {
+  barChart.deEmphasizeBar(countryName);
   lineChart.deEmphasizeLine(countryName);
 })
 
@@ -176,7 +194,7 @@ dispatcher.on(dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, () => {
  * @param {string} type = 'region' if setting region, 'country' if setting country
  * @param {string} value is a capitalized (first letter only) country or region name
  */
- let updateSelectedArea = (type, value) => {
+let updateSelectedArea = (type, value) => {
   if (type === 'country') {
     selected.setArea({ country: value });
   } else if (type === 'region') {
@@ -190,26 +208,26 @@ dispatcher.on(dispatcherEvents.ERROR_TOO_MANY_COMPARISONS, () => {
  * @param {string} _region = name of region that's selected
  */
 let handleSelectRegion = (_region) => {
-    selected.setArea({ region: _region });
-    
-    // Update dropdown to display only countries of that region
-    focusedAreaWidget.createSelectCountryDropdown();
+  selected.setArea({ region: _region });
 
-    // Update selected country to the default of updated dropdown
-    let selectElem = document.getElementById('country-selector');
-    selected.setArea({ country: selectElem.value });
+  // Update dropdown to display only countries of that region
+  focusedAreaWidget.createSelectCountryDropdown();
+
+  // Update selected country to the default of updated dropdown
+  let selectElem = document.getElementById('country-selector');
+  selected.setArea({ country: selectElem.value });
 }
 
 /**
- * Purpose: Creates a mock "selected" state for testing purposes
+ * Purpose: Sets default state for program
  */
-let setTestSelectedItems = () => {
-  // test value timeInterval
+let setDefaultSelectedItems = () => {
+  // set default timeInterval
   const defaultYears = [...new Set(data.map(d => d.Year))].slice(30,51);
   selected.selectedYears = defaultYears;
-  selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length-1] };
+  selected.timeInterval = { min: defaultYears[0], max: defaultYears[defaultYears.length - 1] };
 
-  // test value indicator
+  // default indicator
   selected.setIndicator(indicators.POPULATION_TOTAL);
 }
 
