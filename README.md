@@ -16,7 +16,7 @@
     - [Pre-processing](#pre-processing)
   - [Implementation](#implementation)
     - [Project File Structure](#project-file-structure)
-    - [Current Status (as of March 31, 2021)](#current-status-as-of-march-31-2021)
+    - [Current Status (as of April 14, 2021)](#current-status-as-of-april-14-2021)
       - [High-level Tasks (Not fully inclusive)](#high-level-tasks-not-fully-inclusive)
         - [**Complete:**](#complete)
         - [**Todo's from M2**](#todos-from-m2)
@@ -126,7 +126,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
  ┗ 📜README.md
  ```
 
-### Current Status (as of March 31, 2021)
+### Current Status (as of April 14, 2021)
 #### High-level Tasks (Not fully inclusive)
 ##### **Complete:**
 - [x] View: Choropleth Map (Basic)
@@ -155,7 +155,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [x] Link: Bar-chart --> Map 
 - [ ] Link: Wedge (ability to select more than one indicator?)
 - [x] UI: Styling
-- [ ] Others
+- [x] Others
 
 
 ## External Resources
