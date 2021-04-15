@@ -31,6 +31,7 @@
         - [Comparison Section](#comparison-section)
         - [Styling](#styling)
         - [Colour Palette](#colour-palette)
+        - [Scrolling](#scrolling)
   
 ## The Team
 Group 24:
