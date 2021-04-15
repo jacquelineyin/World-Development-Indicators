@@ -34,7 +34,6 @@
   
 
 ## Pre-processing
-<!-- TODO: Need to include the pre-processing we did to get our original Dataset.csv -->
 1. First, we created a database using MSSM, then, following the steps in [this guide](https://www.c-sharpcorner.com/article/create-table-and-put-data-in-sql-server-using-csv-file/), we created two tables, `Indicators` and `continents2` by importing the "flat files" `Indicators.csv` and `continents2.csv`
    
 2. We used a query to filter the rows from the `Indicators` table that did not match the indicators we were interested in. We used the results to create a new `.csv` file called `Dataset.csv`
