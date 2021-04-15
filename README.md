@@ -1,26 +1,27 @@
 # CPSC 436V Project : World Development Indicators
 
 ## Notes to/for the TA:
-- There are a lot of `TODO` markers left in the comments as placeholders for where we would need to adjust our code for certain stretch goals. Please disregard them for M2.
-- Visualization designed for larger screens (preferably 1920px x 1080px) but some responsiveness has been implemented for screen sizes of min-width 1024px.
-- You have to scroll to the bottom to see and access the year slider (We will reposition the slider in M3) - sorry :(
+- Visualization designed for larger screens (preferably 1920px x 1080px and above). (Though there is some responsiveness for smaller screens, it's not 100% completely responsive)
 - [Project Structure & Implementation below](#project-file-structure)
 
 ## Table of Contents
-  - **[The Team](#the-team)**
-  - **[Overview](#overview)**
+- [CPSC 436V Project : World Development Indicators](#cpsc-436v-project--world-development-indicators)
+  - [Notes to/for the TA:](#notes-tofor-the-ta)
+  - [Table of Contents](#table-of-contents)
+  - [The Team](#the-team)
+  - [Overview](#overview)
     - [Goal and Purpose](#goal-and-purpose)
-  - **[Dataset](#dataset)**
+  - [Dataset](#dataset)
     - [Sources](#sources)
     - [Pre-processing](#pre-processing)
-  - **[Implementation](#implementation)**
+  - [Implementation](#implementation)
     - [Project File Structure](#project-file-structure)
     - [Current Status (as of March 31, 2021)](#current-status-as-of-march-31-2021)
       - [High-level Tasks (Not fully inclusive)](#high-level-tasks-not-fully-inclusive)
         - [**Complete:**](#complete)
-        - [**Todo**](#todo)
+        - [**Todo's from M2**](#todos-from-m2)
         - [**Stretch Goals**](#stretch-goals)
-  - **[External Resources](#external-resources)**
+  - [External Resources](#external-resources)
     - [Data Sources](#data-sources)
     - [Referenced Material](#referenced-material)
         - [Data Processing](#data-processing)
@@ -41,14 +42,12 @@ Group 24:
 
 ## Overview
 ### Goal and Purpose
-Inequality is, sadly, pervasive throughout all domains of life - and countries are not exempt. Countries fall under the categories of “developed” vs “developing”, with “developed” countries seeking to expand their sphere of influence by donating and funding the development of those that are “developing”. But what does that mean, exactly? What are the factors that determine whether a country is “developed” or “developing”, and how do countries fare on each indicator of development?
+Inequality is, sadly, pervasive throughout all domains of life - and countries are not exempt. Countries fall under the categories of “developed” vs “developing”, with “developed” countries seeking to expand their sphere of influence by donating and funding the development of those that are “developing”. But what does that mean, exactly? What are the factors that determine whether a country is *"developed"* or *"developing"*, and how do countries fare on each indicator of development?
 
 The data visualization for this project leverages data consolidated from the World Bank and seeks to allow users to explore the different regions of the world and see how well they do in different areas of development as compared to a global average. Furthermore, we hope to allow users to investigate similarities or discrepancies between different areas of the world by juxtapositioning countries of interest in terms of indicators of development. 
 
-Screenshot 1:
-  - <img src="https://media.github.students.cs.ubc.ca/user/3011/files/58863d00-9255-11eb-9832-ceba52621c9b" width="700px"/>
-Screenshot 2:
-  - <img src="https://media.github.students.cs.ubc.ca/user/3011/files/591ed380-9255-11eb-8a40-2390d8a2361d" width="700px"/>
+Demo:
+ - <img src="https://media.github.students.cs.ubc.ca/user/3011/files/3527bb80-9d46-11eb-94e2-41636a897483" width="700px">
 
 ## Dataset
 ### Sources
@@ -67,7 +66,7 @@ Screenshot 2:
 ### Project File Structure
 Our project repo separates all visual components where the bar chart, line chart, map and wedges have their own css file. General styling all belongs in the style.css file. All stylesheets are under the `css` folder.
 
-In our `js` folder, we have a `constants`, `widgets` and `visualizations` folder. The `constants` folder contains all constants used in our project. These constants include our colour palette colors, indicator names and country names. 
+In our `js` folder, we have a `constants`, `widgets` and `visualizations` folder. The `constants` folder contains all constants used in our project. These constants include our colour palette colors, indicator names, country names, and our mappers. 
 
 The `widgets` folder contains all the code for our selectors. The selectors include the selector for comparison areas and selecting the focus country. 
 
@@ -79,7 +78,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 
 ```
 📦436v-project_g8y9a_r6s1b_s4g1b
- ┣ 📂css
+┣ 📂css
  ┃ ┣ 📜barChart.css
  ┃ ┣ 📜comparisonWidget.css
  ┃ ┣ 📜focusAreaWidget.css
@@ -90,17 +89,22 @@ A util file of particular use is `selected.js`. We created a new class in `selec
  ┃ ┣ 📜wedges.css
  ┃ ┗ 📜yearSlider.css
  ┣ 📂data
- ┃ ┣ ...
+ ┃ ┣ 📜countries.json 
+ ┃ ┣ 📜Dataset.csv
+ ┃ ┗ 📜README.md
  ┣ 📂images
  ┃ ┣ ...
  ┣ 📂js
  ┃ ┣ 📂constants
  ┃ ┃ ┣ 📜colourPalette.js
  ┃ ┃ ┣ 📜countries.js
+ ┃ ┃ ┣ 📜countryCodeMapper.js
  ┃ ┃ ┣ 📜dispatcherEvents.js
  ┃ ┃ ┣ 📜indicators.js
  ┃ ┃ ┣ 📜keyEventMapper.js
- ┃ ┃ ┗ 📜regions.js
+ ┃ ┃ ┣ 📜regionMapper.js
+ ┃ ┃ ┣ 📜regions.js
+ ┃ ┃ ┗ 📜warningType.js
  ┃ ┣ 📂visualizations
  ┃ ┃ ┣ 📜barChart.js
  ┃ ┃ ┣ 📜geoMap.js
@@ -112,10 +116,10 @@ A util file of particular use is `selected.js`. We created a new class in `selec
  ┃ ┃ ┣ 📜comparisonWidget.js
  ┃ ┃ ┗ 📜focusAreaWidget.js
  ┃ ┣ 📜d3.v6.min.js
+ ┃ ┣ 📜inputSanitizer.js
  ┃ ┣ 📜leaflet.js
  ┃ ┣ 📜leaflet.js.map
  ┃ ┣ 📜main.js
- ┃ ┣ 📜regionMapper.js
  ┃ ┗ 📜selected.js
  ┣ 📜.gitignore
  ┣ 📜index.html
@@ -150,7 +154,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 ##### **Stretch Goals**
 - [x] Link: Bar-chart --> Map 
 - [ ] Link: Wedge (ability to select more than one indicator?)
-- [ ] UI: Styling
+- [x] UI: Styling
 - [ ] Others
 
 
