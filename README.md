@@ -149,7 +149,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [x] UI: Warning message when adding over 4 comparison countries
 - [x] UI: Warning when trying to add invalid country as comparison country
 - [x] UI: Move year slider to left and change to vertical slider
-- [ ] Others
+- [x] Others
 
 ##### **Stretch Goals**
 - [x] Link: Bar-chart --> Map 
