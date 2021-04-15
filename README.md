@@ -181,7 +181,7 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 
 ##### Year slider
 - [D3 brushing linking](https://codesandbox.io/s/github/UBC-InfoVis/2021-436V-examples/tree/master/d3-brushing-linking)
-- [D3 Snapping brush](https://blockbuilder.org/mforando/942ba2486980a4ba44eda80b616abe07)
+- [D3 snapping brush](https://observablehq.com/@d3/brush-snapping)
 
 ##### Multi-line chart
 - [D3 Mouseover Multi-line Chart](https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91)
