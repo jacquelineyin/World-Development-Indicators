@@ -117,6 +117,7 @@ class LineChart {
    */
   updateVis() {
     let vis = this;
+    const parseTime = d3.timeParse("%Y");
     const selectedCountries = vis.selected.allSelectedAreas;
     const selectedIndicator = vis.selected.indicator;
     const selectedYears = vis.selected.selectedYears;
@@ -159,14 +160,23 @@ class LineChart {
       })
       .defined(d => { return d.value !== null });
 
-    // Set the scale input domains
+    selectedYears.forEach(y => {
+      parseTime(y);
+    });
+
+    // Set the scale input domains - yScalePos for positive domains, yScaleNeg for negative domains
     vis.colorScale.domain(vis.selected.allSelectedAreas);
-    vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
 
-    // yScalePos for positive domains, yScaleNeg for negative domains
-    vis.yScalePos.domain([0, d3.max(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value)]);
-    vis.yScaleNeg.domain(d3.extent(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value));
-
+    // Check if data is empty
+    if (filteredSelectedData.length !== 0) {
+      vis.xScale.domain(d3.extent(filteredSelectedData, d => d.year));
+      vis.yScalePos.domain([0, d3.max(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value)]);
+      vis.yScaleNeg.domain(d3.extent(filteredSelectedData, d => d.value), d3.max(filteredSelectedData, d => d.value));
+    } else {
+      vis.xScale.domain([parseTime(vis.selected.timeInterval.min), parseTime(vis.selected.timeInterval.max)]);
+      vis.yScalePos.domain([0, 0]);
+      vis.yScaleNeg.domain([0, 0]);
+    }
     vis.renderVis();
   }
 
@@ -605,5 +615,4 @@ class LineChart {
     const circle = vis.circles.selectAll(`.circle-${countryKey}`);
     circle.classed('active-circle', toggleSetting);
   }
-
 }
