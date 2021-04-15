@@ -27,7 +27,7 @@ body {
 }
 
 g.axis.x-axis.linechart g.tick > text {
-  transform: rotate(-45deg);
+  transform: rotate(-60deg);
   text-anchor: end;
   fill: black;
 }
