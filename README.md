@@ -206,3 +206,5 @@ A util file of particular use is `selected.js`. We created a new class in `selec
 - [Cooler: Link to choosen colour palette](https://coolors.co/540d6e-ee4266-ffd23f-3bceac-1982c4)
 - [ColBlinder](https://www.color-blindness.com/coblis-color-blindness-simulator/) as a Colour Blindness Simulator
 
+##### Scrolling
+- [Smooth scrolling](https://css-tricks.com/snippets/jquery/smooth-scrolling/)
