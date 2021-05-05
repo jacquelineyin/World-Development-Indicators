@@ -1,12 +1,12 @@
 # CPSC 436V Project : World Development Indicators
 
-## Notes to/for the TA:
+## Notes:
 - Visualization designed for larger screens (preferably 1920px x 1080px and above). (Though there is some responsiveness for smaller screens, it's not 100% completely responsive)
 - [Project Structure & Implementation below](#project-file-structure)
 
 ## Table of Contents
 - [CPSC 436V Project : World Development Indicators](#cpsc-436v-project--world-development-indicators)
-  - [Notes to/for the TA:](#notes-tofor-the-ta)
+  - [Notes:](#notes)
   - [Table of Contents](#table-of-contents)
   - [The Team](#the-team)
   - [Overview](#overview)
@@ -35,11 +35,11 @@
   
 ## The Team
 Group 24:
-| Team Member | Github Id (School's) |
-|-------------|----------------------|
-|Amy          | amy2400              |
-|Brett        | bpasula              |
-|Jacqueline   | yjackie              |
+| Team Member | Github Id (School's) | Github Id Personal |
+|-------------|----------------------|------------------- |
+|Amy          | (NA for privacy reasons) | (NA for privacy reasons) |
+|Brett        | (NA for privacy reasons) | (NA for privacy reasons) |
+|Jacqueline   | yjackie              | jacquelineyin |
 
 ## Overview
 ### Goal and Purpose
