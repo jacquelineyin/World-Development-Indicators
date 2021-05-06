@@ -1,5 +1,4 @@
 # CPSC 436V Project : World Development Indicators
-[Click Here to Explore the App](https://jacquelineyin.github.io/World-Development-Indicators/)
 
 ## Notes:
 - Visualization designed for larger screens (preferably 1920px x 1080px and above). (Though there is some responsiveness for smaller screens, it's not 100% completely responsive)
@@ -50,6 +49,9 @@ The data visualization for this project leverages data consolidated from the Wor
 
 Demo:
  - <img src="https://user-images.githubusercontent.com/39810669/117261362-e7621880-ae04-11eb-99b7-eb0d595383f9.gif" width="700px">
+
+App:
+[Click Here to Explore the App](https://jacquelineyin.github.io/World-Development-Indicators/)
 
 ## Dataset
 ### Sources
